@@ -4801,3 +4801,15 @@ textarea:focus-visible{
    ========================================================= */
 .supporter-photo__layout{display:none!important}
 .supporter-photo__canvas-wrap.is-circle::after{display:none!important}
+
+
+/* =========================================================
+   FOTO DE APOIO — zoom imediatamente abaixo da foto no celular
+   ========================================================= */
+@media(max-width:700px){
+  .supporter-photo__zoom--under-preview{
+    width:100%;
+    margin-top:12px;
+    margin-bottom:18px;
+  }
+}

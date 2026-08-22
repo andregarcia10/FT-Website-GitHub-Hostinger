@@ -852,6 +852,23 @@ function initSupporterPhotoCreator(){
   const shareButton=qs('#supporter-photo-share');
   const networkButtons=qsa('[data-supporter-network]');
   const shareStatus=qs('#supporter-photo-share-status');
+  const previewColumn=qs('[data-supporter-preview-column]');
+  const controlsColumn=qs('[data-supporter-controls-column]');
+  const zoomBlock=qs('[data-supporter-zoom]');
+  const mobileZoomAnchor=document.createComment('supporter-photo-zoom-original-position');
+  if(zoomBlock?.parentNode)zoomBlock.parentNode.insertBefore(mobileZoomAnchor,zoomBlock);
+
+  const placeZoomForViewport=()=>{
+    if(!zoomBlock||!previewColumn||!controlsColumn)return;
+    if(window.matchMedia('(max-width: 700px)').matches){
+      stage.insertAdjacentElement('afterend',zoomBlock);
+      zoomBlock.classList.add('supporter-photo__zoom--under-preview');
+    }else{
+      mobileZoomAnchor.parentNode?.insertBefore(zoomBlock,mobileZoomAnchor.nextSibling);
+      zoomBlock.classList.remove('supporter-photo__zoom--under-preview');
+    }
+  };
+
 
   if(!canvas||!input||!zoom||!resetButton||!downloadButton||!stage)return;
 
@@ -1103,9 +1120,16 @@ function initSupporterPhotoCreator(){
   campaignArt.onload=render;
   window.addEventListener('beforeunload',()=>{if(objectUrl)URL.revokeObjectURL(objectUrl)},{once:true});
 
+  placeZoomForViewport();
   setCanvasSize();
   updateUi();
   render();
+
+  let zoomViewportTimer;
+  window.addEventListener('resize',()=>{
+    window.clearTimeout(zoomViewportTimer);
+    zoomViewportTimer=window.setTimeout(placeZoomForViewport,120);
+  });
 }
 
 // ===== app.js =====
