@@ -1,0 +1,27 @@
+IDENTIDADE VISUAL — integração web
+
+Esta versão aplica a paleta, a marca oficial, o símbolo, os grafismos e a família Saira.
+Os arquivos de fonte proprietária não foram redistribuídos neste ZIP.
+
+Para usar Sequia Grande exatamente como no manual, copie do pacote original da identidade:
+2. Fonte/Sequia Grande/Sequia Grande.woff2
+para:
+assets/fonts/sequia-grande.woff2
+
+Depois, se desejar carregá-la localmente, adicione ao topo do style.css:
+@font-face{
+  font-family:"Sequia Grande";
+  src:url("assets/fonts/sequia-grande.woff2") format("woff2");
+  font-display:swap;
+}
+
+
+ETAPA 2 — REFINAMENTO
+- Composição editorial dos títulos e seções.
+- Uso mais integrado do símbolo oficial e grafismos diagonais.
+- Molduras fotográficas com linguagem de colagem.
+- Cards e galeria com tratamento de cartaz/material impresso.
+- Refinamento específico de Hero, trajetória, propostas, números, mídia, agenda, CTA e footer.
+- Adaptação própria para tablet e smartphone.
+- Conteúdo, fotos, vídeos e funcionalidades existentes preservados.
+- CSS de impressão da Cola Eleitoral preservado.

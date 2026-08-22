@@ -1,0 +1,27 @@
+FOTO DE APOIO 13007 — PERFIL, POST E STORY
+
+Envie juntos para a mesma pasta pública:
+- index.html
+- style-20260822-0928.css
+- script-20260822-0928.js
+
+A pasta assets/ existente deve permanecer.
+
+FORMATOS:
+- Perfil: 1080x1080 circular
+- Post: 1080x1350 (4:5)
+- Story: 1080x1920 (9:16)
+
+POST/STORY:
+- Layout 1: composição clássica 13007
+- Layout 2: arte oficial fornecida no rodapé
+
+COMPARTILHAMENTO:
+A ferramenta usa a Web Share API com o arquivo PNG quando suportada.
+Em celulares compatíveis, o usuário pode escolher Instagram, Facebook,
+X ou WhatsApp diretamente na tela nativa de compartilhamento.
+Em navegadores sem compartilhamento de arquivo, a imagem é baixada e
+a rede social é aberta como fallback.
+
+PRIVACIDADE:
+Todo o processamento da foto continua local no navegador.
