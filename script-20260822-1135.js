@@ -852,22 +852,30 @@ function initSupporterPhotoCreator(){
   const shareButton=qs('#supporter-photo-share');
   const networkButtons=qsa('[data-supporter-network]');
   const shareStatus=qs('#supporter-photo-share-status');
-  const previewColumn=qs('[data-supporter-preview-column]');
-  const controlsColumn=qs('[data-supporter-controls-column]');
+  const editor=qs('.supporter-photo__editor');
+  const controls=qs('.supporter-photo__controls');
   const zoomBlock=qs('[data-supporter-zoom]');
-  const mobileZoomAnchor=document.createComment('supporter-photo-zoom-original-position');
-  if(zoomBlock?.parentNode)zoomBlock.parentNode.insertBefore(mobileZoomAnchor,zoomBlock);
+  const zoomDesktopAnchor=document.createComment('zoom-desktop-position');
 
-  const placeZoomForViewport=()=>{
-    if(!zoomBlock||!previewColumn||!controlsColumn)return;
+  if(zoomBlock?.parentNode){
+    zoomBlock.parentNode.insertBefore(zoomDesktopAnchor,zoomBlock);
+  }
+
+  const positionZoom=()=>{
+    if(!zoomBlock||!editor||!controls)return;
+
     if(window.matchMedia('(max-width: 700px)').matches){
+      // Mobile: immediately after the photo frame, before the hint,
+      // privacy notice and "Escolher minha foto".
       stage.insertAdjacentElement('afterend',zoomBlock);
-      zoomBlock.classList.add('supporter-photo__zoom--under-preview');
+      zoomBlock.classList.add('supporter-photo__zoom--mobile-under-photo');
     }else{
-      mobileZoomAnchor.parentNode?.insertBefore(zoomBlock,mobileZoomAnchor.nextSibling);
-      zoomBlock.classList.remove('supporter-photo__zoom--under-preview');
+      // Desktop: restore exactly to its original place among the controls.
+      zoomDesktopAnchor.parentNode?.insertBefore(zoomBlock,zoomDesktopAnchor.nextSibling);
+      zoomBlock.classList.remove('supporter-photo__zoom--mobile-under-photo');
     }
   };
+
 
 
   if(!canvas||!input||!zoom||!resetButton||!downloadButton||!stage)return;
@@ -1120,16 +1128,17 @@ function initSupporterPhotoCreator(){
   campaignArt.onload=render;
   window.addEventListener('beforeunload',()=>{if(objectUrl)URL.revokeObjectURL(objectUrl)},{once:true});
 
-  placeZoomForViewport();
+  positionZoom();
   setCanvasSize();
   updateUi();
   render();
 
-  let zoomViewportTimer;
+  let zoomPositionTimer;
   window.addEventListener('resize',()=>{
-    window.clearTimeout(zoomViewportTimer);
-    zoomViewportTimer=window.setTimeout(placeZoomForViewport,120);
+    clearTimeout(zoomPositionTimer);
+    zoomPositionTimer=setTimeout(positionZoom,100);
   });
+
 }
 
 // ===== app.js =====

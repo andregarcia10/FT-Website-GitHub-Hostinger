@@ -4813,3 +4813,14 @@ textarea:focus-visible{
     margin-bottom:18px;
   }
 }
+
+
+/* FOTO DE APOIO — zoom imediatamente abaixo do quadro no mobile */
+@media(max-width:700px){
+  .supporter-photo__zoom--mobile-under-photo{
+    width:100%;
+    margin:12px 0 14px;
+    padding:14px 16px;
+    box-sizing:border-box;
+  }
+}
