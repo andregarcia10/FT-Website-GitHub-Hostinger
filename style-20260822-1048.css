@@ -4696,3 +4696,108 @@ textarea:focus-visible{
   .supporter-photo__canvas-wrap[data-output-format="story"]{max-width:330px}
 }
 
+
+/* =========================================================
+   FOTO DE APOIO — apresentação clara das duas utilidades
+   ========================================================= */
+.supporter-photo__heading{max-width:940px}
+.supporter-photo__heading p{max-width:860px}
+.supporter-photo__uses{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  width:min(100%,1060px);
+  margin:-18px auto 46px;
+}
+.supporter-photo__use-card{
+  position:relative;
+  display:grid;
+  grid-template-columns:58px minmax(0,1fr);
+  gap:18px;
+  align-items:start;
+  min-height:210px;
+  padding:24px 24px 24px 22px;
+  border:2px solid rgba(244,227,200,.72);
+  color:var(--cream);
+  background:rgba(244,227,200,.075);
+  box-shadow:8px 8px 0 rgba(220,20,19,.38);
+  overflow:hidden;
+}
+.supporter-photo__use-card:nth-child(2){box-shadow:8px 8px 0 rgba(255,166,64,.38)}
+.supporter-photo__use-number{
+  position:absolute;
+  right:12px;
+  top:0;
+  color:rgba(244,227,200,.08);
+  font-family:"Sequia Grande","Bebas Neue","Arial Narrow",Impact,sans-serif;
+  font-size:6.2rem;
+  line-height:1;
+  pointer-events:none;
+}
+.supporter-photo__use-icon{
+  position:relative;
+  z-index:1;
+  display:grid;
+  place-items:center;
+  width:54px;
+  height:54px;
+  color:var(--brown);
+  background:var(--trumpet);
+  border:2px solid var(--cream);
+  box-shadow:4px 4px 0 var(--red);
+  font-size:1.25rem;
+}
+.supporter-photo__use-card:nth-child(2) .supporter-photo__use-icon{
+  color:var(--cream);
+  background:var(--red);
+  box-shadow:4px 4px 0 var(--trumpet);
+}
+.supporter-photo__use-card>div{position:relative;z-index:1;min-width:0}
+.supporter-photo__use-kicker{
+  display:inline-block;
+  margin-bottom:7px;
+  color:var(--trumpet);
+  font-size:.67rem;
+  font-weight:900;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+.supporter-photo__use-card h3{
+  margin:0 0 9px;
+  color:var(--cream);
+  font-family:"Sequia Grande","Bebas Neue","Arial Narrow",Impact,sans-serif;
+  font-size:clamp(1.75rem,3vw,2.35rem);
+  font-weight:400;
+  line-height:.94;
+  text-transform:uppercase;
+}
+.supporter-photo__use-card p{
+  margin:0;
+  color:rgba(244,227,200,.76);
+  font-size:.84rem;
+  line-height:1.52;
+}
+.supporter-photo__use-card p strong{color:var(--cream)}
+
+@media(max-width:800px){
+  .supporter-photo__uses{grid-template-columns:1fr;margin-top:-12px;margin-bottom:34px}
+  .supporter-photo__use-card{min-height:0}
+}
+@media(max-width:520px){
+  .supporter-photo__use-card{
+    grid-template-columns:46px minmax(0,1fr);
+    gap:13px;
+    padding:18px 16px;
+  }
+  .supporter-photo__use-icon{width:44px;height:44px;font-size:1.05rem}
+  .supporter-photo__use-number{font-size:4.5rem}
+  .supporter-photo__use-card h3{font-size:1.7rem}
+}
+
+
+
+/* =========================================================
+   FOTO DE APOIO — layout único e imagem limpa
+   ========================================================= */
+.supporter-photo__layout{display:none!important}
+.supporter-photo__canvas-wrap.is-circle::after{display:none!important}

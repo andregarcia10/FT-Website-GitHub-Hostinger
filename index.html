@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style-20260822-0928.css">
+  <link rel="stylesheet" href="style-20260822-1048.css">
   <noscript>
     <style>
       .loader { display: none !important; }
@@ -846,11 +846,33 @@
 
     <section id="foto-apoiador" class="supporter-photo section section--dark" aria-labelledby="supporter-photo-title">
       <div class="container">
-        <header class="section-heading section-heading--light reveal">
+        <header class="section-heading section-heading--light reveal supporter-photo__heading">
           <span class="section-heading__label">Foto de apoio</span>
-          <h2 id="supporter-photo-title">Coloque o 13007 na sua foto de perfil</h2>
-          <p>Envie uma foto, ajuste o enquadramento e gere sua imagem de apoio a Fabiano Trompetista. Todo o processamento acontece somente no seu navegador.</p>
+          <h2 id="supporter-photo-title">Crie uma imagem para postar seu apoio ao 13007 ou uma foto de perfil</h2>
+          <p>Use uma foto sua para demonstrar apoio a Fabiano Trompetista: crie principalmente uma imagem pronta para posts, Stories e Status nas redes sociais e WhatsApp ou, como segunda opção, gere uma foto de perfil circular com a identidade da campanha. Você ajusta posição e zoom, escolhe o formato e baixa ou compartilha o resultado. Sua foto permanece no seu aparelho durante todo o processo.</p>
         </header>
+
+        <div class="supporter-photo__uses reveal" aria-label="Duas maneiras de usar a ferramenta">
+          <article class="supporter-photo__use-card">
+            <span class="supporter-photo__use-number">01</span>
+            <span class="supporter-photo__use-icon"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i></span>
+            <div>
+              <span class="supporter-photo__use-kicker">Post e Story</span>
+              <h3>Publique seu apoio nas redes sociais</h3>
+              <p>Transforme sua foto em uma peça de campanha pronta para <strong>posts 4:5</strong> e <strong>Stories 9:16</strong>. Compartilhe no Instagram, Facebook, X e WhatsApp.</p>
+            </div>
+          </article>
+
+          <article class="supporter-photo__use-card">
+            <span class="supporter-photo__use-number">02</span>
+            <span class="supporter-photo__use-icon"><i class="fa-solid fa-circle-user" aria-hidden="true"></i></span>
+            <div>
+              <span class="supporter-photo__use-kicker">Foto de perfil</span>
+              <h3>Leve o 13007 para o seu perfil</h3>
+              <p>Crie uma imagem <strong>circular 1:1</strong> para usar como foto de perfil no Instagram, Facebook, X, WhatsApp e outras redes.</p>
+            </div>
+          </article>
+        </div>
 
         <div class="supporter-photo__shell reveal">
           <div class="supporter-photo__editor">
@@ -863,7 +885,7 @@
               </div>
             </div>
 
-            <p class="supporter-photo__drag-hint"><i class="fa-solid fa-up-down-left-right" aria-hidden="true"></i> Arraste a foto para reposicionar. Use o controle de zoom para aproximar ou afastar.</p>
+            <p class="supporter-photo__drag-hint"><i class="fa-solid fa-up-down-left-right" aria-hidden="true"></i> Depois de escolher a finalidade, arraste a foto para reposicionar e use o zoom para ajustar o enquadramento.</p>
           </div>
 
           <div class="supporter-photo__controls">
@@ -878,12 +900,12 @@
             <div class="supporter-photo__format" aria-label="Formato da imagem">
               <span class="supporter-photo__format-title"><i class="fa-solid fa-crop-simple" aria-hidden="true"></i> Uso da imagem</span>
               <div class="supporter-photo__format-options supporter-photo__format-options--three" role="group" aria-label="Escolha o formato da imagem">
-                <button class="supporter-photo__format-button is-active" type="button" data-supporter-format="profile" aria-pressed="true">
+                <button class="supporter-photo__format-button" type="button" data-supporter-format="profile" aria-pressed="false">
                   <span class="supporter-photo__format-icon supporter-photo__format-icon--circle" aria-hidden="true"></span>
                   Perfil
                   <small>1:1 circular</small>
                 </button>
-                <button class="supporter-photo__format-button" type="button" data-supporter-format="feed" aria-pressed="false">
+                <button class="supporter-photo__format-button is-active" type="button" data-supporter-format="feed" aria-pressed="true">
                   <span class="supporter-photo__format-icon supporter-photo__format-icon--portrait" aria-hidden="true"></span>
                   Post
                   <small>4:5 · 1080×1350</small>
@@ -897,19 +919,7 @@
               <small id="supporter-photo-format-note">Foto circular 1080×1080 para perfil em Instagram, Facebook, X e WhatsApp.</small>
             </div>
 
-            <div class="supporter-photo__layout" id="supporter-photo-layout" hidden>
-              <span class="supporter-photo__format-title"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Layout de apoio</span>
-              <div class="supporter-photo__layout-options" role="group" aria-label="Escolha o layout da campanha">
-                <button class="supporter-photo__layout-button is-active" type="button" data-supporter-layout="classic" aria-pressed="true">
-                  <span class="supporter-photo__layout-preview supporter-photo__layout-preview--classic" aria-hidden="true"></span>
-                  <span><strong>Layout 1</strong><small>Identidade clássica 13007</small></span>
-                </button>
-                <button class="supporter-photo__layout-button" type="button" data-supporter-layout="art" aria-pressed="false">
-                  <span class="supporter-photo__layout-preview supporter-photo__layout-preview--art" aria-hidden="true"></span>
-                  <span><strong>Layout 2</strong><small>Arte oficial na base</small></span>
-                </button>
-              </div>
-            </div>
+
 
             <div class="supporter-photo__zoom">
               <label for="supporter-photo-zoom"><span><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Zoom</span><output id="supporter-photo-zoom-value" for="supporter-photo-zoom">100%</output></label>
@@ -939,10 +949,10 @@
             </div>
 
             <div class="supporter-photo__steps" aria-label="Como usar">
-              <span><b>1</b> Escolha uma foto</span><span><b>2</b> Escolha formato e layout</span><span><b>3</b> Baixe ou compartilhe</span>
+              <span><b>1</b> Escolha uma foto</span><span><b>2</b> Escolha o formato</span><span><b>3</b> Baixe ou compartilhe</span>
             </div>
 
-            <p class="supporter-photo__note">Perfil: 1080×1080 circular. Post: 1080×1350 (4:5), formato recomendado para o feed do Instagram e compatível com Facebook e X. Story: 1080×1920 (9:16), adequado também para Stories do Facebook e Status do WhatsApp.</p>
+            <p class="supporter-photo__note">Perfil: 1080×1080 circular. Post: 1080×1350 (4:5), formato recomendado para o feed do Instagram e compatível com Facebook e X. Story: 1080×1920 (9:16), adequado também para Stories do Facebook e Status do WhatsApp. Em todos os formatos, a imagem final contém somente sua foto e a arte inferior da campanha.</p>
           </div>
         </div>
       </div>
@@ -1037,6 +1047,6 @@
       </button>
     </div>
   </div>
-  <script src="script-20260822-0928.js" defer></script>
+  <script src="script-20260822-1048.js" defer></script>
 </body>
 </html>
