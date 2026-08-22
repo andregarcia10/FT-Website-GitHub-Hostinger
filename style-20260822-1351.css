@@ -4839,3 +4839,96 @@ textarea:focus-visible{
 .supporter-photo__use-card{
   min-height:0;
 }
+
+
+/* =========================================================
+   FOTO DE APOIO — correção de largura exclusivamente no mobile
+   Impede que a coluna de controles ultrapasse a viewport.
+   ========================================================= */
+@media(max-width:700px){
+  #foto-apoiador,
+  #foto-apoiador .container,
+  .supporter-photo__shell,
+  .supporter-photo__editor,
+  .supporter-photo__controls,
+  .supporter-photo__controls > *,
+  .supporter-photo__format,
+  .supporter-photo__actions,
+  .supporter-photo__share,
+  .supporter-photo__steps{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  .supporter-photo__shell{
+    grid-template-columns:minmax(0,1fr) !important;
+    overflow:hidden;
+  }
+
+  /* Post e Story ficam empilhados no celular para evitar min-content overflow. */
+  .supporter-photo__format-options,
+  .supporter-photo__format-options--three{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+
+  .supporter-photo__format-button{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    grid-template-columns:30px minmax(0,1fr) auto !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  .supporter-photo__format-button > *{
+    min-width:0 !important;
+  }
+
+  .supporter-photo__format-button small{
+    white-space:normal !important;
+    text-align:right;
+  }
+
+  .supporter-photo__upload,
+  .supporter-photo__privacy,
+  .supporter-photo__zoom,
+  .supporter-photo__actions .button,
+  .supporter-photo__share-main{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+
+  .supporter-photo__actions{
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+
+  .supporter-photo__networks{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    width:100% !important;
+  }
+
+  .supporter-photo__networks button{
+    min-width:0 !important;
+    width:100% !important;
+  }
+
+  .supporter-photo__steps{
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+
+  .supporter-photo__note,
+  .supporter-photo__privacy span,
+  .supporter-photo__share-heading small,
+  .supporter-photo__share-status{
+    overflow-wrap:anywhere;
+    word-break:normal;
+  }
+}
+
