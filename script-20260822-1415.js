@@ -843,6 +843,7 @@ function initSupporterPhotoCreator(){
   const zoomValue=qs('#supporter-photo-zoom-value');
   const resetButton=qs('#supporter-photo-reset');
   const downloadButton=qs('#supporter-photo-download');
+  const downloadFileButton=qs('#supporter-photo-download-file');
   const downloadLabel=qs('[data-supporter-download-label]');
   const empty=qs('#supporter-photo-empty');
   const stage=qs('[data-supporter-photo-stage]');
@@ -990,6 +991,15 @@ function initSupporterPhotoCreator(){
     render();
   };
 
+  const updatePrimaryActionLabel=()=>{
+    if(!downloadLabel)return;
+    if(isMobileDevice()){
+      downloadLabel.textContent='Salvar / compartilhar imagem';
+    }else{
+      downloadLabel.textContent='Baixar imagem';
+    }
+  };
+
   const updateUi=()=>{
     formatButtons.forEach(b=>{
       const active=b.dataset.supporterFormat===outputFormat;
@@ -999,7 +1009,6 @@ function initSupporterPhotoCreator(){
     const social=outputFormat!=='profile';
     if(sharePanel)sharePanel.hidden=!social;
     stage.classList.toggle('is-circle',outputFormat==='profile');
-    if(downloadLabel)downloadLabel.textContent='Baixar imagem';
     if(formatNote){
       formatNote.textContent=outputFormat==='profile'
         ?'Foto circular 1080×1080 para perfil. A imagem final contém apenas sua foto e a arte inferior da campanha.'
@@ -1007,6 +1016,7 @@ function initSupporterPhotoCreator(){
           ?'Post vertical 1080×1350 (4:5), recomendado para o feed do Instagram. A imagem final contém apenas sua foto e a arte inferior da campanha.'
           :'Story vertical 1080×1920 (9:16). A imagem final contém apenas sua foto e a arte inferior da campanha.';
     }
+    updatePrimaryActionLabel();
     shareButton&&(shareButton.disabled=!loaded);
     networkButtons.forEach(b=>b.disabled=!loaded);
   };
@@ -1029,7 +1039,7 @@ function initSupporterPhotoCreator(){
     photo.onload=()=>{
       loaded=true;
       empty?.classList.add('is-hidden');
-      zoom.disabled=false;resetButton.disabled=false;downloadButton.disabled=false;
+      zoom.disabled=false;resetButton.disabled=false;downloadButton.disabled=false;if(downloadFileButton)downloadFileButton.disabled=false;
       updateUi();resetView();
     };
     photo.onerror=()=>{
@@ -1070,6 +1080,8 @@ function initSupporterPhotoCreator(){
     }
   };
 
+  const isMobileDevice=()=>window.matchMedia('(max-width: 820px)').matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
   const shareGenerated=async preferredNetwork=>{
     render();
     const networkNames={instagram:'Instagram',facebook:'Facebook',x:'X',whatsapp:'WhatsApp'};
@@ -1082,7 +1094,7 @@ function initSupporterPhotoCreator(){
         return;
       }
       await forceDownload();
-      if(shareStatus)shareStatus.textContent='Seu navegador não permite anexar a imagem diretamente. A imagem foi baixada para você publicar normalmente.';
+      if(shareStatus)shareStatus.textContent='Seu navegador não permite salvar diretamente na galeria. A imagem foi baixada; abra-a e escolha Salvar em Fotos/Galeria ou compartilhe pelo sistema.';
     }catch(error){
       if(error?.name!=='AbortError')console.error(error);
     }
@@ -1097,7 +1109,14 @@ function initSupporterPhotoCreator(){
     clampOffsets();render();
   });
   resetButton.addEventListener('click',resetView);
-  downloadButton.addEventListener('click',forceDownload);
+  downloadButton.addEventListener('click',()=>{
+    if(isMobileDevice()){
+      shareGenerated();
+    }else{
+      forceDownload();
+    }
+  });
+  downloadFileButton?.addEventListener('click',forceDownload);
   shareButton?.addEventListener('click',()=>shareGenerated());
   networkButtons.forEach(b=>b.addEventListener('click',()=>shareGenerated(b.dataset.supporterNetwork)));
 
@@ -1132,6 +1151,9 @@ function initSupporterPhotoCreator(){
   setCanvasSize();
   updateUi();
   render();
+
+  window.addEventListener('resize',updatePrimaryActionLabel);
+  window.addEventListener('orientationchange',updatePrimaryActionLabel);
 
   let zoomPositionTimer;
   window.addEventListener('resize',()=>{

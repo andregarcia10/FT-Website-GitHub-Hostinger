@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style-20260822-1351.css">
+  <link rel="stylesheet" href="style-20260822-1415.css">
   <noscript>
     <style>
       .loader { display: none !important; }
@@ -915,9 +915,24 @@
             </div>
 
             <div class="supporter-photo__actions">
-              <button id="supporter-photo-reset" class="button button--ghost" type="button" disabled><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reenquadrar</button>
-              <button id="supporter-photo-download" class="button supporter-photo__download" type="button" disabled><i class="fa-solid fa-download" aria-hidden="true"></i> <span data-supporter-download-label>Baixar imagem</span></button>
+              <button id="supporter-photo-reset" class="button button--ghost" type="button" disabled>
+                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                Reenquadrar
+              </button>
+              <button id="supporter-photo-download" class="button supporter-photo__download" type="button" disabled>
+                <i class="fa-solid fa-share-from-square" aria-hidden="true"></i>
+                <span data-supporter-download-label>Salvar / compartilhar imagem</span>
+              </button>
+              <button id="supporter-photo-download-file" class="button button--ghost supporter-photo__download-file" type="button" disabled>
+                <i class="fa-solid fa-download" aria-hidden="true"></i>
+                Baixar arquivo
+              </button>
             </div>
+            <p class="supporter-photo__mobile-save-hint">
+              <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+              No celular, toque em <strong>Salvar / compartilhar imagem</strong> e escolha <strong>Salvar Imagem</strong>, <strong>Fotos</strong> ou <strong>Galeria</strong>, conforme as opções do seu aparelho.
+            </p>
+
 
             <div class="supporter-photo__share" id="supporter-photo-share-panel" hidden>
               <div class="supporter-photo__share-heading">
@@ -1035,6 +1050,6 @@
       </button>
     </div>
   </div>
-  <script src="script-20260822-1351.js" defer></script>
+  <script src="script-20260822-1415.js" defer></script>
 </body>
 </html>
