@@ -4824,3 +4824,18 @@ textarea:focus-visible{
     box-sizing:border-box;
   }
 }
+
+
+/* =========================================================
+   FOTO DE APOIO — somente POST e STORY
+   ========================================================= */
+.supporter-photo__format-options--three{
+  grid-template-columns:repeat(2,1fr)!important;
+}
+.supporter-photo__uses{
+  grid-template-columns:1fr!important;
+  width:min(100%,720px)!important;
+}
+.supporter-photo__use-card{
+  min-height:0;
+}

@@ -999,7 +999,7 @@ function initSupporterPhotoCreator(){
     const social=outputFormat!=='profile';
     if(sharePanel)sharePanel.hidden=!social;
     stage.classList.toggle('is-circle',outputFormat==='profile');
-    if(downloadLabel)downloadLabel.textContent=outputFormat==='profile'?'Baixar foto de perfil':'Baixar imagem';
+    if(downloadLabel)downloadLabel.textContent='Baixar imagem';
     if(formatNote){
       formatNote.textContent=outputFormat==='profile'
         ?'Foto circular 1080×1080 para perfil. A imagem final contém apenas sua foto e a arte inferior da campanha.'
@@ -1012,7 +1012,7 @@ function initSupporterPhotoCreator(){
   };
 
   const setFormat=format=>{
-    outputFormat=['profile','feed','story'].includes(format)?format:'feed';
+    outputFormat=['feed','story'].includes(format)?format:'feed';
     setCanvasSize();
     updateUi();
     loaded?resetView():render();
