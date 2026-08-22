@@ -843,7 +843,6 @@ function initSupporterPhotoCreator(){
   const zoomValue=qs('#supporter-photo-zoom-value');
   const resetButton=qs('#supporter-photo-reset');
   const downloadButton=qs('#supporter-photo-download');
-  const downloadFileButton=qs('#supporter-photo-download-file');
   const downloadLabel=qs('[data-supporter-download-label]');
   const empty=qs('#supporter-photo-empty');
   const stage=qs('[data-supporter-photo-stage]');
@@ -1039,7 +1038,7 @@ function initSupporterPhotoCreator(){
     photo.onload=()=>{
       loaded=true;
       empty?.classList.add('is-hidden');
-      zoom.disabled=false;resetButton.disabled=false;downloadButton.disabled=false;if(downloadFileButton)downloadFileButton.disabled=false;
+      zoom.disabled=false;resetButton.disabled=false;downloadButton.disabled=false;
       updateUi();resetView();
     };
     photo.onerror=()=>{
@@ -1116,7 +1115,6 @@ function initSupporterPhotoCreator(){
       forceDownload();
     }
   });
-  downloadFileButton?.addEventListener('click',forceDownload);
   shareButton?.addEventListener('click',()=>shareGenerated());
   networkButtons.forEach(b=>b.addEventListener('click',()=>shareGenerated(b.dataset.supporterNetwork)));
 

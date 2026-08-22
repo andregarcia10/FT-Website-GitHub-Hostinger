@@ -4936,9 +4936,6 @@ textarea:focus-visible{
 /* =========================================================
    FOTO DE APOIO — salvar/compartilhar no celular
    ========================================================= */
-.supporter-photo__download-file{
-  display:none;
-}
 .supporter-photo__mobile-save-hint{
   display:none;
   margin:0;
@@ -4961,14 +4958,18 @@ textarea:focus-visible{
   .supporter-photo__actions{
     grid-template-columns:minmax(0,1fr)!important;
   }
-  .supporter-photo__download-file{
-    display:flex;
-    width:100%!important;
-    max-width:100%!important;
-    min-width:0!important;
-  }
   .supporter-photo__mobile-save-hint{
     display:block;
   }
 }
 
+
+
+/* =========================================================
+   FOTO DE APOIO — ação única de salvar/compartilhar no mobile
+   ========================================================= */
+@media(max-width:820px){
+  #supporter-photo-download{
+    display:none !important;
+  }
+}
