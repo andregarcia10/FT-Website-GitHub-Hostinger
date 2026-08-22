@@ -1161,6 +1161,55 @@ function initSupporterPhotoCreator(){
 
 }
 
+
+
+// ===== anchor-stabilizer.js =====
+function initAnchorStabilizer() {
+  const getTarget = () => {
+    const hash = window.location.hash;
+    if (!hash || hash.length < 2) return null;
+    try { return document.querySelector(hash); }
+    catch (_) { return null; }
+  };
+
+  const getHeaderOffset = () => {
+    const header = document.querySelector('.site-header');
+    if (!header) return 16;
+    return Math.max(0, Math.round(header.getBoundingClientRect().height)) + 12;
+  };
+
+  const scrollToHashTarget = (behavior = 'auto') => {
+    const target = getTarget();
+    if (!target) return;
+
+    const top = window.scrollY + target.getBoundingClientRect().top - getHeaderOffset();
+    window.scrollTo({ top: Math.max(0, top), behavior });
+  };
+
+  const stabilizeHashPosition = () => {
+    if (!getTarget()) return;
+
+    requestAnimationFrame(() => scrollToHashTarget('auto'));
+
+    // Corrige novamente após mudanças de altura causadas por mídia e layout responsivo.
+    [180, 450, 900, 1500].forEach(delay => {
+      window.setTimeout(() => scrollToHashTarget('auto'), delay);
+    });
+  };
+
+  window.addEventListener('load', stabilizeHashPosition);
+
+  window.addEventListener('hashchange', () => {
+    window.setTimeout(() => scrollToHashTarget('smooth'), 40);
+    window.setTimeout(() => scrollToHashTarget('auto'), 500);
+  });
+
+  if (document.readyState === 'complete') {
+    stabilizeHashPosition();
+  }
+}
+
+
 // ===== app.js =====
 function initLazyImages() {
   qsa('img[loading="lazy"]').forEach(image => {
@@ -1171,6 +1220,7 @@ function initLazyImages() {
 }
 
 function initApp() {
+  initAnchorStabilizer();
   initLoader();
   initNavbar();
   initScroll();
