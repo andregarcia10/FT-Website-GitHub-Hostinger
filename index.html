@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style-20260822-2042.css">
+  <link rel="stylesheet" href="style-20260824-0856.css">
   <noscript>
     <style>
       .loader { display: none !important; }
@@ -844,117 +844,274 @@
 
     
 
-    <section id="foto-apoiador" class="supporter-photo section section--dark" aria-labelledby="supporter-photo-title">
+    <section id="foto-apoiador" class="supporter-photo-launch section section--dark" aria-labelledby="supporter-photo-title">
       <div class="container">
-        <header class="section-heading section-heading--light reveal supporter-photo__heading">
-          <span class="section-heading__label">Foto de apoio</span>
-          <h2 id="supporter-photo-title">CRIE UMA IMAGEM PARA POSTAR SEU APOIO A FABIANO TROMPETISTA 13007</h2>
-          <p>Use uma foto sua para demonstrar apoio a Fabiano Trompetista criando uma imagem pronta para posts, Stories e Status nas redes sociais e WhatsApp. Ajuste posição e zoom, escolha o formato e baixe ou compartilhe o resultado. Sua foto permanece no seu aparelho durante todo o processo.</p>
-        </header>
+        <div class="supporter-photo-launch__card reveal">
+          <div class="supporter-photo-launch__copy">
+            <span class="section-heading__label">Foto de apoio</span>
+            <h2 id="supporter-photo-title">CRIE SUA FOTO DE APOIO A FABIANO TROMPETISTA 13007</h2>
+            <p>Use uma foto sua e crie, em poucos passos, uma imagem pronta para <strong>Post</strong>, <strong>Story</strong> ou <strong>Foto de Perfil</strong>. Você escolhe o formato, ajusta o enquadramento e, ao final, salva ou compartilha a imagem. Sua foto permanece no seu aparelho durante todo o processo.</p>
 
-        <div class="supporter-photo__uses reveal" aria-label="Crie imagens para posts e stories">
-          <article class="supporter-photo__use-card">
-            <span class="supporter-photo__use-number">01</span>
-            <span class="supporter-photo__use-icon"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i></span>
-            <div>
-              <span class="supporter-photo__use-kicker">Post e Story</span>
-              <h3>Publique seu apoio nas redes sociais</h3>
-              <p>Transforme sua foto em uma peça de campanha pronta para <strong>posts 4:5</strong> e <strong>Stories 9:16</strong>. Compartilhe no Instagram, Facebook, X e WhatsApp.</p>
-            </div>
-          </article>
-
-          
-        </div>
-
-        <div class="supporter-photo__shell reveal">
-          <div class="supporter-photo__editor">
-            <div class="supporter-photo__canvas-wrap" data-supporter-photo-stage>
-              <canvas id="supporter-photo-canvas" class="supporter-photo__canvas" width="1080" height="1080" aria-label="Prévia da foto de apoio"></canvas>
-              <div class="supporter-photo__empty" id="supporter-photo-empty">
-                <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
-                <strong>Sua foto aparecerá aqui</strong>
-                <span>Escolha uma imagem para começar.</span>
-              </div>
+            <div class="supporter-photo-launch__steps" aria-label="Etapas da ferramenta">
+              <span><b>1</b> Escolha sua foto</span>
+              <span><b>2</b> Escolha onde usar</span>
+              <span><b>3</b> Ajuste o enquadramento</span>
+              <span><b>4</b> Compartilhe ou salve</span>
             </div>
 
-            <p class="supporter-photo__drag-hint"><i class="fa-solid fa-up-down-left-right" aria-hidden="true"></i> Depois de escolher a finalidade, arraste a foto para reposicionar e use o zoom para ajustar o enquadramento.</p>
+            <button id="supporter-photo-open" class="button button--primary supporter-photo-launch__button" type="button">
+              <i class="fa-solid fa-camera-retro" aria-hidden="true"></i>
+              CRIE SUA FOTO DE APOIO
+            </button>
+
+            <p class="supporter-photo-launch__privacy">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              <span><strong>Privacidade:</strong> sua fotografia não é enviada nem armazenada no servidor da campanha. Todo o processamento acontece no navegador.</span>
+            </p>
           </div>
 
-          <div class="supporter-photo__controls">
-            <label class="supporter-photo__upload button button--primary" for="supporter-photo-input"><i class="fa-solid fa-image" aria-hidden="true"></i> Escolher minha foto</label>
-            <input id="supporter-photo-input" class="supporter-photo__file-input" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">
-
-            <div class="supporter-photo__privacy">
-              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-              <div><strong>Sua foto não sai do seu aparelho.</strong><span>O arquivo não é enviado, armazenado ou processado no servidor da campanha.</span></div>
-            </div>
-
-            <div class="supporter-photo__format" aria-label="Formato da imagem">
-              <span class="supporter-photo__format-title"><i class="fa-solid fa-crop-simple" aria-hidden="true"></i> Formato da postagem</span>
-              <div class="supporter-photo__format-options supporter-photo__format-options--three" role="group" aria-label="Escolha o formato da imagem">
-                
-                <button class="supporter-photo__format-button is-active" type="button" data-supporter-format="feed" aria-pressed="true">
-                  <span class="supporter-photo__format-icon supporter-photo__format-icon--portrait" aria-hidden="true"></span>
-                  Post
-                  <small>4:5 · 1080×1350</small>
-                </button>
-                <button class="supporter-photo__format-button" type="button" data-supporter-format="story" aria-pressed="false">
-                  <span class="supporter-photo__format-icon supporter-photo__format-icon--story" aria-hidden="true"></span>
-                  Story
-                  <small>9:16 · 1080×1920</small>
-                </button>
-              </div>
-              <small id="supporter-photo-format-note">Post vertical 1080×1350 (4:5), recomendado para o feed do Instagram e compatível com Facebook e X.</small>
-            </div>
-
-
-
-            <div class="supporter-photo__zoom" data-supporter-zoom>
-              <label for="supporter-photo-zoom"><span><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Zoom</span><output id="supporter-photo-zoom-value" for="supporter-photo-zoom">100%</output></label>
-              <input id="supporter-photo-zoom" type="range" min="100" max="300" step="1" value="100" disabled>
-            </div>
-
-            <div class="supporter-photo__actions">
-              <button id="supporter-photo-reset" class="button button--ghost" type="button" disabled>
-                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
-                Reenquadrar
-              </button>
-              <button id="supporter-photo-download" class="button supporter-photo__download" type="button" disabled>
-                <i class="fa-solid fa-share-from-square" aria-hidden="true"></i>
-                <span data-supporter-download-label>Salvar / compartilhar imagem</span>
-              </button>
-            </div>
-            <p class="supporter-photo__mobile-save-hint">
-              <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
-              No celular, toque em <strong>Salvar / Compartilhar</strong> e escolha <strong>Salvar Imagem</strong>, <strong>Fotos</strong> ou <strong>Galeria</strong>, conforme as opções do seu aparelho.
-            </p>
-
-
-            <div class="supporter-photo__share" id="supporter-photo-share-panel" hidden>
-              <div class="supporter-photo__share-heading">
-                <span><i class="fa-solid fa-share-nodes" aria-hidden="true"></i> Compartilhar imagem gerada</span>
-                <small>No celular, a tela de compartilhamento permite enviar a imagem diretamente para os aplicativos instalados.</small>
-              </div>
-              <button id="supporter-photo-share" class="button supporter-photo__share-main" type="button" disabled>
-                <i class="fa-solid fa-share-from-square" aria-hidden="true"></i> Salvar / Compartilhar </button>
-              <div class="supporter-photo__networks" aria-label="Redes sociais compatíveis">
-                <button type="button" data-supporter-network="instagram" disabled aria-label="Compartilhar no Instagram"><i class="fa-brands fa-instagram"></i><span>Instagram</span></button>
-                <button type="button" data-supporter-network="facebook" disabled aria-label="Compartilhar no Facebook"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></button>
-                <button type="button" data-supporter-network="x" disabled aria-label="Compartilhar no X"><i class="fa-brands fa-x-twitter"></i><span>X</span></button>
-                <button type="button" data-supporter-network="whatsapp" disabled aria-label="Compartilhar no WhatsApp"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></button>
-              </div>
-              <p id="supporter-photo-share-status" class="supporter-photo__share-status" aria-live="polite"></p>
-            </div>
-
-            <div class="supporter-photo__steps" aria-label="Como usar">
-              <span><b>1</b> Escolha uma foto</span><span><b>2</b> Escolha o formato</span><span><b>3</b> Baixe ou compartilhe</span>
-            </div>
-
-            <p class="supporter-photo__note">Post: 1080×1350 (4:5), recomendado para o feed do Instagram e compatível com Facebook e X. Story: 1080×1920 (9:16), adequado para Instagram Stories, Facebook Stories e Status do WhatsApp. Em ambos os formatos, a imagem final contém sua foto e a arte inferior da campanha.</p>
+          <div class="supporter-photo-launch__visual" aria-hidden="true">
+            <div class="supporter-photo-launch__mock supporter-photo-launch__mock--story"></div>
+            <div class="supporter-photo-launch__mock supporter-photo-launch__mock--post"></div>
+            <div class="supporter-photo-launch__mock supporter-photo-launch__mock--profile"></div>
+            <span>POST · STORY · PERFIL</span>
           </div>
         </div>
       </div>
     </section>
+
+    <div id="supporter-photo-wizard" class="supporter-wizard" hidden aria-hidden="true">
+      <div class="supporter-wizard__backdrop" data-wizard-close></div>
+
+      <div class="supporter-wizard__dialog" role="dialog" aria-modal="true" aria-labelledby="supporter-wizard-title">
+        <header class="supporter-wizard__header">
+          <div>
+            <span class="supporter-wizard__eyebrow">Fabiano Trompetista 13007</span>
+            <h2 id="supporter-wizard-title">Crie sua foto de apoio</h2>
+          </div>
+          <button class="supporter-wizard__close" type="button" data-wizard-close aria-label="Fechar">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </header>
+
+        <div class="supporter-wizard__progress" aria-label="Progresso">
+          <div class="supporter-wizard__progress-bar"><span id="supporter-wizard-progress-fill"></span></div>
+          <span id="supporter-wizard-progress-text">Passo 1 de 4</span>
+        </div>
+
+        <div class="supporter-wizard__body">
+          <section class="supporter-wizard__step is-active" data-wizard-step="1" aria-labelledby="wizard-step-1-title">
+            <div class="supporter-wizard__step-heading">
+              <span class="supporter-wizard__step-number">01</span>
+              <div>
+                <span class="supporter-wizard__kicker">Sua fotografia</span>
+                <h3 id="wizard-step-1-title">Escolha a foto que você quer usar</h3>
+                <p>Prefira uma imagem nítida e com espaço ao redor do rosto para facilitar o enquadramento.</p>
+              </div>
+            </div>
+
+            <label class="supporter-wizard__upload" for="supporter-wizard-input">
+              <i class="fa-solid fa-image" aria-hidden="true"></i>
+              <strong>ESCOLHER MINHA FOTO</strong>
+              <span>JPG, PNG ou WEBP · até 25 MB</span>
+            </label>
+            <input id="supporter-wizard-input" class="supporter-wizard__file-input" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif">
+
+            <div id="supporter-wizard-file-info" class="supporter-wizard__file-info" hidden>
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+              <span></span>
+            </div>
+
+            <div class="supporter-wizard__privacy-box">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              <div>
+                <strong>Sua foto não sai do seu aparelho.</strong>
+                <span>O arquivo é usado somente pelo navegador para gerar a arte final.</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="supporter-wizard__step" data-wizard-step="2" aria-labelledby="wizard-step-2-title">
+            <div class="supporter-wizard__step-heading">
+              <span class="supporter-wizard__step-number">02</span>
+              <div>
+                <span class="supporter-wizard__kicker">Objetivo da imagem</span>
+                <h3 id="wizard-step-2-title">Onde você vai usar sua foto de apoio?</h3>
+                <p>Escolha uma opção. O formato e a arte são aplicados automaticamente.</p>
+              </div>
+            </div>
+
+            <div class="supporter-wizard__formats" role="group" aria-label="Escolha o formato">
+              <button type="button" data-wizard-format="feed" aria-pressed="false">
+                <span class="supporter-wizard__format-icon supporter-wizard__format-icon--feed"></span>
+                <strong>POST</strong>
+                <small>4:5 · 1080 × 1350</small>
+                <em>Instagram Feed · Facebook · X</em>
+              </button>
+              <button type="button" data-wizard-format="story" aria-pressed="false">
+                <span class="supporter-wizard__format-icon supporter-wizard__format-icon--story"></span>
+                <strong>STORY</strong>
+                <small>9:16 · 1080 × 1920</small>
+                <em>Instagram · Facebook · WhatsApp</em>
+              </button>
+              <button type="button" data-wizard-format="profile" aria-pressed="false">
+                <span class="supporter-wizard__format-icon supporter-wizard__format-icon--profile"></span>
+                <strong>FOTO DE PERFIL</strong>
+                <small>1:1 · 1080 × 1080</small>
+                <em>Instagram · Facebook · X · WhatsApp</em>
+              </button>
+            </div>
+
+            <div class="supporter-wizard__preview-block">
+              <span class="supporter-wizard__preview-label">Prévia automática</span>
+              <div class="supporter-wizard__preview-frame" data-wizard-preview-frame>
+                <canvas id="supporter-wizard-preview" width="1080" height="1350" aria-label="Prévia automática da foto"></canvas>
+              </div>
+            </div>
+          </section>
+
+          <section class="supporter-wizard__step" data-wizard-step="3" aria-labelledby="wizard-step-3-title">
+            <div class="supporter-wizard__step-heading">
+              <span class="supporter-wizard__step-number">03</span>
+              <div>
+                <span class="supporter-wizard__kicker">Enquadramento</span>
+                <h3 id="wizard-step-3-title">Ajuste sua foto</h3>
+                <p>Arraste a imagem para reposicionar e use o zoom até ficar do jeito que você quer.</p>
+              </div>
+            </div>
+
+            <div class="supporter-wizard__editor-layout">
+              <div class="supporter-wizard__editor-frame" data-wizard-editor-frame>
+                <canvas id="supporter-wizard-editor" width="1080" height="1350" aria-label="Editor da foto"></canvas>
+              </div>
+
+              <div class="supporter-wizard__editor-controls">
+                <div class="supporter-wizard__zoom">
+                  <label for="supporter-wizard-zoom">
+                    <span><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Zoom</span>
+                    <output id="supporter-wizard-zoom-value">100%</output>
+                  </label>
+                  <input id="supporter-wizard-zoom" type="range" min="100" max="300" value="100" step="1">
+                </div>
+
+                <button id="supporter-wizard-reset" class="button button--ghost" type="button">
+                  <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                  Reenquadrar
+                </button>
+
+                <p class="supporter-wizard__drag-hint">
+                  <i class="fa-solid fa-up-down-left-right" aria-hidden="true"></i>
+                  No celular, toque e arraste diretamente sobre a foto.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="supporter-wizard__step" data-wizard-step="4" aria-labelledby="wizard-step-4-title">
+            <div class="supporter-wizard__step-heading">
+              <span class="supporter-wizard__step-number">04</span>
+              <div>
+                <span class="supporter-wizard__kicker">Pronto para publicar</span>
+                <h3 id="wizard-step-4-title">Sua imagem está pronta</h3>
+                <p>No computador, primeiro salve a imagem no local que preferir. Depois, escolha onde deseja compartilhá-la.</p>
+              </div>
+            </div>
+
+            <div class="supporter-wizard__final-layout">
+              <div class="supporter-wizard__final-frame" data-wizard-final-frame>
+                <canvas id="supporter-wizard-final" width="1080" height="1350" aria-label="Imagem final"></canvas>
+              </div>
+
+              <div class="supporter-wizard__final-actions">
+                <div class="supporter-wizard__desktop-finish">
+                  <section class="supporter-wizard__save-panel" aria-labelledby="wizard-save-title">
+                    <span class="supporter-wizard__panel-kicker">1 · Salvar</span>
+                    <h4 id="wizard-save-title">Salvar sua imagem</h4>
+                    <p>Escolha onde guardar o arquivo antes de publicar.</p>
+
+                    <button id="supporter-wizard-save" class="button supporter-wizard__save-button" type="button">
+                      <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                      SALVAR IMAGEM
+                    </button>
+
+                    <p id="supporter-wizard-save-status" class="supporter-wizard__save-status" aria-live="polite"></p>
+                  </section>
+
+                  <section class="supporter-wizard__share-panel" aria-labelledby="wizard-share-title">
+                    <span class="supporter-wizard__panel-kicker">2 · Compartilhar</span>
+                    <h4 id="wizard-share-title">Compartilhar</h4>
+                    <p>Escolha a rede social. A imagem será salva primeiro e, quando o navegador permitir, também será copiada para a área de transferência para você colar diretamente na publicação.</p>
+
+                    <div class="supporter-wizard__share-networks">
+                      <button type="button" data-desktop-share="instagram">
+                        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                        <span>Instagram</span>
+                      </button>
+                      <button type="button" data-desktop-share="facebook">
+                        <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                        <span>Facebook</span>
+                      </button>
+                      <button type="button" data-desktop-share="x">
+                        <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                        <span>X</span>
+                      </button>
+                      <button type="button" data-desktop-share="whatsapp">
+                        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                        <span>WhatsApp</span>
+                      </button>
+                    </div>
+
+                    <p class="supporter-wizard__desktop-share-tip">
+                      <i class="fa-regular fa-clipboard" aria-hidden="true"></i>
+                      No Facebook e no X, use <strong>Ctrl+V</strong> (ou <strong>⌘+V</strong> no Mac) no campo da publicação quando a mensagem indicar que a imagem foi copiada.
+                    </p>
+
+                    <button id="supporter-wizard-copy-caption" class="button button--ghost supporter-wizard__copy-caption" type="button">
+                      <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                      COPIAR LEGENDA
+                    </button>
+
+                    <p id="supporter-wizard-share-status" class="supporter-wizard__status" aria-live="polite"></p>
+                  </section>
+                </div>
+
+                <div class="supporter-wizard__mobile-finish">
+                  <button id="supporter-wizard-share" class="button supporter-wizard__share-button" type="button">
+                    <i class="fa-solid fa-share-from-square" aria-hidden="true"></i>
+                    COMPARTILHAR / SALVAR
+                  </button>
+
+                  <p class="supporter-wizard__share-help">
+                    No celular, escolha Instagram, Facebook, X, WhatsApp, Fotos/Galeria ou outra opção disponível no seu aparelho.
+                  </p>
+
+                  <div class="supporter-wizard__platforms" aria-label="Compatível com">
+                    <span><i class="fa-brands fa-instagram"></i> Instagram</span>
+                    <span><i class="fa-brands fa-facebook-f"></i> Facebook</span>
+                    <span><i class="fa-brands fa-x-twitter"></i> X</span>
+                    <span><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
+                  </div>
+
+                  <p id="supporter-wizard-status" class="supporter-wizard__status" aria-live="polite"></p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <footer class="supporter-wizard__footer">
+          <button id="supporter-wizard-back" class="button button--ghost" type="button" hidden>
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Voltar
+          </button>
+
+          <button id="supporter-wizard-next" class="button button--primary" type="button" disabled>
+            Avançar
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </footer>
+      </div>
+    </div>
 
     <aside class="popular-market-reminder" aria-label="Supermercados Populares: uma das principais lutas de Fabiano Trompetista">
       <div class="container popular-market-reminder__inner reveal">
@@ -1045,6 +1202,6 @@
       </button>
     </div>
   </div>
-  <script src="script-20260822-2042.js" defer></script>
+  <script src="script-20260824-0856.js" defer></script>
 </body>
 </html>
