@@ -5916,3 +5916,128 @@ textarea:focus-visible{
   }
 }
 
+
+
+/* =========================================================
+   FOTO DE PERFIL — preservar a arte quadrada integral
+   ========================================================= */
+.supporter-wizard__preview-frame[data-format="profile"],
+.supporter-wizard__editor-frame[data-format="profile"],
+.supporter-wizard__final-frame[data-format="profile"]{
+  aspect-ratio:1 / 1 !important;
+  border-radius:0 !important;
+  overflow:hidden !important;
+}
+
+/* A rede social fará o recorte circular depois.
+   No editor mostramos e exportamos o arquivo 1:1 completo. */
+
+
+/* =========================================================
+   PASSO 4 — FOTO DE PERFIL: fluxo próprio
+   ========================================================= */
+.supporter-wizard__profile-finish[hidden]{
+  display:none!important;
+}
+.supporter-wizard__profile-finish{
+  display:grid;
+  gap:16px;
+}
+.supporter-wizard__profile-save-panel,
+.supporter-wizard__profile-networks-panel{
+  padding:18px;
+  border:1px solid rgba(244,227,200,.22);
+  background:rgba(244,227,200,.05);
+}
+.supporter-wizard__profile-save-panel h4,
+.supporter-wizard__profile-networks-panel h4{
+  margin:0 0 6px;
+  color:var(--cream);
+  font-family:"Sequia Grande","Bebas Neue","Arial Narrow",Impact,sans-serif;
+  font-size:2rem;
+  font-weight:400;
+  line-height:1;
+  text-transform:uppercase;
+}
+.supporter-wizard__profile-save-panel>p,
+.supporter-wizard__profile-networks-panel>p{
+  margin:0 0 14px;
+  color:rgba(244,227,200,.66);
+  font-size:.72rem;
+  line-height:1.45;
+}
+.supporter-wizard__profile-save-button{
+  width:100%;
+  min-height:60px;
+  color:var(--brown)!important;
+  background:var(--trumpet)!important;
+  border:2px solid var(--brown)!important;
+  box-shadow:6px 6px 0 var(--red)!important;
+}
+.supporter-wizard__profile-networks{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+.supporter-wizard__profile-networks button{
+  display:grid;
+  place-items:center;
+  gap:6px;
+  min-width:0;
+  min-height:70px;
+  padding:8px 4px;
+  border:1px solid rgba(244,227,200,.24);
+  color:var(--cream);
+  background:rgba(27,14,13,.48);
+  font-size:.65rem;
+  font-weight:800;
+}
+.supporter-wizard__profile-networks button i{
+  color:var(--trumpet);
+  font-size:1.35rem;
+}
+.supporter-wizard__profile-networks button:hover,
+.supporter-wizard__profile-networks button:focus-visible{
+  color:var(--brown);
+  background:var(--trumpet);
+  border-color:var(--brown);
+}
+.supporter-wizard__profile-networks button:hover i,
+.supporter-wizard__profile-networks button:focus-visible i{
+  color:var(--brown);
+}
+
+@media(max-width:820px){
+  .supporter-wizard__profile-networks{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .supporter-wizard__profile-save-panel,
+  .supporter-wizard__profile-networks-panel{
+    padding:16px;
+  }
+}
+
+@media(max-width:420px){
+  .supporter-wizard__profile-networks{
+    grid-template-columns:1fr;
+  }
+}
+
+
+/* =========================================================
+   PASSO 4 — FOTO DE PERFIL: ajustes finais
+   ========================================================= */
+#supporter-wizard-profile-save-status{
+  display:block;
+  clear:both;
+  min-height:1.5em;
+  margin:16px 0 0 !important;
+  padding-top:2px;
+  line-height:1.45;
+  position:relative;
+  z-index:1;
+}
+
+.supporter-wizard__profile-save-button{
+  margin-bottom:0 !important;
+}
