@@ -855,6 +855,7 @@ function initSupporterPhotoCreator() {
   const previewCanvas = qs('#supporter-wizard-preview');
   const editorCanvas = qs('#supporter-wizard-editor');
   const finalCanvas = qs('#supporter-wizard-final');
+  const finalCanvasStep5 = qs('#supporter-wizard-final-step5');
   const previewFrame = qs('[data-wizard-preview-frame]');
   const editorFrame = qs('[data-wizard-editor-frame]');
   const finalFrame = qs('[data-wizard-final-frame]');
@@ -875,9 +876,15 @@ function initSupporterPhotoCreator() {
   const mobileShareStatus = qs('#supporter-wizard-mobile-share-status');
   const mobileCopyCaptionButton = qs('#supporter-wizard-mobile-copy-caption');
   const mobileCaptionLabel = qs('[data-mobile-caption-label]');
-  const profileFinish = qs('.supporter-wizard__profile-finish');
-  const desktopFinish = qs('.supporter-wizard__desktop-finish');
-  const mobileFinish = qs('.supporter-wizard__mobile-finish');
+  const profileSaveStep = qs('.supporter-wizard__profile-save-step');
+  const profileNetworksStep = qs('.supporter-wizard__profile-networks-step');
+  const desktopSaveStep = qs('.supporter-wizard__desktop-save-step');
+  const mobileSaveStep = qs('.supporter-wizard__mobile-save-step');
+  const desktopShareStep = qs('.supporter-wizard__desktop-share-step');
+  const mobileShareStep = qs('.supporter-wizard__mobile-share-step');
+  const step5Kicker = qs('[data-step5-kicker]');
+  const step5Title = qs('[data-step5-title]');
+  const step5Description = qs('[data-step5-description]');
   const profileSaveButton = qs('#supporter-wizard-profile-save');
   const profileSaveStatus = qs('#supporter-wizard-profile-save-status');
   const profileNetworkButtons = qsa('[data-profile-network]');
@@ -972,7 +979,7 @@ function initSupporterPhotoCreator() {
       drawCampaignArt();
     }
 
-    [previewCanvas, finalCanvas].forEach(canvas => {
+    [previewCanvas, finalCanvas, finalCanvasStep5].filter(Boolean).forEach(canvas => {
       const c = canvas.getContext('2d');
       c.clearRect(0, 0, canvas.width, canvas.height);
       c.drawImage(editorCanvas, 0, 0);
@@ -998,11 +1005,11 @@ function initSupporterPhotoCreator() {
       panel.classList.toggle('is-active', Number(panel.dataset.wizardStep) === step);
     });
 
-    const pct = ((step - 1) / 3) * 100;
+    const pct = ((step - 1) / 4) * 100;
     if (progressFill) progressFill.style.width = `${pct}%`;
-    if (progressText) progressText.textContent = `Passo ${step} de 4`;
+    if (progressText) progressText.textContent = `Passo ${step} de 5`;
     if (backButton) backButton.hidden = step === 1;
-    if (nextButton) nextButton.hidden = step === 4;
+    if (nextButton) nextButton.hidden = step === 5;
 
     if (nextButton) {
       nextButton.disabled =
@@ -1010,19 +1017,32 @@ function initSupporterPhotoCreator() {
         (step === 2 && !selectedFormat);
     }
 
-    if (step === 2 || step === 3 || step === 4) render();
+    if (step >= 2 && step <= 5) render();
 
     const isProfileMode = selectedFormat === 'profile';
-    if (profileFinish) profileFinish.hidden = !isProfileMode;
-    if (desktopFinish) desktopFinish.hidden = isProfileMode;
-    if (mobileFinish) mobileFinish.hidden = isProfileMode;
+    document.querySelector('#supporter-photo-wizard')?.classList.toggle('is-profile-mode', isProfileMode);
+
+    if (profileSaveStep) profileSaveStep.hidden = !isProfileMode;
+    if (profileNetworksStep) profileNetworksStep.hidden = !isProfileMode;
+    if (desktopSaveStep) desktopSaveStep.hidden = isProfileMode;
+    if (mobileSaveStep) mobileSaveStep.hidden = isProfileMode;
+    if (desktopShareStep) desktopShareStep.hidden = isProfileMode;
+    if (mobileShareStep) mobileShareStep.hidden = isProfileMode;
+
+    if (step5Kicker) step5Kicker.textContent = isProfileMode ? 'Próximo passo' : 'Compartilhar';
+    if (step5Title) step5Title.textContent = isProfileMode ? 'Agora é só colocar sua nova foto no perfil' : 'Compartilhe seu apoio';
+    if (step5Description) {
+      step5Description.textContent = isProfileMode
+        ? 'Acesse uma das redes sociais abaixo e substitua sua foto atual pela imagem que você acabou de criar.'
+        : 'Agora escolha onde deseja publicar a imagem que você criou.';
+    }
 
     const active = stepPanels.find(panel => Number(panel.dataset.wizardStep) === step);
     active?.querySelector('button:not([disabled]), input:not([disabled]), [tabindex="0"]')?.focus({ preventScroll: true });
   };
 
   const goToStep = newStep => {
-    step = clamp(newStep, 1, 4);
+    step = clamp(newStep, 1, 5);
     updateNavigation();
   };
 
@@ -1527,7 +1547,7 @@ Coragem para mudar o DF.`;
     const saved = await saveImageDesktop();
     if (profileSaveStatus) {
       profileSaveStatus.textContent = saved
-        ? '✓ Foto de perfil salva. Agora escolha uma rede social abaixo.'
+        ? '✓ Foto de perfil salva. Clique em Avançar para acessar suas redes sociais.'
         : 'Salvamento cancelado ou não concluído.';
     }
   };
@@ -1540,7 +1560,6 @@ Coragem para mudar o DF.`;
       whatsapp: 'https://web.whatsapp.com/'
     };
 
-    // Deep links que tentam abrir diretamente os aplicativos instalados.
     const appUrls = {
       instagram: 'instagram://app',
       facebook: 'fb://feed',
@@ -1557,24 +1576,16 @@ Coragem para mudar o DF.`;
       /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
     if (!isMobile) {
-      // Desktop: mantém a abertura em nova aba.
       window.open(webTarget, '_blank', 'noopener,noreferrer');
-      if (profileSaveStatus) {
-        profileSaveStatus.textContent = 'Rede social aberta em nova aba.';
-      }
       return;
     }
 
-    // MOBILE:
-    // Navega para o esquema do app na própria aba. Se o app estiver instalado,
-    // o sistema operacional entrega o deep link diretamente a ele. Ao voltar
-    // para o navegador, o usuário retorna ao wizard exatamente onde estava.
-    let pageHidden = false;
+    let appOpened = false;
     let fallbackTimer = null;
 
-    const onVisibility = () => {
+    const stopFallback = () => {
       if (document.hidden) {
-        pageHidden = true;
+        appOpened = true;
         if (fallbackTimer) {
           clearTimeout(fallbackTimer);
           fallbackTimer = null;
@@ -1582,21 +1593,11 @@ Coragem para mudar o DF.`;
       }
     };
 
-    document.addEventListener('visibilitychange', onVisibility, { once: true });
+    document.addEventListener('visibilitychange', stopFallback, { once: true });
 
-    if (profileSaveStatus) {
-      profileSaveStatus.textContent = 'Abrindo o aplicativo...';
-    }
-
-    // Se o deep link não for atendido, abre apenas a homepage web em uma NOVA aba,
-    // preservando a página original do gerador.
     fallbackTimer = window.setTimeout(() => {
-      if (!pageHidden && document.visibilityState === 'visible') {
+      if (!appOpened && document.visibilityState === 'visible') {
         window.open(webTarget, '_blank', 'noopener,noreferrer');
-        if (profileSaveStatus) {
-          profileSaveStatus.textContent =
-            'Não foi possível abrir o aplicativo diretamente. A rede social foi aberta no navegador.';
-        }
       }
     }, 1400);
 
@@ -1652,6 +1653,7 @@ Coragem para mudar o DF.`;
     if (step === 1 && loaded) goToStep(2);
     else if (step === 2 && selectedFormat) goToStep(3);
     else if (step === 3) goToStep(4);
+    else if (step === 4) goToStep(5);
   });
 
   backButton?.addEventListener('click', () => goToStep(step - 1));
