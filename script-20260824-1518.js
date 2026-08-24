@@ -1333,6 +1333,85 @@ Coragem para mudar o DF.`;
     window.setTimeout(() => URL.revokeObjectURL(url), 5000);
   };
 
+  const shareToFacebookMobile = async () => {
+    if (!loaded || !selectedFormat) return false;
+
+    try {
+      // Copy the complete caption first. Facebook mobile frequently ignores
+      // text when a Web Share payload also contains a local image file.
+      let captionCopied = false;
+      try {
+        await navigator.clipboard.writeText(captionText);
+        captionCopied = true;
+      } catch (_) {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = captionText;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.append(textarea);
+          textarea.select();
+          captionCopied = document.execCommand('copy');
+          textarea.remove();
+        } catch (_) {}
+      }
+
+      const file = await makeMobileShareFile();
+      const canShareFile =
+        !!navigator.share &&
+        (!navigator.canShare || navigator.canShare({ files: [file] }));
+
+      if (canShareFile) {
+        if (mobileShareStatus) {
+          mobileShareStatus.textContent = captionCopied
+            ? 'Legenda copiada. Na tela que abrir, escolha Facebook. Se o texto não aparecer automaticamente, cole a legenda no post.'
+            : 'Na tela que abrir, escolha Facebook. A imagem será enviada como arquivo.';
+        }
+
+        // Important: FILE ONLY. Sending text+file together is inconsistently
+        // handled by the Facebook share target on Android/iOS.
+        await navigator.share({
+          files: [file],
+          title: 'Eu apoio Fabiano Trompetista 13007'
+        });
+
+        return true;
+      }
+
+      // Fallback: save image + open Facebook homepage/app association.
+      await mobileDownloadFallback();
+      if (mobileShareStatus) {
+        mobileShareStatus.textContent = captionCopied
+          ? 'A imagem foi baixada e a legenda foi copiada. Abra o Facebook, selecione a imagem salva e cole a legenda.'
+          : 'A imagem foi baixada. Abra o Facebook e selecione a imagem salva para publicar.';
+      }
+      window.setTimeout(() => {
+        window.open('https://www.facebook.com/', '_blank', 'noopener,noreferrer');
+      }, 150);
+      return false;
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        if (mobileShareStatus) mobileShareStatus.textContent = 'Compartilhamento cancelado.';
+        return false;
+      }
+
+      console.error('Falha no compartilhamento mobile do Facebook:', error);
+
+      try {
+        await mobileDownloadFallback();
+        if (mobileShareStatus) {
+          mobileShareStatus.textContent =
+            'O Facebook não aceitou o envio direto. A imagem foi baixada; abra o Facebook, selecione-a e use COPIAR LEGENDA.';
+        }
+      } catch (_) {
+        if (mobileShareStatus) {
+          mobileShareStatus.textContent = 'Não foi possível preparar a imagem para o Facebook.';
+        }
+      }
+      return false;
+    }
+  };
+
   const nativeShareFile = async ({ network = '', saveOnly = false } = {}) => {
     if (!loaded || !selectedFormat) return false;
 
@@ -1544,7 +1623,14 @@ Coragem para mudar o DF.`;
   });
   mobileSaveButton?.addEventListener('click', () => nativeShareFile({ saveOnly: true }));
   mobileShareButtons.forEach(button => {
-    button.addEventListener('click', () => nativeShareFile({ network: button.dataset.mobileShare }));
+    button.addEventListener('click', () => {
+      const network = button.dataset.mobileShare;
+      if (network === 'facebook') {
+        shareToFacebookMobile();
+        return;
+      }
+      nativeShareFile({ network });
+    });
   });
   profileSaveButton?.addEventListener('click', saveProfileImage);
   profileNetworkButtons.forEach(button => {
