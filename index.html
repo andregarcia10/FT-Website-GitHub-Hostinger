@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style-20260824-0856.css">
+  <link rel="stylesheet" href="style-20260824-0924.css">
   <noscript>
     <style>
       .loader { display: none !important; }
@@ -1076,23 +1076,49 @@
                 </div>
 
                 <div class="supporter-wizard__mobile-finish">
-                  <button id="supporter-wizard-share" class="button supporter-wizard__share-button" type="button">
-                    <i class="fa-solid fa-share-from-square" aria-hidden="true"></i>
-                    COMPARTILHAR / SALVAR
-                  </button>
+                  <section class="supporter-wizard__mobile-save-panel" aria-labelledby="wizard-mobile-save-title">
+                    <span class="supporter-wizard__panel-kicker">1 · Salvar</span>
+                    <h4 id="wizard-mobile-save-title">Salve sua imagem</h4>
+                    <p>Toque no botão abaixo. O celular abrirá as opções nativas do sistema; escolha <strong>Salvar Imagem</strong>, <strong>Fotos</strong> ou <strong>Galeria</strong>, conforme o seu aparelho.</p>
 
-                  <p class="supporter-wizard__share-help">
-                    No celular, escolha Instagram, Facebook, X, WhatsApp, Fotos/Galeria ou outra opção disponível no seu aparelho.
-                  </p>
+                    <button id="supporter-wizard-mobile-save" class="button supporter-wizard__mobile-save-button" type="button">
+                      <i class="fa-solid fa-image" aria-hidden="true"></i>
+                      SALVAR NA GALERIA
+                    </button>
 
-                  <div class="supporter-wizard__platforms" aria-label="Compatível com">
-                    <span><i class="fa-brands fa-instagram"></i> Instagram</span>
-                    <span><i class="fa-brands fa-facebook-f"></i> Facebook</span>
-                    <span><i class="fa-brands fa-x-twitter"></i> X</span>
-                    <span><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
-                  </div>
+                    <p id="supporter-wizard-mobile-save-status" class="supporter-wizard__status" aria-live="polite"></p>
+                  </section>
 
-                  <p id="supporter-wizard-status" class="supporter-wizard__status" aria-live="polite"></p>
+                  <section class="supporter-wizard__mobile-share-panel" aria-labelledby="wizard-mobile-share-title">
+                    <span class="supporter-wizard__panel-kicker">2 · Compartilhar</span>
+                    <h4 id="wizard-mobile-share-title">Compartilhe seu apoio</h4>
+                    <p>Escolha a rede social. A imagem final será enviada para a tela nativa de compartilhamento do celular.</p>
+
+                    <div class="supporter-wizard__mobile-networks">
+                      <button type="button" data-mobile-share="instagram">
+                        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                        <span>Instagram</span>
+                      </button>
+                      <button type="button" data-mobile-share="facebook">
+                        <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                        <span>Facebook</span>
+                      </button>
+                      <button type="button" data-mobile-share="x">
+                        <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                        <span>X</span>
+                      </button>
+                      <button type="button" data-mobile-share="whatsapp">
+                        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                        <span>WhatsApp</span>
+                      </button>
+                    </div>
+
+                    <p class="supporter-wizard__mobile-share-note">
+                      Após tocar em uma rede, escolha esse mesmo aplicativo na tela de compartilhamento do Android ou iOS.
+                    </p>
+
+                    <p id="supporter-wizard-mobile-share-status" class="supporter-wizard__status" aria-live="polite"></p>
+                  </section>
                 </div>
               </div>
             </div>
@@ -1202,6 +1228,6 @@
       </button>
     </div>
   </div>
-  <script src="script-20260824-0856.js" defer></script>
+  <script src="script-20260824-0924.js" defer></script>
 </body>
 </html>

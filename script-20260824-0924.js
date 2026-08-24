@@ -869,6 +869,10 @@ function initSupporterPhotoCreator() {
   const desktopShareButtons = qsa('[data-desktop-share]');
   const desktopShareStatus = qs('#supporter-wizard-share-status');
   const copyCaptionButton = qs('#supporter-wizard-copy-caption');
+  const mobileSaveButton = qs('#supporter-wizard-mobile-save');
+  const mobileSaveStatus = qs('#supporter-wizard-mobile-save-status');
+  const mobileShareButtons = qsa('[data-mobile-share]');
+  const mobileShareStatus = qs('#supporter-wizard-mobile-share-status');
 
   if (!input || !previewCanvas || !editorCanvas || !finalCanvas || !zoom) return;
 
@@ -1269,6 +1273,81 @@ function initSupporterPhotoCreator() {
   };
 
 
+
+  const makeShareFile = async () => {
+    render();
+    const blob = await canvasBlob();
+    return new File([blob], spec().filename, { type: 'image/png' });
+  };
+
+  const nativeShareFile = async ({ network = '', saveOnly = false } = {}) => {
+    if (!loaded || !selectedFormat) return false;
+
+    try {
+      const file = await makeShareFile();
+
+      if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+        if (saveOnly && mobileSaveStatus) {
+          mobileSaveStatus.textContent = 'Na tela que abrir, escolha Salvar Imagem, Fotos ou Galeria.';
+        }
+
+        if (network && mobileShareStatus) {
+          const names = {
+            instagram: 'Instagram',
+            facebook: 'Facebook',
+            x: 'X',
+            whatsapp: 'WhatsApp'
+          };
+          mobileShareStatus.textContent = `Na tela que abrir, escolha ${names[network]}.`;
+        }
+
+        await navigator.share({
+          files: [file],
+          title: 'Eu apoio Fabiano Trompetista 13007',
+          text: saveOnly ? '' : 'Eu apoio Fabiano Trompetista para Deputado Distrital — 13007.'
+        });
+
+        if (saveOnly && mobileSaveStatus) {
+          mobileSaveStatus.textContent = 'Operação concluída pelo sistema do aparelho.';
+        }
+        return true;
+      }
+
+      // Fallback para browsers sem compartilhamento de arquivo.
+      await forceDownload();
+
+      if (saveOnly && mobileSaveStatus) {
+        mobileSaveStatus.textContent = 'Seu navegador não permite salvar diretamente em Fotos/Galeria. O arquivo foi baixado.';
+      }
+      if (network && mobileShareStatus) {
+        mobileShareStatus.textContent = 'Seu navegador não permite anexar a imagem diretamente. O arquivo foi baixado para você compartilhar manualmente.';
+      }
+      return false;
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        if (saveOnly && mobileSaveStatus) mobileSaveStatus.textContent = 'Ação cancelada.';
+        if (network && mobileShareStatus) mobileShareStatus.textContent = 'Compartilhamento cancelado.';
+        return false;
+      }
+
+      console.error('Falha no compartilhamento móvel:', error);
+
+      try {
+        await forceDownload();
+        if (saveOnly && mobileSaveStatus) {
+          mobileSaveStatus.textContent = 'Não foi possível abrir o salvamento nativo. O arquivo foi baixado.';
+        }
+        if (network && mobileShareStatus) {
+          mobileShareStatus.textContent = 'Não foi possível abrir o compartilhamento nativo. O arquivo foi baixado.';
+        }
+      } catch (_) {
+        if (saveOnly && mobileSaveStatus) mobileSaveStatus.textContent = 'Não foi possível gerar a imagem.';
+        if (network && mobileShareStatus) mobileShareStatus.textContent = 'Não foi possível gerar a imagem.';
+      }
+      return false;
+    }
+  };
+
   const shareOrSave = async () => {
     if (!loaded || !selectedFormat) return;
     render();
@@ -1336,6 +1415,10 @@ function initSupporterPhotoCreator() {
   copyCaptionButton?.addEventListener('click', copyCaption);
   desktopShareButtons.forEach(button => {
     button.addEventListener('click', () => openDesktopNetwork(button.dataset.desktopShare));
+  });
+  mobileSaveButton?.addEventListener('click', () => nativeShareFile({ saveOnly: true }));
+  mobileShareButtons.forEach(button => {
+    button.addEventListener('click', () => nativeShareFile({ network: button.dataset.mobileShare }));
   });
 
   editorFrame?.addEventListener('pointerdown', event => {

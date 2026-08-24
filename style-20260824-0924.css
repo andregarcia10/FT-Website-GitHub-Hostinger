@@ -5724,3 +5724,90 @@ textarea:focus-visible{
 .supporter-wizard__desktop-share-tip strong{
   color:var(--cream);
 }
+
+
+/* =========================================================
+   PASSO 4 — MOBILE: SALVAR + COMPARTILHAR SIMPLIFICADO
+   ========================================================= */
+.supporter-wizard__mobile-save-panel,
+.supporter-wizard__mobile-share-panel{
+  padding:16px;
+  border:1px solid rgba(244,227,200,.22);
+  background:rgba(244,227,200,.05);
+}
+.supporter-wizard__mobile-save-panel h4,
+.supporter-wizard__mobile-share-panel h4{
+  margin:0 0 6px;
+  color:var(--cream);
+  font-family:"Sequia Grande","Bebas Neue","Arial Narrow",Impact,sans-serif;
+  font-size:2rem;
+  font-weight:400;
+  line-height:1;
+  text-transform:uppercase;
+}
+.supporter-wizard__mobile-save-panel>p,
+.supporter-wizard__mobile-share-panel>p{
+  margin:0 0 13px;
+  color:rgba(244,227,200,.66);
+  font-size:.72rem;
+  line-height:1.45;
+}
+.supporter-wizard__mobile-save-panel strong,
+.supporter-wizard__mobile-share-panel strong{
+  color:var(--cream);
+}
+.supporter-wizard__mobile-save-button{
+  width:100%;
+  min-height:60px;
+  color:var(--brown)!important;
+  background:var(--trumpet)!important;
+  border:2px solid var(--brown)!important;
+  box-shadow:6px 6px 0 var(--red)!important;
+}
+.supporter-wizard__mobile-networks{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.supporter-wizard__mobile-networks button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-width:0;
+  min-height:58px;
+  padding:10px 8px;
+  border:1px solid rgba(244,227,200,.24);
+  color:var(--cream);
+  background:rgba(27,14,13,.48);
+  font-size:.72rem;
+  font-weight:800;
+}
+.supporter-wizard__mobile-networks button i{
+  color:var(--trumpet);
+  font-size:1.25rem;
+}
+.supporter-wizard__mobile-networks button:active{
+  transform:scale(.98);
+}
+.supporter-wizard__mobile-share-note{
+  margin-top:10px!important;
+  padding:9px 10px;
+  border:1px solid rgba(244,227,200,.15);
+  background:rgba(244,227,200,.035);
+  color:rgba(244,227,200,.56)!important;
+  font-size:.65rem!important;
+}
+#supporter-wizard-mobile-save-status,
+#supporter-wizard-mobile-share-status{
+  margin-top:10px;
+  color:var(--trumpet);
+  font-weight:800;
+}
+
+@media(max-width:420px){
+  .supporter-wizard__mobile-networks{
+    grid-template-columns:1fr;
+  }
+}
+
