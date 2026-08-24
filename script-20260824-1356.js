@@ -1301,6 +1301,120 @@ Coragem para mudar o DF.`;
     }
   };
 
+  const makeMobileShareFile = async () => {
+    render();
+    const blob = await canvasBlob();
+    return new File([blob], spec().filename, { type: 'image/png', lastModified: Date.now() });
+  };
+
+  const mobileDownloadFallback = async () => {
+    render();
+    const blob = await canvasBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = spec().filename;
+    a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.append(a);
+    a.click();
+    a.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+  };
+
+  const nativeShareFile = async ({ network = '', saveOnly = false } = {}) => {
+    if (!loaded || !selectedFormat) return false;
+
+    try {
+      const file = await makeMobileShareFile();
+      const canShareFile =
+        !!navigator.share &&
+        (!navigator.canShare || navigator.canShare({ files: [file] }));
+
+      if (canShareFile) {
+        if (saveOnly && mobileSaveStatus) {
+          if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            mobileSaveStatus.textContent = 'Na tela do iPhone/iPad, escolha “Salvar Imagem”.';
+          } else if (/Android/i.test(navigator.userAgent)) {
+            mobileSaveStatus.textContent = 'Na tela do Android, escolha Fotos, Galeria ou a opção de salvar disponível.';
+          } else {
+            mobileSaveStatus.textContent = 'Na tela do sistema, escolha a opção para salvar a imagem.';
+          }
+        }
+
+        if (network && mobileShareStatus) {
+          const names = {
+            instagram: 'Instagram',
+            facebook: 'Facebook',
+            x: 'X',
+            whatsapp: 'WhatsApp'
+          };
+          mobileShareStatus.textContent = `Na tela que abrir, escolha ${names[network]}.`;
+        }
+
+        const shareData = {
+          files: [file],
+          title: 'Eu apoio Fabiano Trompetista 13007'
+        };
+
+        if (!saveOnly) {
+          shareData.text = captionText;
+        }
+
+        await navigator.share(shareData);
+
+        if (saveOnly && mobileSaveStatus) {
+          mobileSaveStatus.textContent = 'Ação concluída pelo sistema do aparelho.';
+        }
+        return true;
+      }
+
+      await mobileDownloadFallback();
+
+      if (saveOnly && mobileSaveStatus) {
+        mobileSaveStatus.textContent =
+          'Seu navegador não oferece salvamento direto em Fotos/Galeria. A imagem foi baixada em PNG.';
+      }
+
+      if (network && mobileShareStatus) {
+        mobileShareStatus.textContent =
+          'Seu navegador não permite anexar a imagem diretamente. O arquivo foi baixado para você compartilhar manualmente.';
+      }
+      return false;
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        if (saveOnly && mobileSaveStatus) mobileSaveStatus.textContent = 'Salvamento cancelado.';
+        if (network && mobileShareStatus) mobileShareStatus.textContent = 'Compartilhamento cancelado.';
+        return false;
+      }
+
+      console.error('Falha no fluxo mobile de salvar/compartilhar:', error);
+
+      try {
+        await mobileDownloadFallback();
+
+        if (saveOnly && mobileSaveStatus) {
+          mobileSaveStatus.textContent =
+            'Não foi possível abrir o salvamento nativo. A imagem foi baixada em PNG.';
+        }
+
+        if (network && mobileShareStatus) {
+          mobileShareStatus.textContent =
+            'Não foi possível abrir o compartilhamento nativo. A imagem foi baixada em PNG.';
+        }
+      } catch (fallbackError) {
+        console.error('Falha no fallback mobile:', fallbackError);
+        if (saveOnly && mobileSaveStatus) {
+          mobileSaveStatus.textContent = 'Não foi possível salvar a imagem. Recarregue a página e tente novamente.';
+        }
+        if (network && mobileShareStatus) {
+          mobileShareStatus.textContent = 'Não foi possível gerar a imagem.';
+        }
+      }
+      return false;
+    }
+  };
+
   const shareOrSave = async () => {
     if (!loaded || !selectedFormat) return;
     render();
