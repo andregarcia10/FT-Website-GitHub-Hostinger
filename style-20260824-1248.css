@@ -5811,3 +5811,20 @@ textarea:focus-visible{
   }
 }
 
+
+
+/* =========================================================
+   PASSO 4 — MOBILE: botão COPIAR LEGENDA
+   ========================================================= */
+.supporter-wizard__mobile-copy-caption{
+  display:none;
+}
+@media(max-width:820px){
+  .supporter-wizard__mobile-copy-caption{
+    display:flex;
+    width:100%;
+    min-height:52px;
+    margin-top:10px;
+    justify-content:center;
+  }
+}

@@ -873,6 +873,7 @@ function initSupporterPhotoCreator() {
   const mobileSaveStatus = qs('#supporter-wizard-mobile-save-status');
   const mobileShareButtons = qsa('[data-mobile-share]');
   const mobileShareStatus = qs('#supporter-wizard-mobile-share-status');
+  const mobileCopyCaptionButton = qs('#supporter-wizard-mobile-copy-caption');
 
   if (!input || !previewCanvas || !editorCanvas || !finalCanvas || !zoom) return;
 
@@ -1417,6 +1418,14 @@ function initSupporterPhotoCreator() {
   mobileSaveButton?.addEventListener('click', () => nativeShareFile({ saveOnly: true }));
   mobileShareButtons.forEach(button => {
     button.addEventListener('click', () => nativeShareFile({ network: button.dataset.mobileShare }));
+  });
+  mobileCopyCaptionButton?.addEventListener('click', async () => {
+    const copied = await copyCaption();
+    if (mobileShareStatus) {
+      mobileShareStatus.textContent = copied
+        ? '✓ Legenda copiada para a área de transferência.'
+        : 'Não foi possível copiar a legenda automaticamente.';
+    }
   });
 
   editorFrame?.addEventListener('pointerdown', event => {
