@@ -1533,24 +1533,74 @@ Coragem para mudar o DF.`;
   };
 
   const openProfileNetwork = network => {
-    const urls = {
+    const webUrls = {
       instagram: 'https://www.instagram.com/',
       facebook: 'https://www.facebook.com/',
       x: 'https://x.com/',
       whatsapp: 'https://web.whatsapp.com/'
     };
 
-    const target = urls[network];
-    if (!target) return;
+    // Deep links que tentam abrir diretamente os aplicativos instalados.
+    const appUrls = {
+      instagram: 'instagram://app',
+      facebook: 'fb://feed',
+      x: 'twitter://timeline',
+      whatsapp: 'whatsapp://'
+    };
 
-    // Abrimos diretamente em nova aba sem usar o retorno de window.open
-    // como indicador de bloqueio, porque com noopener/noreferrer alguns
-    // navegadores retornam null mesmo quando a aba abre corretamente.
-    window.open(target, '_blank', 'noopener,noreferrer');
+    const webTarget = webUrls[network];
+    const appTarget = appUrls[network];
+    if (!webTarget) return;
+
+    const isMobile =
+      window.matchMedia('(max-width: 820px)').matches ||
+      /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+    if (!isMobile) {
+      // Desktop: mantém a abertura em nova aba.
+      window.open(webTarget, '_blank', 'noopener,noreferrer');
+      if (profileSaveStatus) {
+        profileSaveStatus.textContent = 'Rede social aberta em nova aba.';
+      }
+      return;
+    }
+
+    // MOBILE:
+    // Navega para o esquema do app na própria aba. Se o app estiver instalado,
+    // o sistema operacional entrega o deep link diretamente a ele. Ao voltar
+    // para o navegador, o usuário retorna ao wizard exatamente onde estava.
+    let pageHidden = false;
+    let fallbackTimer = null;
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        pageHidden = true;
+        if (fallbackTimer) {
+          clearTimeout(fallbackTimer);
+          fallbackTimer = null;
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', onVisibility, { once: true });
 
     if (profileSaveStatus) {
-      profileSaveStatus.textContent = 'Rede social aberta em nova aba.';
+      profileSaveStatus.textContent = 'Abrindo o aplicativo...';
     }
+
+    // Se o deep link não for atendido, abre apenas a homepage web em uma NOVA aba,
+    // preservando a página original do gerador.
+    fallbackTimer = window.setTimeout(() => {
+      if (!pageHidden && document.visibilityState === 'visible') {
+        window.open(webTarget, '_blank', 'noopener,noreferrer');
+        if (profileSaveStatus) {
+          profileSaveStatus.textContent =
+            'Não foi possível abrir o aplicativo diretamente. A rede social foi aberta no navegador.';
+        }
+      }
+    }, 1400);
+
+    window.location.href = appTarget;
   };
 
   const shareOrSave = async () => {
