@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style-20260824-1248.css">
+  <link rel="stylesheet" href="style-20260824-1308.css">
   <noscript>
     <style>
       .loader { display: none !important; }
@@ -1092,7 +1092,7 @@
                   <section class="supporter-wizard__mobile-share-panel" aria-labelledby="wizard-mobile-share-title">
                     <span class="supporter-wizard__panel-kicker">2 · Compartilhar</span>
                     <h4 id="wizard-mobile-share-title">Compartilhe seu apoio</h4>
-                    <p>Escolha a rede social. A imagem final será enviada para a tela nativa de compartilhamento do celular.</p>
+                    <p>Antes de compartilhar, você pode copiar a legenda pronta acima para acompanhar sua postagem. Depois, escolha a rede social.</p>
 
                     <div class="supporter-wizard__mobile-networks">
                       <button type="button" data-mobile-share="instagram">
@@ -1113,10 +1113,24 @@
                       </button>
                     </div>
 
-                    <button id="supporter-wizard-mobile-copy-caption" class="button button--ghost supporter-wizard__mobile-copy-caption" type="button">
-                      <i class="fa-regular fa-copy" aria-hidden="true"></i>
-                      COPIAR LEGENDA
-                    </button>
+                    <section class="supporter-wizard__caption-card" aria-labelledby="wizard-mobile-caption-title">
+                      <div class="supporter-wizard__caption-card-head">
+                        <span class="supporter-wizard__caption-icon" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                        <div>
+                          <span class="supporter-wizard__panel-kicker">Legenda pronta</span>
+                          <h4 id="wizard-mobile-caption-title">Use uma legenda pronta na sua postagem</h4>
+                        </div>
+                      </div>
+
+                      <p class="supporter-wizard__caption-preview">“Crie você também a sua imagem de apoio a Fabiano Trompetista 13007...”</p>
+
+                      <button id="supporter-wizard-mobile-copy-caption" class="button supporter-wizard__mobile-copy-caption" type="button">
+                        <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                        <span data-mobile-caption-label>COPIAR LEGENDA</span>
+                      </button>
+
+                      <p class="supporter-wizard__caption-help">Copie agora e cole junto com a imagem quando abrir sua rede social.</p>
+                    </section>
 
                     <p class="supporter-wizard__mobile-share-note">
                       Após tocar em uma rede, escolha esse mesmo aplicativo na tela de compartilhamento do Android ou iOS.
@@ -1233,6 +1247,6 @@
       </button>
     </div>
   </div>
-  <script src="script-20260824-1248.js" defer></script>
+  <script src="script-20260824-1308.js" defer></script>
 </body>
 </html>

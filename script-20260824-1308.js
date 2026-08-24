@@ -874,6 +874,7 @@ function initSupporterPhotoCreator() {
   const mobileShareButtons = qsa('[data-mobile-share]');
   const mobileShareStatus = qs('#supporter-wizard-mobile-share-status');
   const mobileCopyCaptionButton = qs('#supporter-wizard-mobile-copy-caption');
+  const mobileCaptionLabel = qs('[data-mobile-caption-label]');
 
   if (!input || !previewCanvas || !editorCanvas || !finalCanvas || !zoom) return;
 
@@ -1421,10 +1422,21 @@ function initSupporterPhotoCreator() {
   });
   mobileCopyCaptionButton?.addEventListener('click', async () => {
     const copied = await copyCaption();
-    if (mobileShareStatus) {
-      mobileShareStatus.textContent = copied
-        ? '✓ Legenda copiada para a área de transferência.'
-        : 'Não foi possível copiar a legenda automaticamente.';
+
+    if (copied) {
+      if (mobileCaptionLabel) mobileCaptionLabel.textContent = '✓ LEGENDA COPIADA';
+      mobileCopyCaptionButton.classList.add('is-copied');
+
+      if (mobileShareStatus) {
+        mobileShareStatus.textContent = 'Agora é só colar a legenda na sua publicação.';
+      }
+
+      window.setTimeout(() => {
+        if (mobileCaptionLabel) mobileCaptionLabel.textContent = 'COPIAR LEGENDA';
+        mobileCopyCaptionButton.classList.remove('is-copied');
+      }, 3500);
+    } else if (mobileShareStatus) {
+      mobileShareStatus.textContent = 'Não foi possível copiar a legenda automaticamente.';
     }
   });
 
