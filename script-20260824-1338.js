@@ -1135,7 +1135,11 @@ function initSupporterPhotoCreator() {
 
   let desktopImageSaved = false;
 
-  const captionText = "Crie você também a sua imagem de apoio a Fabiano Trompetista 13007:\nhttps://trompetista13007.com.br/#foto-apoiador\n\nEu apoio Fabiano Trompetista para Deputado Distrital — 13007.\nCoragem para mudar o DF.";
+  const captionText = `Crie você também a sua imagem de apoio a Fabiano Trompetista 13007:
+https://trompetista13007.com.br/#foto-apoiador
+
+Eu apoio Fabiano Trompetista para Deputado Distrital — 13007.
+Coragem para mudar o DF.`;
 
   const saveImageDesktop = async () => {
     if (!loaded || !selectedFormat) return false;
@@ -1231,25 +1235,53 @@ function initSupporterPhotoCreator() {
   };
 
   const openDesktopNetwork = async network => {
+    // Para o X, a aba precisa ser criada imediatamente no clique.
+    // Se esperarmos operações assíncronas de salvar/copiar, Chrome pode bloquear window.open.
+    let xWindow = null;
+    if (network === 'x') {
+      xWindow = window.open('about:blank', '_blank');
+      if (xWindow) {
+        try {
+          xWindow.opener = null;
+          xWindow.document.title = 'Abrindo X...';
+          xWindow.document.body.innerHTML =
+            '<p style="font-family:Arial,sans-serif;padding:24px">Abrindo o X...</p>';
+        } catch (_) {}
+      }
+    }
+
     const saved = await ensureDesktopSaved();
-    if (!saved) return;
+    if (!saved) {
+      if (xWindow && !xWindow.closed) xWindow.close();
+      return;
+    }
 
-    // Facebook/X/Instagram não aceitam anexar um arquivo local através de uma URL pública.
-    // Tentamos colocar o PNG no clipboard para permitir Ctrl+V/⌘+V no compositor.
     const imageCopied = await copyGeneratedImage();
-
     const text = encodeURIComponent(captionText);
+
     const urls = {
       instagram: 'https://www.instagram.com/',
       facebook: 'https://www.facebook.com/',
-      x: `https://twitter.com/intent/tweet?text=${text}`,
+      x: `https://x.com/intent/tweet?text=${text}`,
       whatsapp: `https://web.whatsapp.com/send?text=${text}`
     };
 
     const target = urls[network];
-    if (!target) return;
+    if (!target) {
+      if (xWindow && !xWindow.closed) xWindow.close();
+      return;
+    }
 
-    window.open(target, '_blank', 'noopener');
+    if (network === 'x') {
+      if (xWindow && !xWindow.closed) {
+        xWindow.location.replace(target);
+      } else {
+        // Fallback quando o navegador bloqueia pop-ups.
+        window.location.assign(target);
+      }
+    } else {
+      window.open(target, '_blank', 'noopener');
+    }
 
     const labels = {
       instagram: 'Instagram',
@@ -1261,90 +1293,11 @@ function initSupporterPhotoCreator() {
     if (imageCopied) {
       if (desktopShareStatus) {
         desktopShareStatus.textContent =
-          `Imagem salva e copiada. ${labels[network]} aberto em nova aba. Use Ctrl+V (ou ⌘+V no Mac) para colar a imagem na publicação.`;
+          `Imagem salva e copiada. ${labels[network]} aberto. Use Ctrl+V (ou ⌘+V no Mac) para colar a imagem na publicação.`;
       }
-    } else {
-      // Não copiamos legenda automaticamente aqui, pois isso substituiria a imagem no clipboard.
-      if (desktopShareStatus) {
-        desktopShareStatus.textContent =
-          `Imagem salva. ${labels[network]} aberto em nova aba. Anexe o arquivo salvo à publicação.`;
-      }
-    }
-  };
-
-
-
-  const makeShareFile = async () => {
-    render();
-    const blob = await canvasBlob();
-    return new File([blob], spec().filename, { type: 'image/png' });
-  };
-
-  const nativeShareFile = async ({ network = '', saveOnly = false } = {}) => {
-    if (!loaded || !selectedFormat) return false;
-
-    try {
-      const file = await makeShareFile();
-
-      if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-        if (saveOnly && mobileSaveStatus) {
-          mobileSaveStatus.textContent = 'Na tela que abrir, escolha Salvar Imagem, Fotos ou Galeria.';
-        }
-
-        if (network && mobileShareStatus) {
-          const names = {
-            instagram: 'Instagram',
-            facebook: 'Facebook',
-            x: 'X',
-            whatsapp: 'WhatsApp'
-          };
-          mobileShareStatus.textContent = `Na tela que abrir, escolha ${names[network]}.`;
-        }
-
-        await navigator.share({
-          files: [file],
-          title: 'Eu apoio Fabiano Trompetista 13007',
-          text: saveOnly ? '' : 'Eu apoio Fabiano Trompetista para Deputado Distrital — 13007.'
-        });
-
-        if (saveOnly && mobileSaveStatus) {
-          mobileSaveStatus.textContent = 'Operação concluída pelo sistema do aparelho.';
-        }
-        return true;
-      }
-
-      // Fallback para browsers sem compartilhamento de arquivo.
-      await forceDownload();
-
-      if (saveOnly && mobileSaveStatus) {
-        mobileSaveStatus.textContent = 'Seu navegador não permite salvar diretamente em Fotos/Galeria. O arquivo foi baixado.';
-      }
-      if (network && mobileShareStatus) {
-        mobileShareStatus.textContent = 'Seu navegador não permite anexar a imagem diretamente. O arquivo foi baixado para você compartilhar manualmente.';
-      }
-      return false;
-    } catch (error) {
-      if (error?.name === 'AbortError') {
-        if (saveOnly && mobileSaveStatus) mobileSaveStatus.textContent = 'Ação cancelada.';
-        if (network && mobileShareStatus) mobileShareStatus.textContent = 'Compartilhamento cancelado.';
-        return false;
-      }
-
-      console.error('Falha no compartilhamento móvel:', error);
-
-      try {
-        await forceDownload();
-        if (saveOnly && mobileSaveStatus) {
-          mobileSaveStatus.textContent = 'Não foi possível abrir o salvamento nativo. O arquivo foi baixado.';
-        }
-        if (network && mobileShareStatus) {
-          mobileShareStatus.textContent = 'Não foi possível abrir o compartilhamento nativo. O arquivo foi baixado.';
-        }
-      } catch (_) {
-        if (saveOnly && mobileSaveStatus) mobileSaveStatus.textContent = 'Não foi possível gerar a imagem.';
-        if (network && mobileShareStatus) mobileShareStatus.textContent = 'Não foi possível gerar a imagem.';
-      }
-      return false;
+    } else if (desktopShareStatus) {
+      desktopShareStatus.textContent =
+        `Imagem salva. ${labels[network]} aberto. Anexe o arquivo salvo à publicação.`;
     }
   };
 
