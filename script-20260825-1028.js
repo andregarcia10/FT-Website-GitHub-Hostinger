@@ -882,6 +882,7 @@ function initSupporterPhotoCreator() {
   const step6Kicker = qs('[data-step6-kicker]');
   const step6Title = qs('[data-step6-title]');
   const step6Description = qs('[data-step6-description]');
+  const step6Number = qs('[data-wizard-step="6"] .supporter-wizard__step-number');
   const captionCopyContinueButton = qs('#supporter-wizard-caption-copy-continue');
   const captionSkipButton = qs('#supporter-wizard-caption-skip');
   const captionChoiceStatus = qs('#supporter-wizard-caption-status');
@@ -911,6 +912,10 @@ function initSupporterPhotoCreator() {
   let loaded = false;
   let selectedFormat = '';
   let captionChoice = null;
+  const isProfileFlow = () => selectedFormat === 'profile';
+  const visibleStepNumber = () => (isProfileFlow() && step === 6 ? 5 : step);
+  const visibleTotalSteps = () => (isProfileFlow() ? 5 : 6);
+
   let baseScale = 1;
   let zoomFactor = 1;
   let offsetX = 0;
@@ -1034,9 +1039,11 @@ function initSupporterPhotoCreator() {
       panel.classList.toggle('is-active', Number(panel.dataset.wizardStep) === step);
     });
 
-    const pct = ((step - 1) / 5) * 100;
+    const visibleStep = visibleStepNumber();
+    const visibleTotal = visibleTotalSteps();
+    const pct = ((visibleStep - 1) / (visibleTotal - 1)) * 100;
     if (progressFill) progressFill.style.width = `${pct}%`;
-    if (progressText) progressText.textContent = `Passo ${step} de 6`;
+    if (progressText) progressText.textContent = `Passo ${visibleStep} de ${visibleTotal}`;
     if (backButton) backButton.hidden = step === 1;
     if (nextButton) nextButton.hidden = step === 6;
 
@@ -1044,7 +1051,7 @@ function initSupporterPhotoCreator() {
       nextButton.disabled =
         (step === 1 && !loaded) ||
         (step === 2 && !selectedFormat) ||
-        (step === 5 && !captionChoice);
+        (step === 5 && !isProfileFlow() && !captionChoice);
     }
 
     if (step >= 2 && step <= 6) render();
@@ -1060,12 +1067,13 @@ function initSupporterPhotoCreator() {
     if (mobileShareStep) mobileShareStep.hidden = isProfileMode;
 
     if (step6Kicker) step6Kicker.textContent = isProfileMode ? 'Próximo passo' : 'Compartilhar';
-    if (step6Title) step6Title.textContent = isProfileMode ? 'Agora é só colocar sua nova foto no perfil' : 'Compartilhe seu apoio';
+    if (step6Title) step6Title.textContent = isProfileMode ? 'Agora coloque sua nova foto no perfil' : 'Compartilhe seu apoio';
     if (step6Description) {
       step6Description.textContent = isProfileMode
-        ? 'Acesse uma das redes sociais abaixo e substitua sua foto atual pela imagem que você acabou de criar.'
+        ? 'Sua foto já está pronta e salva. Escolha abaixo a rede social em que deseja trocar sua foto de perfil.'
         : 'Agora escolha onde deseja publicar a imagem que você criou.';
     }
+    if (step6Number) step6Number.textContent = isProfileMode ? '05' : '06';
 
     const active = stepPanels.find(panel => Number(panel.dataset.wizardStep) === step);
     fitActiveStepToViewport();
@@ -1150,7 +1158,9 @@ function initSupporterPhotoCreator() {
     setCanvasSize();
     resetView();
 
+    if (!isProfileFlow()) captionChoice = null;
     if (nextButton && step === 2) nextButton.disabled = false;
+    updateNavigation();
   };
 
   const canvasBlob = () => new Promise((resolve, reject) => {
@@ -1685,11 +1695,17 @@ Coragem para mudar o DF.`;
     if (step === 1 && loaded) goToStep(2);
     else if (step === 2 && selectedFormat) goToStep(3);
     else if (step === 3) goToStep(4);
-    else if (step === 4) goToStep(5);
+    else if (step === 4) goToStep(isProfileFlow() ? 6 : 5);
     else if (step === 5 && captionChoice) goToStep(6);
   });
 
-  backButton?.addEventListener('click', () => goToStep(step - 1));
+  backButton?.addEventListener('click', () => {
+    if (isProfileFlow() && step === 6) {
+      goToStep(4);
+      return;
+    }
+    goToStep(step - 1);
+  });
 
   zoom.addEventListener('input', () => {
     if (!loaded || !selectedFormat) return;

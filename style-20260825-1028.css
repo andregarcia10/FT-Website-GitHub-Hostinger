@@ -7105,3 +7105,12 @@ textarea:focus-visible{
     font-size:1.08em;
   }
 }
+
+
+/* =========================================================
+   FOTO DE PERFIL — FLUXO EFETIVO DE 5 PASSOS
+   O Passo 5 técnico (legenda) é exclusivo de Post/Story.
+   ========================================================= */
+.supporter-wizard.is-profile-mode [data-wizard-step="5"]{
+  display:none!important;
+}
