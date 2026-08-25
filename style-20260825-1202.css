@@ -6732,3 +6732,49 @@ textarea:focus-visible{
     min-height:40px;
   }
 }
+
+
+/* =========================================================
+   PASSO 6 — ALINHAR QUADRO DE COMPARTILHAMENTO AO TOPO DA FOTO
+   Correção pontual, sem alterar os demais passos.
+   ========================================================= */
+
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-layout{
+  align-items:start !important;
+}
+
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-frame{
+  align-self:start !important;
+}
+
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-actions{
+  align-self:start !important;
+  align-content:start !important;
+  max-height:none !important;
+}
+
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__desktop-share-step,
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__mobile-share-step,
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__profile-networks-step{
+  align-self:start !important;
+  align-content:start !important;
+}
+
+/* Desktop: o topo do quadro COMPARTILHAR coincide com o topo da imagem final. */
+@media(min-width:821px){
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__desktop-share-step{
+    display:grid;
+    gap:8px;
+    align-content:start !important;
+  }
+}
+
+/* Mobile: mantém a mesma lógica de alinhamento, sem modificar tamanhos. */
+@media(max-width:820px){
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-layout{
+    align-items:start !important;
+  }
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-actions{
+    align-self:start !important;
+  }
+}
