@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style-20260825-0642.css">
+  <link rel="stylesheet" href="style-20260825-0812.css">
   <noscript>
     <style>
       .loader { display: none !important; }
@@ -857,7 +857,8 @@
               <span><b>2</b> Escolha onde usar</span>
               <span><b>3</b> Ajuste o enquadramento</span>
               <span><b>4</b> Salve sua imagem</span>
-              <span><b>5</b> Compartilhe ou acesse suas redes</span>
+              <span><b>5</b> Escolha se quer copiar a legenda</span>
+              <span><b>6</b> Compartilhe ou acesse suas redes</span>
             </div>
 
             <button id="supporter-photo-open" class="button button--primary supporter-photo-launch__button" type="button">
@@ -1066,19 +1067,56 @@
             </div>
           </section>
 
-          <section class="supporter-wizard__step" data-wizard-step="5" aria-labelledby="wizard-step-5-title">
+                    <section class="supporter-wizard__step" data-wizard-step="5" aria-labelledby="wizard-step-5-title">
             <div class="supporter-wizard__step-heading">
               <span class="supporter-wizard__step-number">05</span>
               <div>
-                <span class="supporter-wizard__kicker" data-step5-kicker>Compartilhar</span>
-                <h3 id="wizard-step-5-title" data-step5-title>Compartilhe seu apoio</h3>
-                <p data-step5-description>Agora escolha onde deseja publicar a imagem que você criou.</p>
+                <span class="supporter-wizard__kicker">Legenda</span>
+                <h3 id="wizard-step-5-title">Quer usar uma legenda pronta?</h3>
+                <p>Você pode copiar uma legenda já preparada para acompanhar sua imagem ou seguir sem copiá-la.</p>
+              </div>
+            </div>
+
+            <div class="supporter-wizard__caption-choice">
+              <section class="supporter-wizard__caption-choice-card">
+                <span class="supporter-wizard__panel-kicker">Legenda sugerida</span>
+                <h4>Ajude mais pessoas a criarem sua foto de apoio</h4>
+                <p>O convite e o link aparecem logo no início da legenda para facilitar o acesso de quem vir sua publicação.</p>
+
+                <button id="supporter-wizard-caption-copy-continue" class="button supporter-wizard__caption-primary" type="button">
+                  <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                  QUERO USAR ESTA LEGENDA
+                </button>
+
+                <div class="supporter-wizard__caption-full" aria-label="Texto completo da legenda">
+                  <p><strong>Crie também a sua foto de apoio a Fabiano Trompetista 13007:</strong><br>
+                  <span>https://trompetista13007.com.br/#foto-apoiador</span></p>
+                  <p>Eu apoio Fabiano Trompetista para Deputado Distrital — 13007.<br>
+                  Coragem para mudar o DF.</p>
+                </div>
+
+                <button id="supporter-wizard-caption-skip" class="button button--ghost supporter-wizard__caption-skip" type="button">
+                  QUERO CRIAR MINHA PRÓPRIA LEGENDA
+                </button>
+
+                <p id="supporter-wizard-caption-status" class="supporter-wizard__status" aria-live="polite"></p>
+              </section>
+            </div>
+          </section>
+
+<section class="supporter-wizard__step" data-wizard-step="6" aria-labelledby="wizard-step-6-title">
+            <div class="supporter-wizard__step-heading">
+              <span class="supporter-wizard__step-number">06</span>
+              <div>
+                <span class="supporter-wizard__kicker" data-step6-kicker>Compartilhar</span>
+                <h3 id="wizard-step-6-title" data-step6-title>Compartilhe seu apoio</h3>
+                <p data-step6-description>Agora escolha onde deseja publicar a imagem que você criou.</p>
               </div>
             </div>
 
             <div class="supporter-wizard__final-layout">
-              <div class="supporter-wizard__final-frame" data-wizard-final-frame-step5>
-                <canvas id="supporter-wizard-final-step5" width="1080" height="1350" aria-label="Imagem final para compartilhamento"></canvas>
+              <div class="supporter-wizard__final-frame" data-wizard-final-frame-step6>
+                <canvas id="supporter-wizard-final-step6" width="1080" height="1350" aria-label="Imagem final para compartilhamento"></canvas>
               </div>
 
               <div class="supporter-wizard__final-actions">
@@ -1108,34 +1146,34 @@
                       <button type="button" data-desktop-share="whatsapp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span></button>
                     </div>
                     <p class="supporter-wizard__desktop-share-tip"><i class="fa-regular fa-clipboard" aria-hidden="true"></i> No Facebook e no X, use <strong>Ctrl+V</strong> (ou <strong>⌘+V</strong> no Mac) no campo da publicação quando a mensagem indicar que a imagem foi copiada.</p>
-                    <button id="supporter-wizard-copy-caption" class="button button--ghost supporter-wizard__copy-caption" type="button"><i class="fa-regular fa-copy" aria-hidden="true"></i>COPIAR LEGENDA</button>
                     <p id="supporter-wizard-share-status" class="supporter-wizard__status" aria-live="polite"></p>
                   </section>
+
+                  <button id="supporter-wizard-copy-caption-step6" class="button button--ghost supporter-wizard__copy-caption-step6" type="button">
+                    <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                    COPIAR LEGENDA
+                  </button>
                 </div>
 
                 <div class="supporter-wizard__mobile-share-step">
                   <section class="supporter-wizard__mobile-share-panel" aria-labelledby="wizard-mobile-share-title">
                     <span class="supporter-wizard__panel-kicker">Compartilhar</span>
                     <h4 id="wizard-mobile-share-title">Compartilhe seu apoio</h4>
-                    <p>Copie a legenda pronta e depois escolha a rede social.</p>
+                    <p>Escolha a rede social onde deseja publicar a imagem.</p>
                     <div class="supporter-wizard__mobile-networks">
                       <button type="button" data-mobile-share="instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i><span>Instagram</span></button>
                       <button type="button" data-mobile-share="facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i><span>Facebook</span></button>
                       <button type="button" data-mobile-share="x"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i><span>X</span></button>
                       <button type="button" data-mobile-share="whatsapp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span></button>
                     </div>
-                    <section class="supporter-wizard__caption-card" aria-labelledby="wizard-mobile-caption-title">
-                      <div class="supporter-wizard__caption-card-head">
-                        <span class="supporter-wizard__caption-icon" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
-                        <div><span class="supporter-wizard__panel-kicker">Legenda pronta</span><h4 id="wizard-mobile-caption-title">Use uma legenda pronta na sua postagem</h4></div>
-                      </div>
-                      <p class="supporter-wizard__caption-preview">“Crie você também a sua imagem de apoio a Fabiano Trompetista 13007...”</p>
-                      <button id="supporter-wizard-mobile-copy-caption" class="button supporter-wizard__mobile-copy-caption" type="button"><i class="fa-regular fa-copy" aria-hidden="true"></i><span data-mobile-caption-label>COPIAR LEGENDA</span></button>
-                      <p class="supporter-wizard__caption-help">Copie agora e cole junto com a imagem quando abrir sua rede social.</p>
-                    </section>
-                    <p class="supporter-wizard__mobile-share-note"><strong>Facebook:</strong> a legenda é copiada antes do envio da foto. Se ela não aparecer no post, basta colar no campo de texto.<br><br>Após tocar em uma rede, escolha esse mesmo aplicativo na tela de compartilhamento do Android ou iOS.</p>
+                    <p class="supporter-wizard__mobile-share-note">Após tocar em uma rede, escolha esse mesmo aplicativo na tela de compartilhamento do Android ou iOS.</p>
                     <p id="supporter-wizard-mobile-share-status" class="supporter-wizard__status" aria-live="polite"></p>
                   </section>
+
+                  <button id="supporter-wizard-copy-caption-step6-mobile" class="button button--ghost supporter-wizard__copy-caption-step6 supporter-wizard__copy-caption-step6--mobile" type="button">
+                    <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                    COPIAR LEGENDA
+                  </button>
                 </div>
               </div>
             </div>
@@ -1245,6 +1283,6 @@
       </button>
     </div>
   </div>
-  <script src="script-20260825-0642.js" defer></script>
+  <script src="script-20260825-0812.js" defer></script>
 </body>
 </html>

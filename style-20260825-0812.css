@@ -6073,11 +6073,11 @@ textarea:focus-visible{
 /* =========================================================
    PASSO 5 — FOTO DE PERFIL: "PRÓXIMO PASSO", sem compartilhar
    ========================================================= */
-.supporter-wizard.is-profile-mode [data-wizard-step="5"] .supporter-wizard__desktop-share-step,
-.supporter-wizard.is-profile-mode [data-wizard-step="5"] .supporter-wizard__mobile-share-step,
-.supporter-wizard.is-profile-mode [data-wizard-step="5"] .supporter-wizard__caption-card,
-.supporter-wizard.is-profile-mode [data-wizard-step="5"] [data-desktop-share],
-.supporter-wizard.is-profile-mode [data-wizard-step="5"] [data-mobile-share]{
+.supporter-wizard.is-profile-mode [data-wizard-step="6"] .supporter-wizard__desktop-share-step,
+.supporter-wizard.is-profile-mode [data-wizard-step="6"] .supporter-wizard__mobile-share-step,
+.supporter-wizard.is-profile-mode [data-wizard-step="6"] .supporter-wizard__caption-card,
+.supporter-wizard.is-profile-mode [data-wizard-step="6"] [data-desktop-share],
+.supporter-wizard.is-profile-mode [data-wizard-step="6"] [data-mobile-share]{
   display:none!important;
 }
 
@@ -6085,13 +6085,13 @@ textarea:focus-visible{
 /* =========================================================
    PASSO 5 — FOTO DE PERFIL: conteúdo obrigatório
    ========================================================= */
-.supporter-wizard.is-profile-mode [data-wizard-step="5"] .supporter-wizard__profile-networks-step:not([hidden]){
+.supporter-wizard.is-profile-mode [data-wizard-step="6"] .supporter-wizard__profile-networks-step:not([hidden]){
   display:block!important;
 }
-.supporter-wizard.is-profile-mode [data-wizard-step="5"] .supporter-wizard__profile-networks-panel{
+.supporter-wizard.is-profile-mode [data-wizard-step="6"] .supporter-wizard__profile-networks-panel{
   display:block!important;
 }
-.supporter-wizard.is-profile-mode [data-wizard-step="5"] .supporter-wizard__profile-networks{
+.supporter-wizard.is-profile-mode [data-wizard-step="6"] .supporter-wizard__profile-networks{
   display:grid!important;
 }
 
@@ -6103,5 +6103,632 @@ textarea:focus-visible{
 @media(max-width:820px){
   .supporter-photo-launch__steps{
     grid-template-columns:1fr;
+  }
+}
+
+
+/* =========================================================
+   FOTO DE APOIO — apresentação em 6 passos
+   ========================================================= */
+.supporter-photo-launch__steps{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+
+/* =========================================================
+   PASSO 5 — escolha da legenda
+   ========================================================= */
+.supporter-wizard__caption-choice{
+  width:min(100%,760px);
+  margin:0 auto;
+}
+.supporter-wizard__caption-choice-card{
+  padding:22px;
+  border:2px solid var(--trumpet);
+  background:
+    linear-gradient(180deg,rgba(255,166,64,.08),rgba(83,20,20,.16)),
+    rgba(244,227,200,.05);
+  box-shadow:7px 7px 0 rgba(220,20,19,.44);
+}
+.supporter-wizard__caption-choice-card h4{
+  margin:3px 0 8px;
+  color:var(--cream);
+  font-family:"Sequia Grande","Bebas Neue","Arial Narrow",Impact,sans-serif;
+  font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:400;
+  line-height:1;
+  text-transform:uppercase;
+}
+.supporter-wizard__caption-choice-card>p{
+  color:rgba(244,227,200,.68);
+  line-height:1.45;
+}
+.supporter-wizard__caption-primary{
+  width:100%;
+  min-height:60px;
+  margin-top:12px;
+  color:var(--brown)!important;
+  background:var(--trumpet)!important;
+  border:2px solid var(--brown)!important;
+  box-shadow:6px 6px 0 var(--red)!important;
+}
+.supporter-wizard__caption-full{
+  margin:18px 0;
+  padding:16px;
+  border-left:5px solid var(--trumpet);
+  background:rgba(27,14,13,.42);
+  color:var(--cream);
+}
+.supporter-wizard__caption-full p{
+  margin:0;
+  font-size:.84rem;
+  line-height:1.55;
+}
+.supporter-wizard__caption-full p+p{
+  margin-top:14px;
+}
+.supporter-wizard__caption-full span{
+  color:var(--trumpet);
+  overflow-wrap:anywhere;
+}
+.supporter-wizard__caption-skip{
+  width:100%;
+  min-height:54px;
+}
+#supporter-wizard-caption-status{
+  margin-top:12px;
+  color:var(--trumpet);
+  font-weight:800;
+}
+
+@media(max-width:820px){
+  .supporter-photo-launch__steps{
+    grid-template-columns:1fr;
+  }
+  .supporter-wizard__caption-choice-card{
+    padding:16px;
+  }
+  .supporter-wizard__caption-full{
+    padding:13px;
+  }
+}
+
+
+/* PASSO 5 — escolha obrigatória antes de AVANÇAR */
+.supporter-wizard__caption-primary.is-selected,
+.supporter-wizard__caption-skip.is-selected{
+  outline:3px solid var(--cream);
+  outline-offset:3px;
+}
+.supporter-wizard__caption-skip.is-selected{
+  color:var(--brown)!important;
+  background:var(--trumpet)!important;
+  border-color:var(--brown)!important;
+}
+
+
+/* =========================================================
+   WIZARD FOTO DE APOIO — MODO COMPACTO SEM ROLAGEM VERTICAL
+   ========================================================= */
+
+/* Estrutura geral mais enxuta */
+.supporter-wizard__dialog{
+  width:min(1040px,calc(100vw - 28px));
+  height:min(790px,calc(100vh - 28px));
+  max-height:calc(100vh - 28px);
+}
+.supporter-wizard__header{
+  padding:11px 18px 9px;
+  gap:14px;
+}
+.supporter-wizard__header h2{
+  font-size:clamp(1.45rem,2.7vw,2.35rem);
+}
+.supporter-wizard__close{
+  width:38px;
+  height:38px;
+}
+.supporter-wizard__progress{
+  padding:7px 18px;
+}
+.supporter-wizard__body{
+  overflow:hidden;
+  padding:14px 18px 10px;
+}
+.supporter-wizard__footer{
+  padding:8px 18px 10px;
+}
+.supporter-wizard__footer .button{
+  min-height:42px;
+  padding-block:8px;
+}
+
+/* Cabeçalho interno de cada passo */
+.supporter-wizard__step-heading{
+  grid-template-columns:48px minmax(0,1fr);
+  gap:10px;
+  margin-bottom:12px;
+  max-width:860px;
+}
+.supporter-wizard__step-number{
+  font-size:3.25rem;
+}
+.supporter-wizard__step-heading h3{
+  margin:2px 0 4px;
+  font-size:clamp(1.65rem,3.25vw,3rem);
+  line-height:.94;
+}
+.supporter-wizard__step-heading p{
+  font-size:.76rem;
+  line-height:1.32;
+}
+.supporter-wizard__kicker,
+.supporter-wizard__panel-kicker{
+  font-size:.58rem;
+}
+
+/* Passo 1 */
+.supporter-wizard__upload{
+  min-height:138px;
+  max-width:640px;
+  margin-bottom:9px;
+  padding:16px;
+  gap:5px;
+}
+.supporter-wizard__upload i{font-size:2.15rem}
+.supporter-wizard__file-info,
+.supporter-wizard__privacy-box{
+  max-width:640px;
+  margin-bottom:7px;
+  padding:9px 12px;
+}
+.supporter-wizard__privacy-box strong{font-size:.76rem}
+.supporter-wizard__privacy-box span,
+.supporter-wizard__file-info{font-size:.66rem}
+
+/* Passo 2 */
+.supporter-wizard__formats{
+  gap:9px;
+  max-width:860px;
+  margin-inline:auto;
+}
+.supporter-wizard__formats button{
+  min-height:112px;
+  padding:11px;
+}
+.supporter-wizard__formats strong{font-size:.82rem}
+.supporter-wizard__formats em{font-size:.64rem;line-height:1.28}
+.supporter-wizard__formats small{font-size:.58rem}
+
+/* Passo 3 */
+.supporter-wizard__editor-layout{
+  gap:22px;
+  max-width:820px;
+  grid-template-columns:minmax(0,1fr) 280px;
+}
+.supporter-wizard__editor-controls{gap:9px}
+.supporter-wizard__zoom{
+  gap:6px;
+  padding:10px;
+}
+.supporter-wizard__zoom label{font-size:.72rem}
+.supporter-wizard__drag-hint{font-size:.63rem}
+.supporter-wizard__editor-frame[data-format="feed"],
+.supporter-wizard__final-frame[data-format="feed"]{width:min(100%,240px)}
+.supporter-wizard__editor-frame[data-format="story"],
+.supporter-wizard__final-frame[data-format="story"]{width:min(100%,180px)}
+.supporter-wizard__editor-frame[data-format="profile"],
+.supporter-wizard__final-frame[data-format="profile"]{width:min(100%,235px)}
+
+/* Passos 4 e 6 */
+.supporter-wizard__final-layout{
+  gap:22px;
+  max-width:840px;
+  grid-template-columns:minmax(0,1fr) minmax(285px,.85fr);
+}
+.supporter-wizard__final-actions{gap:10px}
+.supporter-wizard__save-panel,
+.supporter-wizard__share-panel,
+.supporter-wizard__profile-save-panel,
+.supporter-wizard__profile-networks-panel{
+  padding:12px;
+}
+.supporter-wizard__save-panel h4,
+.supporter-wizard__share-panel h4,
+.supporter-wizard__profile-save-panel h4,
+.supporter-wizard__profile-networks-panel h4{
+  font-size:1.55rem;
+}
+.supporter-wizard__save-panel>p,
+.supporter-wizard__share-panel>p,
+.supporter-wizard__profile-save-panel>p,
+.supporter-wizard__profile-networks-panel>p{
+  margin-bottom:9px;
+  font-size:.66rem;
+}
+.supporter-wizard__save-button,
+.supporter-wizard__profile-save-button{
+  min-height:48px;
+}
+.supporter-wizard__share-networks button,
+.supporter-wizard__profile-networks button{
+  min-height:54px;
+  padding:6px 4px;
+}
+.supporter-wizard__share-networks i,
+.supporter-wizard__profile-networks i{
+  font-size:1.1rem;
+}
+.supporter-wizard__desktop-share-tip{
+  margin-top:7px!important;
+  padding:7px 8px;
+  font-size:.60rem!important;
+}
+
+/* Passo 5 */
+.supporter-wizard__caption-choice{
+  width:min(100%,690px);
+}
+.supporter-wizard__caption-choice-card{
+  padding:14px;
+}
+.supporter-wizard__caption-choice-card h4{
+  margin:2px 0 5px;
+  font-size:clamp(1.6rem,3vw,2.35rem);
+}
+.supporter-wizard__caption-choice-card>p{
+  margin:0 0 8px;
+  font-size:.68rem;
+  line-height:1.3;
+}
+.supporter-wizard__caption-primary{
+  min-height:48px;
+  margin-top:7px;
+}
+.supporter-wizard__caption-full{
+  margin:10px 0;
+  padding:10px 12px;
+}
+.supporter-wizard__caption-full p{
+  font-size:.70rem;
+  line-height:1.38;
+}
+.supporter-wizard__caption-full p+p{
+  margin-top:8px;
+}
+.supporter-wizard__caption-skip{
+  min-height:46px;
+}
+#supporter-wizard-caption-status{
+  margin-top:8px;
+  font-size:.64rem;
+}
+
+/* Telas com pouca altura: compactação adicional */
+@media(max-height:760px) and (min-width:821px){
+  .supporter-wizard__dialog{
+    height:calc(100vh - 16px);
+    max-height:calc(100vh - 16px);
+  }
+  .supporter-wizard__header{padding:7px 14px 6px}
+  .supporter-wizard__header h2{font-size:1.55rem}
+  .supporter-wizard__progress{padding:5px 14px}
+  .supporter-wizard__body{padding:8px 14px 6px}
+  .supporter-wizard__footer{padding:6px 14px}
+  .supporter-wizard__step-heading{margin-bottom:7px}
+  .supporter-wizard__step-number{font-size:2.7rem}
+  .supporter-wizard__step-heading h3{font-size:1.8rem}
+  .supporter-wizard__upload{min-height:105px}
+  .supporter-wizard__formats button{min-height:92px}
+  .supporter-wizard__editor-frame[data-format="feed"],
+  .supporter-wizard__final-frame[data-format="feed"]{width:min(100%,205px)}
+  .supporter-wizard__editor-frame[data-format="story"],
+  .supporter-wizard__final-frame[data-format="story"]{width:min(100%,150px)}
+  .supporter-wizard__editor-frame[data-format="profile"],
+  .supporter-wizard__final-frame[data-format="profile"]{width:min(100%,200px)}
+}
+
+/* Mobile: reduzir drasticamente o comprimento vertical sem perder conteúdo */
+@media(max-width:820px){
+  .supporter-wizard{
+    padding:0;
+  }
+  .supporter-wizard__dialog{
+    width:100vw;
+    height:100dvh;
+    max-height:100dvh;
+  }
+  .supporter-wizard__header{
+    padding:7px 10px 5px;
+  }
+  .supporter-wizard__header h2{
+    font-size:1.35rem;
+  }
+  .supporter-wizard__eyebrow{font-size:.52rem}
+  .supporter-wizard__close{
+    width:34px;
+    height:34px;
+  }
+  .supporter-wizard__progress{
+    padding:5px 10px;
+  }
+  .supporter-wizard__body{
+    overflow:hidden;
+    padding:8px 10px 5px;
+  }
+  .supporter-wizard__footer{
+    padding:6px 10px max(7px,env(safe-area-inset-bottom));
+  }
+  .supporter-wizard__footer .button{
+    min-height:40px;
+    font-size:.72rem;
+  }
+
+  .supporter-wizard__step-heading{
+    grid-template-columns:36px minmax(0,1fr);
+    gap:7px;
+    margin-bottom:8px;
+  }
+  .supporter-wizard__step-number{
+    font-size:2.55rem;
+  }
+  .supporter-wizard__step-heading h3{
+    font-size:clamp(1.55rem,7vw,2.25rem);
+    margin:1px 0 3px;
+  }
+  .supporter-wizard__step-heading p{
+    font-size:.65rem;
+    line-height:1.22;
+  }
+
+  .supporter-wizard__upload{
+    min-height:104px;
+    margin-bottom:6px;
+    padding:10px;
+  }
+  .supporter-wizard__upload i{font-size:1.8rem}
+  .supporter-wizard__file-info,
+  .supporter-wizard__privacy-box{
+    margin-bottom:5px;
+    padding:7px 9px;
+  }
+
+  .supporter-wizard__formats{
+    grid-template-columns:1fr;
+    gap:5px;
+  }
+  .supporter-wizard__formats button{
+    min-height:60px;
+    padding:6px 8px;
+    grid-template-columns:42px minmax(0,1fr) auto;
+  }
+  .supporter-wizard__formats .supporter-wizard__format-icon{
+    width:34px;
+    height:34px;
+  }
+  .supporter-wizard__formats strong{font-size:.72rem}
+  .supporter-wizard__formats em{font-size:.58rem}
+  .supporter-wizard__formats small{font-size:.54rem}
+
+  .supporter-wizard__editor-layout,
+  .supporter-wizard__final-layout{
+    grid-template-columns:minmax(0,.76fr) minmax(145px,1fr);
+    gap:10px;
+    align-items:center;
+  }
+  .supporter-wizard__editor-controls,
+  .supporter-wizard__final-actions{
+    width:100%;
+  }
+  .supporter-wizard__editor-controls{gap:6px}
+  .supporter-wizard__zoom{padding:7px;gap:4px}
+  .supporter-wizard__drag-hint{font-size:.56rem}
+
+  .supporter-wizard__preview-frame[data-format="feed"],
+  .supporter-wizard__editor-frame[data-format="feed"],
+  .supporter-wizard__final-frame[data-format="feed"]{width:min(100%,145px)}
+  .supporter-wizard__preview-frame[data-format="story"],
+  .supporter-wizard__editor-frame[data-format="story"],
+  .supporter-wizard__final-frame[data-format="story"]{width:min(100%,108px)}
+  .supporter-wizard__preview-frame[data-format="profile"],
+  .supporter-wizard__editor-frame[data-format="profile"],
+  .supporter-wizard__final-frame[data-format="profile"]{width:min(100%,140px)}
+
+  .supporter-wizard__save-panel,
+  .supporter-wizard__share-panel,
+  .supporter-wizard__profile-save-panel,
+  .supporter-wizard__profile-networks-panel,
+  .supporter-wizard__mobile-save-panel,
+  .supporter-wizard__mobile-share-panel{
+    padding:8px;
+  }
+  .supporter-wizard__save-panel h4,
+  .supporter-wizard__share-panel h4,
+  .supporter-wizard__profile-save-panel h4,
+  .supporter-wizard__profile-networks-panel h4,
+  .supporter-wizard__mobile-save-panel h4,
+  .supporter-wizard__mobile-share-panel h4{
+    font-size:1.3rem;
+  }
+  .supporter-wizard__mobile-save-panel>p,
+  .supporter-wizard__mobile-share-panel>p{
+    margin-bottom:7px;
+    font-size:.60rem;
+  }
+  .supporter-wizard__mobile-save-button{
+    min-height:44px;
+  }
+  .supporter-wizard__profile-networks,
+  .supporter-wizard__mobile-networks{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:5px;
+  }
+  .supporter-wizard__profile-networks button,
+  .supporter-wizard__mobile-networks button{
+    min-height:44px;
+    padding:5px;
+  }
+
+  .supporter-wizard__caption-choice-card{
+    padding:9px;
+  }
+  .supporter-wizard__caption-choice-card h4{
+    font-size:1.35rem;
+  }
+  .supporter-wizard__caption-choice-card>p{
+    margin-bottom:5px;
+    font-size:.59rem;
+  }
+  .supporter-wizard__caption-primary,
+  .supporter-wizard__caption-skip{
+    min-height:42px;
+    font-size:.68rem;
+  }
+  .supporter-wizard__caption-full{
+    margin:6px 0;
+    padding:7px 9px;
+  }
+  .supporter-wizard__caption-full p{
+    font-size:.61rem;
+    line-height:1.25;
+  }
+  .supporter-wizard__caption-full p+p{
+    margin-top:5px;
+  }
+}
+
+/* Celulares baixos */
+@media(max-width:820px) and (max-height:700px){
+  .supporter-wizard__header{padding:4px 8px 3px}
+  .supporter-wizard__header h2{font-size:1.15rem}
+  .supporter-wizard__progress{padding:3px 8px}
+  .supporter-wizard__body{padding:5px 8px 3px}
+  .supporter-wizard__footer{padding:4px 8px max(5px,env(safe-area-inset-bottom))}
+  .supporter-wizard__step-heading{margin-bottom:5px}
+  .supporter-wizard__step-number{font-size:2.15rem}
+  .supporter-wizard__step-heading h3{font-size:1.5rem}
+  .supporter-wizard__step-heading p{font-size:.58rem}
+  .supporter-wizard__upload{min-height:80px}
+  .supporter-wizard__formats button{min-height:51px}
+  .supporter-wizard__preview-frame[data-format="feed"],
+  .supporter-wizard__editor-frame[data-format="feed"],
+  .supporter-wizard__final-frame[data-format="feed"]{width:min(100%,118px)}
+  .supporter-wizard__preview-frame[data-format="story"],
+  .supporter-wizard__editor-frame[data-format="story"],
+  .supporter-wizard__final-frame[data-format="story"]{width:min(100%,88px)}
+  .supporter-wizard__preview-frame[data-format="profile"],
+  .supporter-wizard__editor-frame[data-format="profile"],
+  .supporter-wizard__final-frame[data-format="profile"]{width:min(100%,112px)}
+  .supporter-wizard__caption-choice-card h4{font-size:1.18rem}
+  .supporter-wizard__caption-full p{font-size:.56rem}
+}
+
+
+/* =========================================================
+   PASSO 6 — COMPARTILHAR MAIOR + COPIAR LEGENDA
+   ========================================================= */
+
+/* Mais espaço horizontal para o quadro de compartilhamento */
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-layout{
+  grid-template-columns:minmax(220px,.72fr) minmax(390px,1.28fr);
+  gap:24px;
+  max-width:930px;
+}
+
+/* A coluna direita ocupa no máximo a altura visual da foto */
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-actions{
+  align-self:stretch;
+  display:grid;
+  align-content:center;
+  gap:10px;
+}
+
+/* Quadro Compartilhar mais amplo e confortável */
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-panel{
+  padding:15px 16px;
+}
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-panel h4{
+  font-size:1.85rem;
+}
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-panel>p{
+  font-size:.70rem;
+  line-height:1.35;
+}
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-networks{
+  gap:8px;
+}
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-networks button{
+  min-height:58px;
+  font-size:.68rem;
+}
+.supporter-wizard [data-wizard-step="6"] .supporter-wizard__desktop-share-tip{
+  margin-top:8px!important;
+  padding:8px 9px;
+  font-size:.62rem!important;
+  line-height:1.32!important;
+}
+
+/* Novo botão abaixo do quadro */
+.supporter-wizard__copy-caption-step6{
+  width:100%;
+  min-height:46px;
+  margin:0;
+}
+.supporter-wizard__copy-caption-step6--mobile{
+  display:none;
+}
+
+/* Desktop: a soma painel + botão fica visualmente limitada à altura da foto */
+@media(min-width:821px){
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-actions{
+    max-height:240px;
+  }
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__desktop-share-step{
+    display:grid;
+    gap:8px;
+    align-content:center;
+  }
+}
+
+/* Mobile: mantém tudo compacto, com o botão abaixo do quadro */
+@media(max-width:820px){
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-layout{
+    grid-template-columns:minmax(0,.72fr) minmax(160px,1.28fr);
+    gap:9px;
+  }
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-panel,
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__mobile-share-panel{
+    padding:8px;
+  }
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__mobile-networks{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:5px;
+  }
+  .supporter-wizard__copy-caption-step6--mobile{
+    display:flex;
+    justify-content:center;
+    min-height:42px;
+    font-size:.66rem;
+  }
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__desktop-share-step{
+    display:none!important;
+  }
+}
+
+/* Telas desktop mais baixas: redução adicional sem rolagem */
+@media(min-width:821px) and (max-height:760px){
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__final-actions{
+    max-height:205px;
+  }
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-panel{
+    padding:10px 12px;
+  }
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-panel h4{
+    font-size:1.55rem;
+  }
+  .supporter-wizard [data-wizard-step="6"] .supporter-wizard__share-networks button{
+    min-height:48px;
+  }
+  .supporter-wizard__copy-caption-step6{
+    min-height:40px;
   }
 }

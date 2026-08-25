@@ -855,7 +855,7 @@ function initSupporterPhotoCreator() {
   const previewCanvas = qs('#supporter-wizard-preview');
   const editorCanvas = qs('#supporter-wizard-editor');
   const finalCanvas = qs('#supporter-wizard-final');
-  const finalCanvasStep5 = qs('#supporter-wizard-final-step5');
+  const finalCanvasStep6 = qs('#supporter-wizard-final-step6');
   const previewFrame = qs('[data-wizard-preview-frame]');
   const editorFrame = qs('[data-wizard-editor-frame]');
   const finalFrame = qs('[data-wizard-final-frame]');
@@ -869,22 +869,24 @@ function initSupporterPhotoCreator() {
   const saveStatus = qs('#supporter-wizard-save-status');
   const desktopShareButtons = qsa('[data-desktop-share]');
   const desktopShareStatus = qs('#supporter-wizard-share-status');
-  const copyCaptionButton = qs('#supporter-wizard-copy-caption');
   const mobileSaveButton = qs('#supporter-wizard-mobile-save');
   const mobileSaveStatus = qs('#supporter-wizard-mobile-save-status');
   const mobileShareButtons = qsa('[data-mobile-share]');
   const mobileShareStatus = qs('#supporter-wizard-mobile-share-status');
-  const mobileCopyCaptionButton = qs('#supporter-wizard-mobile-copy-caption');
-  const mobileCaptionLabel = qs('[data-mobile-caption-label]');
   const profileSaveStep = qs('.supporter-wizard__profile-save-step');
   const profileNetworksStep = qs('.supporter-wizard__profile-networks-step');
   const desktopSaveStep = qs('.supporter-wizard__desktop-save-step');
   const mobileSaveStep = qs('.supporter-wizard__mobile-save-step');
   const desktopShareStep = qs('.supporter-wizard__desktop-share-step');
   const mobileShareStep = qs('.supporter-wizard__mobile-share-step');
-  const step5Kicker = qs('[data-step5-kicker]');
-  const step5Title = qs('[data-step5-title]');
-  const step5Description = qs('[data-step5-description]');
+  const step6Kicker = qs('[data-step6-kicker]');
+  const step6Title = qs('[data-step6-title]');
+  const step6Description = qs('[data-step6-description]');
+  const captionCopyContinueButton = qs('#supporter-wizard-caption-copy-continue');
+  const captionSkipButton = qs('#supporter-wizard-caption-skip');
+  const captionChoiceStatus = qs('#supporter-wizard-caption-status');
+  const copyCaptionStep6Button = qs('#supporter-wizard-copy-caption-step6');
+  const copyCaptionStep6MobileButton = qs('#supporter-wizard-copy-caption-step6-mobile');
   const profileSaveButton = qs('#supporter-wizard-profile-save');
   const profileSaveStatus = qs('#supporter-wizard-profile-save-status');
   const profileNetworkButtons = qsa('[data-profile-network]');
@@ -908,6 +910,7 @@ function initSupporterPhotoCreator() {
   let objectUrl = '';
   let loaded = false;
   let selectedFormat = '';
+  let captionChoice = null;
   let baseScale = 1;
   let zoomFactor = 1;
   let offsetX = 0;
@@ -979,7 +982,7 @@ function initSupporterPhotoCreator() {
       drawCampaignArt();
     }
 
-    [previewCanvas, finalCanvas, finalCanvasStep5].filter(Boolean).forEach(canvas => {
+    [previewCanvas, finalCanvas, finalCanvasStep6].filter(Boolean).forEach(canvas => {
       const c = canvas.getContext('2d');
       c.clearRect(0, 0, canvas.width, canvas.height);
       c.drawImage(editorCanvas, 0, 0);
@@ -1000,24 +1003,51 @@ function initSupporterPhotoCreator() {
     render();
   };
 
+  const fitActiveStepToViewport = () => {
+    const body = qs('.supporter-wizard__body');
+    const active = stepPanels.find(panel => Number(panel.dataset.wizardStep) === step);
+    if (!body || !active) return;
+
+    active.style.transform = '';
+    active.style.transformOrigin = '';
+    active.style.width = '';
+    active.style.marginInline = '';
+
+    requestAnimationFrame(() => {
+      const available = body.clientHeight;
+      const needed = active.scrollHeight;
+
+      if (!available || needed <= available) return;
+
+      const minScale = window.matchMedia('(max-width: 820px)').matches ? 0.68 : 0.76;
+      const scale = Math.max(minScale, Math.min(1, available / needed));
+
+      active.style.transformOrigin = 'top center';
+      active.style.transform = `scale(${scale})`;
+      active.style.width = `${100 / scale}%`;
+      active.style.marginInline = `${-(100 / scale - 100) / 2}%`;
+    });
+  };
+
   const updateNavigation = () => {
     stepPanels.forEach(panel => {
       panel.classList.toggle('is-active', Number(panel.dataset.wizardStep) === step);
     });
 
-    const pct = ((step - 1) / 4) * 100;
+    const pct = ((step - 1) / 5) * 100;
     if (progressFill) progressFill.style.width = `${pct}%`;
-    if (progressText) progressText.textContent = `Passo ${step} de 5`;
+    if (progressText) progressText.textContent = `Passo ${step} de 6`;
     if (backButton) backButton.hidden = step === 1;
-    if (nextButton) nextButton.hidden = step === 5;
+    if (nextButton) nextButton.hidden = step === 6;
 
     if (nextButton) {
       nextButton.disabled =
         (step === 1 && !loaded) ||
-        (step === 2 && !selectedFormat);
+        (step === 2 && !selectedFormat) ||
+        (step === 5 && !captionChoice);
     }
 
-    if (step >= 2 && step <= 5) render();
+    if (step >= 2 && step <= 6) render();
 
     const isProfileMode = selectedFormat === 'profile';
     document.querySelector('#supporter-photo-wizard')?.classList.toggle('is-profile-mode', isProfileMode);
@@ -1029,20 +1059,21 @@ function initSupporterPhotoCreator() {
     if (desktopShareStep) desktopShareStep.hidden = isProfileMode;
     if (mobileShareStep) mobileShareStep.hidden = isProfileMode;
 
-    if (step5Kicker) step5Kicker.textContent = isProfileMode ? 'Próximo passo' : 'Compartilhar';
-    if (step5Title) step5Title.textContent = isProfileMode ? 'Agora é só colocar sua nova foto no perfil' : 'Compartilhe seu apoio';
-    if (step5Description) {
-      step5Description.textContent = isProfileMode
+    if (step6Kicker) step6Kicker.textContent = isProfileMode ? 'Próximo passo' : 'Compartilhar';
+    if (step6Title) step6Title.textContent = isProfileMode ? 'Agora é só colocar sua nova foto no perfil' : 'Compartilhe seu apoio';
+    if (step6Description) {
+      step6Description.textContent = isProfileMode
         ? 'Acesse uma das redes sociais abaixo e substitua sua foto atual pela imagem que você acabou de criar.'
         : 'Agora escolha onde deseja publicar a imagem que você criou.';
     }
 
     const active = stepPanels.find(panel => Number(panel.dataset.wizardStep) === step);
+    fitActiveStepToViewport();
     active?.querySelector('button:not([disabled]), input:not([disabled]), [tabindex="0"]')?.focus({ preventScroll: true });
   };
 
   const goToStep = newStep => {
-    step = clamp(newStep, 1, 5);
+    step = clamp(newStep, 1, 6);
     updateNavigation();
   };
 
@@ -1052,6 +1083,7 @@ function initSupporterPhotoCreator() {
     wizard.setAttribute('aria-hidden', 'false');
     document.body.classList.add('supporter-wizard-open');
     step = 1;
+    captionChoice = null;
     if (status) status.textContent = '';
     updateNavigation();
   };
@@ -1166,7 +1198,7 @@ function initSupporterPhotoCreator() {
 
   let desktopImageSaved = false;
 
-  const captionText = `Crie você também a sua imagem de apoio a Fabiano Trompetista 13007:
+  const captionText = `Crie também a sua foto de apoio a Fabiano Trompetista 13007:
 https://trompetista13007.com.br/#foto-apoiador
 
 Eu apoio Fabiano Trompetista para Deputado Distrital — 13007.
@@ -1654,6 +1686,7 @@ Coragem para mudar o DF.`;
     else if (step === 2 && selectedFormat) goToStep(3);
     else if (step === 3) goToStep(4);
     else if (step === 4) goToStep(5);
+    else if (step === 5 && captionChoice) goToStep(6);
   });
 
   backButton?.addEventListener('click', () => goToStep(step - 1));
@@ -1669,7 +1702,6 @@ Coragem para mudar o DF.`;
   resetButton?.addEventListener('click', resetView);
   shareButton?.addEventListener('click', shareOrSave);
   saveButton?.addEventListener('click', saveImageDesktop);
-  copyCaptionButton?.addEventListener('click', copyCaption);
   desktopShareButtons.forEach(button => {
     button.addEventListener('click', () => openDesktopNetwork(button.dataset.desktopShare));
   });
@@ -1689,24 +1721,53 @@ Coragem para mudar o DF.`;
     button.addEventListener('click', () => openProfileNetwork(button.dataset.profileNetwork));
   });
 
-  mobileCopyCaptionButton?.addEventListener('click', async () => {
+  copyCaptionStep6Button?.addEventListener('click', async () => {
+    const copied = await copyCaption();
+    if (desktopShareStatus) {
+      desktopShareStatus.textContent = copied
+        ? '✓ Legenda copiada para a área de transferência.'
+        : 'Não foi possível copiar a legenda automaticamente.';
+    }
+  });
+
+  copyCaptionStep6MobileButton?.addEventListener('click', async () => {
+    const copied = await copyCaption();
+    if (mobileShareStatus) {
+      mobileShareStatus.textContent = copied
+        ? '✓ Legenda copiada para a área de transferência.'
+        : 'Não foi possível copiar a legenda automaticamente.';
+    }
+  });
+
+  captionCopyContinueButton?.addEventListener('click', async () => {
     const copied = await copyCaption();
 
     if (copied) {
-      if (mobileCaptionLabel) mobileCaptionLabel.textContent = '✓ LEGENDA COPIADA';
-      mobileCopyCaptionButton.classList.add('is-copied');
+      captionChoice = 'copied';
+      captionCopyContinueButton.classList.add('is-selected');
+      captionSkipButton?.classList.remove('is-selected');
 
-      if (mobileShareStatus) {
-        mobileShareStatus.textContent = 'Agora é só colar a legenda na sua publicação.';
+      if (captionChoiceStatus) {
+        captionChoiceStatus.textContent = '✓ Legenda copiada. Agora clique em AVANÇAR.';
       }
-
-      window.setTimeout(() => {
-        if (mobileCaptionLabel) mobileCaptionLabel.textContent = 'COPIAR LEGENDA';
-        mobileCopyCaptionButton.classList.remove('is-copied');
-      }, 3500);
-    } else if (mobileShareStatus) {
-      mobileShareStatus.textContent = 'Não foi possível copiar a legenda automaticamente.';
+    } else if (captionChoiceStatus) {
+      captionChoiceStatus.textContent =
+        'Não foi possível copiar automaticamente. Você pode tentar novamente ou escolher criar sua própria legenda.';
     }
+
+    updateNavigation();
+  });
+
+  captionSkipButton?.addEventListener('click', () => {
+    captionChoice = 'own';
+    captionSkipButton.classList.add('is-selected');
+    captionCopyContinueButton?.classList.remove('is-selected');
+
+    if (captionChoiceStatus) {
+      captionChoiceStatus.textContent = 'Você escolheu criar sua própria legenda. Agora clique em AVANÇAR.';
+    }
+
+    updateNavigation();
   });
 
   editorFrame?.addEventListener('pointerdown', event => {
@@ -1747,6 +1808,15 @@ Coragem para mudar o DF.`;
   editorFrame?.addEventListener('lostpointercapture', endDrag);
 
   campaignArt.onload = render;
+
+  window.addEventListener('resize', () => {
+    window.clearTimeout(window.__supporterWizardFitTimer);
+    window.__supporterWizardFitTimer = window.setTimeout(fitActiveStepToViewport, 80);
+  });
+
+  window.addEventListener('orientationchange', () => {
+    window.setTimeout(fitActiveStepToViewport, 180);
+  });
 
   window.addEventListener('beforeunload', () => {
     if (objectUrl) URL.revokeObjectURL(objectUrl);
