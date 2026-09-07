@@ -655,13 +655,6 @@ function initDynamicAgenda(){
     !endpoint.includes('COLE_AQUI') &&
     /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec(?:\?.*)?$/.test(endpoint);
 
-  if(!configured){
-    if(status){
-      status.innerHTML = '<i class="fa-solid fa-circle-info" aria-hidden="true"></i> Agenda exibida a partir da versão publicada no site. Configure a integração com o Google Sheets para atualização automática.';
-    }
-    return;
-  }
-
   const create = (tag, className, text) => {
     const element = document.createElement(tag);
     if(className) element.className = className;
@@ -680,6 +673,120 @@ function initDynamicAgenda(){
     if(!text) return;
     if(paragraph.childNodes.length) paragraph.append(document.createTextNode('  '));
     paragraph.append(icon(iconClass), document.createTextNode(` ${text}`));
+  };
+
+  const monthMap = {
+    JAN:0, FEV:1, MAR:2, ABR:3, MAI:4, JUN:5,
+    JUL:6, AGO:7, SET:8, OUT:9, NOV:10, DEZ:11
+  };
+
+  const asBooleanFixed = value => {
+    if(value === true) return true;
+    if(value === false || value === null || value === undefined) return false;
+    const text = String(value).trim().toLowerCase();
+    return ['true','1','sim','s','yes','agenda fixa','fixa'].includes(text);
+  };
+
+  const normalizeAgendaDate = item => {
+    const value = item?.data;
+
+    if(value){
+      const text = String(value).trim();
+
+      let m = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if(m){
+        const date = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12, 0, 0, 0);
+        if(!Number.isNaN(date.getTime())) return date;
+      }
+
+      m = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if(m){
+        const date = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]), 12, 0, 0, 0);
+        if(!Number.isNaN(date.getTime())) return date;
+      }
+
+      const parsed = new Date(text);
+      if(!Number.isNaN(parsed.getTime())){
+        return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 12, 0, 0, 0);
+      }
+    }
+
+    // Compatibilidade com versões antigas da API que enviavam apenas dia/mes.
+    const day = Number(item?.dia);
+    const monthText = String(item?.mes || '').trim().toUpperCase();
+    const month = monthMap[monthText];
+
+    if(Number.isInteger(day) && day >= 1 && day <= 31 && Number.isInteger(month)){
+      const explicitYear = Number(item?.ano);
+      const year = Number.isInteger(explicitYear) && explicitYear >= 2000
+        ? explicitYear
+        : new Date().getFullYear();
+
+      const inferred = new Date(year, month, day, 12, 0, 0, 0);
+      if(!Number.isNaN(inferred.getTime())) return inferred;
+    }
+
+    return null;
+  };
+
+  const normalizeTime = value => {
+    if(value === null || value === undefined) return '';
+    const text = String(value).trim();
+    if(!text) return '';
+
+    // Já está em um formato amigável.
+    if(/^\d{1,2}:\d{2}(?:h)?$/i.test(text)) return text.replace(/h$/i,'');
+    if(/^(manhã|tarde|noite)$/i.test(text)) return text;
+
+    // Horários do Google Sheets às vezes chegam como Date ancorado em 1899.
+    const dateLike = new Date(text);
+    if(!Number.isNaN(dateLike.getTime())){
+      const hh = String(dateLike.getHours()).padStart(2,'0');
+      const mm = String(dateLike.getMinutes()).padStart(2,'0');
+      return `${hh}:${mm}`;
+    }
+
+    return text;
+  };
+
+  const startOfToday = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+  };
+
+  const normalizeItem = item => {
+    const fixa = asBooleanFixed(item?.fixa) ||
+      String(item?.tipo || '').trim().toLowerCase() === 'agenda fixa';
+
+    return {
+      ...item,
+      fixa,
+      horario: normalizeTime(item?.horario),
+      __date: fixa ? null : normalizeAgendaDate(item)
+    };
+  };
+
+  const prepareItems = rawItems => {
+    const today = startOfToday();
+
+    return (Array.isArray(rawItems) ? rawItems : [])
+      .map(normalizeItem)
+      .filter(item => {
+        if(item.fixa) return true;
+        if(!item.__date) return false;
+        const eventDay = new Date(
+          item.__date.getFullYear(),
+          item.__date.getMonth(),
+          item.__date.getDate(),
+          0,0,0,0
+        );
+        return eventDay >= today;
+      })
+      .sort((a,b) => {
+        if(a.fixa !== b.fixa) return a.fixa ? 1 : -1;
+        if(a.fixa && b.fixa) return 0;
+        return (a.__date?.getTime() || 0) - (b.__date?.getTime() || 0);
+      });
   };
 
   const renderItem = item => {
@@ -731,10 +838,11 @@ function initDynamicAgenda(){
   };
 
   const render = payload => {
-    const items = Array.isArray(payload?.itens) ? payload.itens : [];
+    const items = prepareItems(payload?.itens);
+
+    list.replaceChildren();
 
     if(!items.length){
-      list.replaceChildren();
       const empty = create('div', 'agenda__empty');
       empty.append(
         icon('fa-regular fa-calendar'),
@@ -745,7 +853,7 @@ function initDynamicAgenda(){
     }else{
       const fragment = document.createDocumentFragment();
       items.forEach(item => fragment.append(renderItem(item)));
-      list.replaceChildren(fragment);
+      list.append(fragment);
     }
 
     if(status){
@@ -754,23 +862,32 @@ function initDynamicAgenda(){
         : '';
       status.innerHTML = `<i class="fa-solid fa-circle-check" aria-hidden="true"></i> Agenda sincronizada automaticamente com a equipe da campanha.${updated}`;
       status.classList.add('is-synced');
+      status.classList.remove('is-fallback');
     }
 
     try{
-      localStorage.setItem('fabiano13007_agenda_cache', JSON.stringify({
+      localStorage.setItem('fabiano13007_agenda_cache_v5', JSON.stringify({
         savedAt: Date.now(),
         payload
       }));
     }catch(_){}
   };
 
+  if(!configured){
+    // Sem API: mantém apenas o fallback fixo existente no HTML.
+    if(status){
+      status.innerHTML = '<i class="fa-solid fa-circle-info" aria-hidden="true"></i> Agenda exibida a partir da versão publicada no site.';
+    }
+    return;
+  }
+
   const useCachedFallback = () => {
     try{
-      const cached = JSON.parse(localStorage.getItem('fabiano13007_agenda_cache') || 'null');
+      const cached = JSON.parse(localStorage.getItem('fabiano13007_agenda_cache_v5') || 'null');
       if(cached?.payload?.itens){
         render(cached.payload);
         if(status){
-          status.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Exibindo a última agenda sincronizada. A atualização online será tentada novamente no próximo acesso.';
+          status.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Exibindo a última agenda sincronizada.';
           status.classList.remove('is-synced');
           status.classList.add('is-fallback');
         }
@@ -797,7 +914,7 @@ function initDynamicAgenda(){
 
     if(payload?.ok === false){
       if(!useCachedFallback() && status){
-        status.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Não foi possível atualizar a agenda agora. Mantivemos a programação publicada no site.';
+        status.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Não foi possível atualizar a agenda agora.';
         status.classList.add('is-fallback');
       }
       return;
@@ -809,12 +926,13 @@ function initDynamicAgenda(){
   const separator = endpoint.includes('?') ? '&' : '?';
   script.src = `${endpoint}${separator}callback=${encodeURIComponent(callbackName)}&_=${Date.now()}`;
   script.async = true;
+
   script.onerror = () => {
     if(finished) return;
     finished = true;
     cleanup();
     if(!useCachedFallback() && status){
-      status.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Não foi possível sincronizar a agenda agora. Mantivemos a programação publicada no site.';
+      status.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Não foi possível sincronizar a agenda agora.';
       status.classList.add('is-fallback');
     }
   };
@@ -824,15 +942,13 @@ function initDynamicAgenda(){
     finished = true;
     cleanup();
     if(!useCachedFallback() && status){
-      status.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> A sincronização demorou além do esperado. Mantivemos a programação publicada no site.';
+      status.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> A sincronização demorou além do esperado.';
       status.classList.add('is-fallback');
     }
   }, 10000);
 
   document.head.append(script);
 }
-
-
 
 
 // ===== foto-apoiador.js =====
@@ -1831,7 +1947,10 @@ Coragem para mudar o DF.`;
   editorFrame?.addEventListener('pointercancel', endDrag);
   editorFrame?.addEventListener('lostpointercapture', endDrag);
 
-  campaignArt.onload = render;
+  // As três artes atuais já possuem listeners individuais de load.
+  // Não usar a antiga variável campaignArt: ela não existe mais e interrompia initApp(),
+  // impedindo a inicialização dos carrosséis que vêm depois.
+
 
   window.addEventListener('resize', () => {
     window.clearTimeout(window.__supporterWizardFitTimer);

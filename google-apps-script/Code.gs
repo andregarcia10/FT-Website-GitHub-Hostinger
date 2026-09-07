@@ -119,7 +119,7 @@ function criarEstruturaAgendaFabiano() {
   instrucoes.getRange('A1:A8').setWrap(true);
 
   props.setProperty(AGENDA_CONFIG.propriedadePlanilhaId, ss.getId());
-  CacheService.getScriptCache().remove('agenda_publica_json');
+  CacheService.getScriptCache().remove('agenda_publica_json_v5');
 
   Logger.log('Pasta criada: ' + AGENDA_CONFIG.pastaNome);
   Logger.log('Planilha: ' + ss.getUrl());
@@ -148,7 +148,7 @@ function doGet(e) {
 
 function obterAgendaPublica_() {
   const cache = CacheService.getScriptCache();
-  const cacheKey = 'agenda_publica_json';
+  const cacheKey = 'agenda_publica_json_v5';
   const emCache = cache.get(cacheKey);
 
   if (emCache) {
@@ -189,12 +189,12 @@ function obterAgendaPublica_() {
     }
   });
 
-  const hoje = inicioDoDia_(new Date());
+  const hoje = hojeNoFuso_();
 
   const itens = valores.slice(1)
     .map((linha, posicao) => mapearLinha_(linha, idx, posicao))
     .filter(item => item)
-    .filter(item => item.fixa || !item.dataObj || item.dataObj >= hoje)
+    .filter(item => item.fixa || (item.dataObj && item.dataObj >= hoje))
     .sort(ordenarItens_)
     .map(({ dataObj, ordemOriginal, ...publico }) => publico);
 
@@ -233,8 +233,9 @@ function mapearLinha_(linha, idx, posicao) {
     data,
     dia,
     mes,
-    diaSemana: normalizarTexto_(linha[idx['Dia da semana']]),
-    horario: normalizarTexto_(linha[idx['Horário']]),
+    ano: dataObj ? Number(Utilities.formatDate(dataObj, AGENDA_CONFIG.timezone, 'yyyy')) : '',
+    diaSemana: normalizarTexto_(linha[idx['Dia da semana']]) || (dataObj ? diaSemanaPt_(dataObj) : ''),
+    horario: formatarHorario_(linha[idx['Horário']]),
     evento,
     local: normalizarTexto_(linha[idx['Local']]),
     fixa,
@@ -276,6 +277,33 @@ function normalizarData_(valor) {
   }
 
   return null;
+}
+
+
+function hojeNoFuso_() {
+  const texto = Utilities.formatDate(new Date(), AGENDA_CONFIG.timezone, 'yyyy-MM-dd');
+  const partes = texto.split('-').map(Number);
+  return new Date(partes[0], partes[1] - 1, partes[2], 0, 0, 0, 0);
+}
+
+function formatarHorario_(valor) {
+  if (valor === null || valor === undefined || valor === '') return '';
+
+  if (Object.prototype.toString.call(valor) === '[object Date]' && !isNaN(valor.getTime())) {
+    return Utilities.formatDate(valor, AGENDA_CONFIG.timezone, 'HH:mm');
+  }
+
+  const texto = String(valor).trim();
+  if (!texto) return '';
+
+  // Preserva expressões como "Manhã", "Tarde" e horários já prontos.
+  if (/^\d{1,2}:\d{2}(?:h)?$/i.test(texto)) return texto.replace(/h$/i, '');
+  return texto;
+}
+
+function diaSemanaPt_(data) {
+  const numero = Number(Utilities.formatDate(data, AGENDA_CONFIG.timezone, 'u'));
+  return ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo'][numero - 1] || '';
 }
 
 function inicioDoDia_(data) {
@@ -321,6 +349,6 @@ function responder_(payload, callback) {
  * após editar a planilha, sem aguardar os até 5 minutos de cache.
  */
 function limparCacheAgenda() {
-  CacheService.getScriptCache().remove('agenda_publica_json');
+  CacheService.getScriptCache().remove('agenda_publica_json_v5');
   Logger.log('Cache da agenda limpo.');
 }

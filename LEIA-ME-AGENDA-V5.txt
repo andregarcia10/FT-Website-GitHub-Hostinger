@@ -1,0 +1,40 @@
+AGENDA — CORREÇÃO V5
+
+Esta versão corrige os dois problemas observados:
+1) compromissos passados permanecendo na agenda;
+2) horários aparecendo como "Sat Dec 30 1899 ...".
+
+ARQUIVOS PRINCIPAIS DO SITE
+- index.html
+- script-v5.js
+- style-v1.css
+
+O QUE FOI CORRIGIDO NO SITE
+- script-v5.js filtra novamente os eventos recebidos pela API;
+- se a API antiga não enviar o campo data corretamente, o script usa dia + mês para inferir a data do ano atual;
+- eventos anteriores ao dia atual são removidos;
+- agendas fixas continuam visíveis;
+- horários recebidos como objetos Date/strings de 1899 são convertidos para HH:mm;
+- cache local passou para fabiano13007_agenda_cache_v5;
+- o HTML não contém eventos datados antigos como fallback.
+
+O QUE FOI CORRIGIDO NO GOOGLE APPS SCRIPT
+- eventos sem data válida NÃO passam mais como eventos comuns;
+- filtro agora exige: agenda fixa OU data válida >= hoje;
+- data de hoje é calculada no fuso America/Sao_Paulo;
+- horários do Google Sheets que chegam como Date são formatados como HH:mm;
+- payload inclui o ano;
+- chave de cache mudou para agenda_publica_json_v5.
+
+PUBLICAÇÃO NO GOOGLE APPS SCRIPT
+1. Substitua o Code.gs pelo arquivo desta pasta.
+2. Salve.
+3. Execute manualmente limparCacheAgenda() uma vez.
+4. Vá em Implantar > Gerenciar implantações.
+5. Edite a implantação do Web App e selecione NOVA VERSÃO.
+6. Clique em Implantar.
+7. Mantenha a mesma URL /exec no index.html se a implantação for atualizada, não recriada.
+
+IMPORTANTE
+Somente trocar o arquivo Code.gs no editor sem publicar uma NOVA VERSÃO do Web App não altera
+a resposta da URL /exec que o site usa.
