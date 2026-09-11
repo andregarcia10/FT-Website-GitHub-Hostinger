@@ -372,7 +372,6 @@ function initWhatsappFloatText(){
 function initVoterNote() {
   const form = qs('#voter-note-form');
   const printButtons = qsa('#voter-note-print, #voter-note-print-bottom');
-  const clearButton = qs('#voter-note-clear');
   const downloadButton = qs('#voter-note-download');
   const whatsappButtons = qsa('#voter-note-whatsapp, #voter-note-whatsapp-bottom');
   const shareStatus = qs('#voter-note-share-status');
@@ -509,12 +508,6 @@ function initVoterNote() {
     input.addEventListener('input', () => {
       input.value = input.value.replace(/\D/g, '').slice(0, Number(input.maxLength) || undefined);
     });
-  });
-
-  clearButton?.addEventListener('click', () => {
-    qsa('input:not([readonly])', form).forEach(input => { input.value = ''; });
-    qs('input:not([readonly])', form)?.focus();
-    if(shareStatus) shareStatus.textContent = '';
   });
 
   printButtons.forEach(button => {
