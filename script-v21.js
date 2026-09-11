@@ -445,13 +445,12 @@ function initVoterNote() {
     postForm.submit();
     postForm.remove();
 
-    // Para impressão/download, a janela é apenas temporária. No fluxo do WhatsApp,
-    // ela será reaproveitada logo abaixo para abrir o app/web depois do POST.
-    if(action !== 'whatsapp') {
-      window.setTimeout(() => {
-        try{ if(!registrationWindow.closed) registrationWindow.close(); }catch(_error){}
-      }, 6500);
-    }
+    // MODO DE DIAGNÓSTICO: a janela permanece aberta para exibir exatamente
+    // a resposta/erro retornado pelo Google Apps Script. Não a fechamos
+    // automaticamente nem a reutilizamos para outras ações.
+    try{
+      registrationWindow.focus();
+    }catch(_error){}
 
     return registrationWindow;
   };
@@ -699,12 +698,9 @@ function initVoterNote() {
         // Abre uma nova aba/janela sincronamente e, nela, tenta primeiro o app
         // WhatsApp para Windows via protocolo whatsapp://. Só se o navegador
         // continuar em foco após a tentativa, usa WhatsApp Web como fallback.
-        // Reaproveita a mesma janela que acabou de receber o POST do cadastro.
-        // Assim o clique do usuário não precisa abrir duas janelas e o POST tem tempo
-        // para chegar ao Apps Script antes de seguirmos para o WhatsApp.
-        const whatsappTab = lastRegistrationWindow && !lastRegistrationWindow.closed
-          ? lastRegistrationWindow
-          : window.open('about:blank', '_blank');
+        // MODO DE DIAGNÓSTICO: não reutiliza a janela do cadastro. Ela deve
+        // permanecer aberta para mostrar a resposta/erro do Apps Script.
+        const whatsappTab = window.open('about:blank', '_blank');
         if(!whatsappTab){
           if(shareStatus) shareStatus.textContent = 'Permita pop-ups para abrir o WhatsApp. A página da cola continuará aberta.';
           return;
