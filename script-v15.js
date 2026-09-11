@@ -373,7 +373,129 @@ function initVoterNote() {
   const form = qs('#voter-note-form');
   const printButtons = qsa('#voter-note-print, #voter-note-print-bottom');
   const clearButton = qs('#voter-note-clear');
+  const downloadButton = qs('#voter-note-download');
+  const whatsappButtons = qsa('#voter-note-whatsapp, #voter-note-whatsapp-bottom');
+  const shareStatus = qs('#voter-note-share-status');
+  const identityError = qs('#voter-note-identity-error');
+  const identityFields = {
+    name: qs('#voter-note-full-name'),
+    email: qs('#voter-note-email'),
+    phone: qs('#voter-note-phone'),
+    consent: qs('#voter-note-lgpd')
+  };
+  const registrationEndpoint = (document.querySelector('meta[name="voter-note-registration-endpoint"]')?.content || '').trim();
+  const consentVersion = 'cola-lgpd-v2-2026-09-11';
+  const registrationOrigin = 'site-cola-eleitoral';
   if (!form) return;
+
+  const setIdentityMessage = (message, isError = false) => {
+    if(identityError){
+      identityError.textContent = message || '';
+      identityError.classList.toggle('is-success', !!message && !isError);
+    }
+  };
+
+  const endpointIsConfigured = () => /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec(?:\?.*)?$/.test(registrationEndpoint);
+
+  // Envia o cadastro ao Apps Script sem aguardar uma resposta dentro do iframe.
+  // O Apps Script pode ser executado em um iframe sandbox do Google, e o postMessage
+  // de confirmação nem sempre chega à página principal. O envio do formulário em si
+  // é suficiente para disparar o doPost e gravar os dados na planilha.
+  const registerIdentity = action => {
+    if(!endpointIsConfigured()) throw new Error('endpoint_nao_configurado');
+
+    const token = `cola_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
+    const iframeName = `cola_registration_${token}`;
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.hidden = true;
+    iframe.setAttribute('aria-hidden', 'true');
+
+    const postForm = document.createElement('form');
+    postForm.method = 'POST';
+    postForm.action = registrationEndpoint;
+    postForm.target = iframeName;
+    postForm.hidden = true;
+
+    const payload = {
+      nome: (identityFields.name?.value || '').trim(),
+      email: (identityFields.email?.value || '').trim(),
+      telefone: (identityFields.phone?.value || '').trim(),
+      consentimento: 'true',
+      versaoConsentimento: consentVersion,
+      origem: registrationOrigin,
+      acao: action,
+      token,
+      website: ''
+    };
+
+    Object.entries(payload).forEach(([name, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = String(value);
+      postForm.appendChild(input);
+    });
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(postForm);
+    postForm.submit();
+
+    // Mantém iframe/form vivos tempo suficiente para o navegador concluir o POST.
+    window.setTimeout(() => {
+      postForm.remove();
+      iframe.remove();
+    }, 15000);
+
+    return true;
+  };
+
+  const authorizeAction = action => {
+    if(!validateIdentity()) return false;
+    setIdentityMessage('');
+    try{
+      registerIdentity(action);
+      return true;
+    }catch(error){
+      const message = error?.message === 'endpoint_nao_configurado'
+        ? 'O cadastro ainda não está conectado ao Google Sheets. Tente novamente em alguns instantes.'
+        : 'Não foi possível iniciar o registro dos seus dados. Tente novamente.';
+      setIdentityMessage(message, true);
+      window.alert(message);
+      return false;
+    }
+  };
+
+  const validateIdentity = () => {
+    const name = (identityFields.name?.value || '').trim();
+    const email = (identityFields.email?.value || '').trim();
+    const phone = (identityFields.phone?.value || '').trim();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const phoneDigits = phone.replace(/\D/g, '');
+    let message = '';
+    if(name.split(/\s+/).filter(Boolean).length < 2) message = 'Informe seu nome completo.';
+    else if(!emailOk) message = 'Informe um e-mail válido.';
+    else if(phoneDigits.length < 10 || phoneDigits.length > 13) message = 'Informe um telefone válido com DDD.';
+    else if(!identityFields.consent?.checked) message = 'Marque a autorização de tratamento de dados para continuar.';
+    setIdentityMessage('');
+    if(message){
+      window.alert('Para continuar, preencha também seus dados de identificação (nome completo, e-mail e telefone) e marque a autorização LGPD.');
+      const target = !name || name.split(/\s+/).filter(Boolean).length < 2 ? identityFields.name : !emailOk ? identityFields.email : (phoneDigits.length < 10 || phoneDigits.length > 13) ? identityFields.phone : identityFields.consent;
+      target?.focus();
+      target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+    return true;
+  };
+
+  identityFields.phone?.addEventListener('input', () => {
+    const digits = identityFields.phone.value.replace(/\D/g, '').slice(0, 11);
+    let value = digits;
+    if(digits.length > 2) value = `(${digits.slice(0,2)}) ${digits.slice(2)}`;
+    if(digits.length > 7) value = `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7)}`;
+    identityFields.phone.value = value;
+  });
+  [identityFields.name, identityFields.email, identityFields.phone, identityFields.consent].forEach(field => field?.addEventListener('input', () => { setIdentityMessage(''); }));
 
   qsa('input[inputmode="numeric"]', form).forEach(input => {
     input.addEventListener('input', () => {
@@ -384,11 +506,243 @@ function initVoterNote() {
   clearButton?.addEventListener('click', () => {
     qsa('input:not([readonly])', form).forEach(input => { input.value = ''; });
     qs('input:not([readonly])', form)?.focus();
+    if(shareStatus) shareStatus.textContent = '';
   });
 
   printButtons.forEach(button => {
-    button.addEventListener('click', () => window.print());
+    button.addEventListener('click', () => { if(authorizeAction('imprimir')) window.print(); });
   });
+
+  const rows = [
+    ['Deputado Federal', 'cola-dep-federal-nome', 'cola-dep-federal-numero'],
+    ['Deputado Distrital', 'cola-dep-distrital-nome', 'cola-dep-distrital-numero'],
+    ['Senador — 1ª vaga', 'cola-senador1-nome', 'cola-senador1-numero'],
+    ['Senador — 2ª vaga', 'cola-senador2-nome', 'cola-senador2-numero'],
+    ['Governador', 'cola-governador-nome', 'cola-governador-numero'],
+    ['Presidente da República', 'cola-presidente-nome', 'cola-presidente-numero']
+  ];
+
+  const getValue = id => (qs(`#${id}`)?.value || '').trim();
+
+  const roundedRect = (ctx, x, y, w, h, r) => {
+    const radius = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+  };
+
+  const buildVoterNoteBlob = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080;
+    canvas.height = 1350;
+    const ctx = canvas.getContext('2d');
+    if(!ctx) throw new Error('Canvas indisponível');
+
+    // Fundo e cabeçalho
+    ctx.fillStyle = '#f7f2ef';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#531414';
+    ctx.fillRect(0, 0, canvas.width, 240);
+    ctx.fillStyle = '#dc1413';
+    ctx.fillRect(0, 220, canvas.width, 20);
+
+    ctx.fillStyle = '#f4e3c8';
+    ctx.font = '900 70px Saira, Arial, sans-serif';
+    ctx.fillText('MINHA COLA ELEITORAL', 70, 105);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 31px Saira, Arial, sans-serif';
+    ctx.fillText('Fabiano Trompetista • Deputado Distrital 13007', 72, 162);
+    ctx.fillStyle = '#ffa640';
+    ctx.font = '800 25px Saira, Arial, sans-serif';
+    ctx.fillText('CORAGEM PARA MUDAR O DF', 72, 205);
+
+    const top = 285;
+    const rowH = 145;
+    rows.forEach((row, index) => {
+      const [office, nameId, numberId] = row;
+      const name = getValue(nameId) || '—';
+      const number = getValue(numberId) || '—';
+      const y = top + index * rowH;
+      const featured = office === 'Deputado Distrital' || office === 'Presidente da República';
+
+      ctx.fillStyle = featured ? '#fff4e5' : '#ffffff';
+      roundedRect(ctx, 65, y, 950, 118, 22);
+      ctx.fill();
+      ctx.lineWidth = featured ? 4 : 2;
+      ctx.strokeStyle = featured ? '#dc1413' : '#ded4ce';
+      ctx.stroke();
+
+      ctx.fillStyle = '#dc1413';
+      roundedRect(ctx, 88, y + 25, 66, 66, 18);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 34px Saira, Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(index + 1), 121, y + 58);
+
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = '#531414';
+      ctx.font = '800 23px Saira, Arial, sans-serif';
+      ctx.fillText(office.toUpperCase(), 185, y + 40);
+
+      ctx.fillStyle = '#1b0e0d';
+      ctx.font = '700 30px Saira, Arial, sans-serif';
+      let displayName = name;
+      while(ctx.measureText(displayName).width > 580 && displayName.length > 8){
+        displayName = displayName.slice(0, -1);
+      }
+      if(displayName !== name) displayName = displayName.trimEnd() + '…';
+      ctx.fillText(displayName, 185, y + 82);
+
+      ctx.fillStyle = featured ? '#dc1413' : '#531414';
+      ctx.font = '900 43px Saira, Arial, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(number, 970, y + 78);
+      ctx.textAlign = 'left';
+    });
+
+    ctx.fillStyle = '#6f6260';
+    ctx.font = '600 23px Saira, Arial, sans-serif';
+    ctx.fillText('Guarde esta imagem no celular para consultar no dia da votação.', 70, 1220);
+    ctx.fillStyle = '#531414';
+    ctx.font = '900 28px Saira, Arial, sans-serif';
+    ctx.fillText('trompetista13007.com.br', 70, 1272);
+    ctx.fillStyle = '#dc1413';
+    ctx.font = '900 42px Saira, Arial, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('13007', 1000, 1275);
+    ctx.textAlign = 'left';
+
+    // Geração síncrona: mantém a ativação do clique do usuário até navigator.share().
+    // Alguns navegadores cancelavam o compartilhamento porque canvas.toBlob() é assíncrono
+    // e fazia a chamada ao compartilhamento perder a ativação transitória do usuário.
+    const dataUrl = canvas.toDataURL('image/png', 1);
+    const base64 = dataUrl.split(',')[1] || '';
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for(let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: 'image/png' });
+  };
+
+  const createFile = () => {
+    const blob = buildVoterNoteBlob();
+    return new File([blob], 'cola-eleitoral-fabiano-13007.png', { type: 'image/png' });
+  };
+
+  const downloadFile = file => {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.name;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  downloadButton?.addEventListener('click', async () => {
+    if(!authorizeAction('baixar')) return;
+    if(shareStatus) shareStatus.textContent = 'Gerando sua cola eleitoral…';
+    try{
+      const file = createFile();
+      downloadFile(file);
+      if(shareStatus) shareStatus.textContent = 'Cola eleitoral salva como imagem PNG.';
+    }catch(_){
+      if(shareStatus) shareStatus.textContent = 'Não foi possível gerar a imagem agora. Você ainda pode usar “Imprimir cola”.';
+    }
+  });
+
+  whatsappButtons.forEach(button => button.addEventListener('click', () => {
+    if(!authorizeAction('whatsapp')) return;
+    const original = button.innerHTML;
+    button.disabled = true;
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Abrindo WhatsApp…';
+    if(shareStatus) shareStatus.textContent = 'Preparando sua cola e abrindo o WhatsApp…';
+
+    try{
+      // Links do WhatsApp não permitem anexar automaticamente um arquivo local.
+      // Por isso, salvamos a imagem da cola e abrimos diretamente o WhatsApp.
+      const file = createFile();
+      downloadFile(file);
+
+      const text = 'Minha cola eleitoral. Fabiano Trompetista para Deputado Distrital — 13007. A imagem da cola foi salva no aparelho; vou anexá-la nesta conversa.';
+      const encoded = encodeURIComponent(text);
+      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+
+      if(isMobile){
+        // No celular, usa o protocolo do aplicativo na própria aba apenas porque
+        // essa é a navegação esperada do sistema móvel.
+        window.location.href = `whatsapp://send?text=${encoded}`;
+
+        // Se o protocolo não estiver disponível, cai para o link oficial.
+        window.setTimeout(() => {
+          if(document.visibilityState === 'visible'){
+            window.location.href = `https://wa.me/?text=${encoded}`;
+          }
+        }, 1200);
+      }else{
+        // DESKTOP: a página original nunca é redirecionada.
+        // Abre uma nova aba/janela sincronamente e, nela, tenta primeiro o app
+        // WhatsApp para Windows via protocolo whatsapp://. Só se o navegador
+        // continuar em foco após a tentativa, usa WhatsApp Web como fallback.
+        const whatsappTab = window.open('about:blank', '_blank');
+        if(!whatsappTab){
+          if(shareStatus) shareStatus.textContent = 'Permita pop-ups para abrir o WhatsApp. A página da cola continuará aberta.';
+          return;
+        }
+
+        try{
+          whatsappTab.document.title = 'Abrindo WhatsApp…';
+          whatsappTab.document.body.innerHTML = '<p style="font-family:Arial,sans-serif;padding:24px">Tentando abrir o aplicativo WhatsApp…</p>';
+        }catch(_){ }
+
+        let appLikelyOpened = false;
+        const markAppOpened = () => { appLikelyOpened = true; };
+        const onVisibility = () => {
+          if(document.visibilityState === 'hidden') appLikelyOpened = true;
+        };
+
+        window.addEventListener('blur', markAppOpened, { once: true });
+        document.addEventListener('visibilitychange', onVisibility);
+
+        // A tentativa do aplicativo acontece somente na nova aba.
+        whatsappTab.location.href = `whatsapp://send?text=${encoded}`;
+
+        window.setTimeout(() => {
+          document.removeEventListener('visibilitychange', onVisibility);
+
+          if(appLikelyOpened){
+            // O navegador perdeu o foco, forte sinal de que o app foi acionado.
+            // Mantém a página principal intacta e fecha a aba auxiliar se possível.
+            try{ whatsappTab.close(); }catch(_){ }
+            return;
+          }
+
+          // Se o app não abriu, reaproveita a MESMA nova aba para o WhatsApp Web.
+          try{
+            if(!whatsappTab.closed){
+              whatsappTab.location.href = `https://web.whatsapp.com/send?text=${encoded}`;
+            }
+          }catch(_){ }
+        }, 1800);
+      }
+
+      if(shareStatus) shareStatus.textContent = 'A imagem da cola foi baixada. O WhatsApp foi aberto; anexe a imagem salva à conversa.';
+    }catch(error){
+      if(shareStatus) shareStatus.textContent = 'Não foi possível abrir o WhatsApp agora. Use “Baixar cola” e envie a imagem manualmente.';
+    }finally{
+      window.setTimeout(() => {
+        button.disabled = false;
+        button.innerHTML = original;
+      }, 700);
+    }
+  }));
 }
 
 
@@ -2021,6 +2375,69 @@ function initAnchorStabilizer() {
   }
 }
 
+
+// ===== eu-apoio.js =====
+function initSupportHub(){
+  const builder = qs('[data-support-friend-builder]');
+  if(!builder) return;
+
+  const nameInput = qs('#support-friend-name', builder);
+  const themeSelect = qs('#support-friend-theme', builder);
+  const preview = qs('#support-friend-preview', builder);
+  const copyButton = qs('#support-friend-copy', builder);
+  const whatsappLink = qs('#support-friend-whatsapp', builder);
+  const status = qs('#support-friend-status', builder);
+  const siteUrl = 'https://trompetista13007.com.br/';
+
+  const themeText = {
+    geral: 'pela coragem para mudar o Distrito Federal',
+    alimentacao: 'pela proposta dos Supermercados Populares, com comida de qualidade e preço justo',
+    cultura: 'pela defesa da cultura, da música e dos trabalhadores da cultura',
+    educacao: 'pela defesa da educação pública no Distrito Federal',
+    saude: 'pela defesa da saúde pública no Distrito Federal',
+    mobilidade: 'pela mobilidade urbana e pela luta por Tarifa Zero',
+    democracia: 'pela democracia e pela participação popular'
+  };
+
+  const buildMessage = () => {
+    const name = (nameInput?.value || '').trim().split(/\s+/)[0];
+    const reason = themeText[themeSelect?.value] || themeText.geral;
+    const intro = name ? `Eu sou ${name} e apoio Fabiano Trompetista 13007 ${reason}.` : `Eu apoio Fabiano Trompetista 13007 ${reason}.`;
+    return `${intro}\n\nConheça também a trajetória e as lutas de Fabiano para o DF:\n${siteUrl}\n\nCoragem para mudar o DF. É 13007!`;
+  };
+
+  const render = () => {
+    const message = buildMessage();
+    if(preview) preview.textContent = message;
+    if(whatsappLink) whatsappLink.href = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    if(status) status.textContent = '';
+  };
+
+  nameInput?.addEventListener('input', render);
+  themeSelect?.addEventListener('change', render);
+
+  copyButton?.addEventListener('click', async () => {
+    const message = buildMessage();
+    try{
+      await navigator.clipboard.writeText(message);
+      if(status) status.textContent = 'Mensagem copiada. Agora é só enviar para seus amigos.';
+    }catch(_){
+      const textarea = document.createElement('textarea');
+      textarea.value = message;
+      textarea.setAttribute('readonly','');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.append(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      textarea.remove();
+      if(status) status.textContent = 'Mensagem copiada. Agora é só enviar para seus amigos.';
+    }
+  });
+
+  render();
+}
+
 // ===== app.js =====
 function initLazyImages() {
   qsa('img[loading="lazy"]').forEach(image => {
@@ -2045,6 +2462,7 @@ function initApp() {
   initWhatsappFloatText();
   initVoterNote();
   initSupporterPhotoCreator();
+  initSupportHub();
   initMediaAuthenticityNotice();
   initCampaignPhotosCarousel();
   initLulaCarousels();

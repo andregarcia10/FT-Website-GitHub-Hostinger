@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="voter-note-registration-endpoint" content="https://script.google.com/macros/s/AKfycbwWY9CsK1vGiLeCwI4bO-Pkr1oCjqVfmQR34om3BilJFdTl_oVR08EX8WbSJKQlsRIGJw/exec">
   <title>Fabiano Trompetista | 13007</title>
   <meta name="description" content="Conheça a trajetória de Fabiano Trompetista, seus compromissos e formas de participação na campanha para deputado distrital no Distrito Federal.">
   <meta name="theme-color" content="#1B0E0D">
@@ -17,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style-v1.css">
+  <link rel="stylesheet" href="style-v6.css">
   <noscript>
     <style>
       .loader { display: none !important; }
@@ -66,11 +67,11 @@
           <li><a class="navbar__link" href="#agenda">Agenda</a></li>
           <li><a class="navbar__link" href="#fotos-campanha">Campanha</a></li>
           <li><a class="navbar__link" href="#cola-eleitoral">Cola eleitoral</a></li>
-          <li><a class="navbar__link" href="#participar">Participar</a></li>
+          <li><a class="navbar__link navbar__link--support" href="#eu-apoio">EU APOIO</a></li>
         </ul>
 
         <div class="navbar__actions">
-          <a class="button button--small button--primary navbar__cta" href="https://queroapoiar.com.br/fabiano-trompetista" target="_blank" rel="noopener noreferrer">Quero apoiar</a>
+          <a class="button button--small button--primary navbar__cta" href="https://queroapoiar.com.br/fabiano-trompetista" target="_blank" rel="noopener noreferrer">QUERO DOAR</a>
           <button class="navbar__toggle nav-toggle" type="button" aria-controls="primary-menu" aria-expanded="false" aria-label="Abrir menu">
             <span></span><span></span><span></span>
           </button>
@@ -119,7 +120,7 @@
           </h1>
 
           <div class="hero__buttons">
-            <a class="button button--primary" href="https://queroapoiar.com.br/fabiano-trompetista" target="_blank" rel="noopener noreferrer">Quero apoiar</a>
+            <a class="button button--primary" href="https://queroapoiar.com.br/fabiano-trompetista" target="_blank" rel="noopener noreferrer">QUERO DOAR</a>
           </div>
         </div>
       </div>
@@ -635,7 +636,7 @@
             Agenda conectada à equipe da campanha.
           </p>
           <div class="agenda__actions">
-            <a class="button button--ghost" href="#participar">Participar da campanha</a>
+            <a class="button button--ghost" href="#eu-apoio">Participar da campanha</a>
             <a class="button button--flickr agenda__flickr-button"
                href="https://www.flickr.com/photos/204819820@N05/with/55454866266"
                target="_blank"
@@ -753,7 +754,7 @@
         <header class="section-heading reveal">
           <span class="section-heading__label">Cola eleitoral</span>
           <h2 id="voter-note-title">Monte sua cola para o dia da votação</h2>
-          <p>Fabiano Trompetista e Lula já estão preenchidos. Complete os demais cargos com os nomes e números de sua preferência e imprima sua cola.</p>
+          <p>Fabiano Trompetista e Lula já estão preenchidos. Complete os demais cargos com os nomes e números de sua preferência. Depois, imprima, baixe ou compartilhe sua cola pelo WhatsApp.</p>
         </header>
 
         <div class="voter-note__shell reveal">
@@ -764,7 +765,6 @@
             </div>
             <div class="voter-note__actions">
               <button class="button voter-note__button voter-note__button--clear" type="button" id="voter-note-clear"><i class="fa-solid fa-eraser" aria-hidden="true"></i> Limpar campos</button>
-              <button class="button voter-note__button voter-note__button--print" type="button" id="voter-note-print"><i class="fa-solid fa-print" aria-hidden="true"></i> Imprimir cola</button>
             </div>
           </div>
 
@@ -782,13 +782,38 @@
 
               <li class="voter-note__card voter-note__card--fixed"><div class="voter-note__order">6</div><div class="voter-note__content"><label class="voter-note__office" for="cola-presidente-nome">Presidente da República</label><div class="voter-note__fields"><div class="voter-note__field voter-note__field--name"><span>Nome</span><input id="cola-presidente-nome" name="presidente-nome" type="text" value="Lula" readonly></div><div class="voter-note__field voter-note__field--number"><span>Número</span><input id="cola-presidente-numero" name="presidente-numero" type="text" value="13" readonly></div></div></div><span class="voter-note__badge">Pré-preenchido</span></li>
             </ol>
+            <div class="voter-note__identity" aria-labelledby="voter-note-identity-title">
+              <div class="voter-note__identity-heading">
+                <span>Identificação</span>
+                <strong id="voter-note-identity-title">Seus dados</strong>
+                <p>Informe seus dados de contato abaixo. Os nomes e números escolhidos para os cargos não são enviados nem armazenados por este cadastro.</p>
+              </div>
+              <div class="voter-note__identity-grid">
+                <label class="voter-note__identity-field" for="voter-note-full-name"><span>Nome completo</span><input id="voter-note-full-name" name="nome-completo" type="text" autocomplete="name" required placeholder="Digite seu nome completo"></label>
+                <label class="voter-note__identity-field" for="voter-note-email"><span>E-mail</span><input id="voter-note-email" name="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com"></label>
+                <label class="voter-note__identity-field" for="voter-note-phone"><span>Telefone / WhatsApp</span><input id="voter-note-phone" name="telefone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(61) 99999-9999"></label>
+              </div>
+              <label class="voter-note__consent" for="voter-note-lgpd">
+                <input id="voter-note-lgpd" name="consentimento-lgpd" type="checkbox" required>
+                <span>Ao preencher este formulário, autorizo o tratamento dos meus dados conforme a LGPD (Lei nº 13.709/2018) para campanha do 2026 Fabiano Trompetista 13007.</span>
+              </label>
+              <p class="voter-note__privacy-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> O cadastro não inclui nem transmite os demais nomes e números que você preencher na cola eleitoral.</p>
+              <p class="voter-note__identity-error" id="voter-note-identity-error" role="alert" aria-live="assertive"></p>
+            </div>
           </form>
 
           <div class="voter-note__bottom-action">
+            <button class="button voter-note__button voter-note__button--download" type="button" id="voter-note-download">
+              <i class="fa-solid fa-download" aria-hidden="true"></i> Baixar cola
+            </button>
             <button class="button voter-note__button voter-note__button--print" type="button" id="voter-note-print-bottom">
               <i class="fa-solid fa-print" aria-hidden="true"></i> Imprimir cola
             </button>
+            <button class="button voter-note__button voter-note__button--whatsapp" type="button" id="voter-note-whatsapp-bottom">
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Enviar pelo WhatsApp
+            </button>
           </div>
+          <p class="voter-note__share-status" id="voter-note-share-status" role="status" aria-live="polite"></p>
 
           <p class="voter-note__hint"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> A impressão contém somente a cola eleitoral preenchida. Os campos pré-preenchidos de Fabiano Trompetista (13007) e Lula (13) são preservados ao usar “Limpar campos”.</p>
         </div>
@@ -814,40 +839,123 @@
 
     
 
-    <section id="foto-apoiador" class="supporter-photo-launch section section--dark" aria-labelledby="supporter-photo-title">
+    <section id="eu-apoio" class="support-hub section section--dark" aria-labelledby="support-hub-title">
+      <span id="participar" class="support-hub__anchor" aria-hidden="true"></span>
       <div class="container">
-        <div class="supporter-photo-launch__card reveal">
-          <div class="supporter-photo-launch__copy">
-            <span class="section-heading__label">Foto de apoio</span>
-            <h2 id="supporter-photo-title">CRIE SUA FOTO DE APOIO A FABIANO TROMPETISTA 13007</h2>
-            <p>Use uma foto sua e crie, em poucos passos, uma imagem pronta para <strong>Post</strong>, <strong>Story</strong> ou <strong>Foto de Perfil</strong>. Você escolhe o formato, ajusta o enquadramento e, ao final, salva ou compartilha a imagem. Sua foto permanece no seu aparelho durante todo o processo.</p>
+        <header class="support-hub__heading reveal">
+          <span class="section-heading__label">EU APOIO</span>
+          <h2 id="support-hub-title">Seu apoio pode virar ação. Faça a campanha chegar mais longe.</h2>
+          <p>Escolha uma forma de ajudar Fabiano Trompetista 13007 a chegar à Câmara Legislativa. Cada compartilhamento, presença e convite pode levar a campanha mais longe.</p>
+        </header>
 
-            <div class="supporter-photo-launch__steps" aria-label="Etapas da ferramenta">
-              <span><b>1</b> Escolha sua foto</span>
-              <span><b>2</b> Escolha onde usar</span>
-              <span><b>3</b> Ajuste o enquadramento</span>
-              <span><b>4</b> Salve sua imagem</span>
-              <span><b>5</b> Escolha se quer copiar a legenda</span>
-              <span><b>6</b> Compartilhe ou acesse suas redes</span>
+        <div class="support-hub__missions reveal" aria-label="Missões de apoio">
+          <span><b>1</b> Crie sua foto</span>
+          <span><b>2</b> Apresente Fabiano</span>
+          <span><b>3</b> Participe da campanha</span>
+          <span><b>4</b> Leve Fabiano ao seu bairro</span>
+          <span><b>5</b> Divulgue os materiais</span>
+        </div>
+
+        <div class="support-hub__grid">
+          <article id="foto-apoiador" class="support-action support-action--featured reveal">
+            <div class="support-action__icon"><i class="fa-solid fa-camera-retro" aria-hidden="true"></i></div>
+            <div class="support-action__copy">
+              <span class="support-action__kicker">MISSÃO 01 · FOTO DE APOIO</span>
+              <h3>Mostre que você está com Fabiano</h3>
+              <p>Use uma foto sua e crie uma imagem pronta para Post, Story ou Foto de Perfil. Você escolhe o formato, ajusta o enquadramento e salva ou compartilha. Sua fotografia permanece no seu aparelho.</p>
+              <div class="support-action__chips" aria-label="Formatos disponíveis"><span>POST</span><span>STORY</span><span>PERFIL</span></div>
+              <button id="supporter-photo-open" class="button button--primary support-action__button" type="button"><i class="fa-solid fa-camera" aria-hidden="true"></i> CRIAR MINHA FOTO DE APOIO</button>
+              <small class="support-action__privacy"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Processamento local no navegador. A foto não é enviada para o servidor.</small>
             </div>
+            <div class="supporter-photo-launch__visual" aria-hidden="true">
+              <div class="supporter-photo-launch__mock supporter-photo-launch__mock--story"></div>
+              <div class="supporter-photo-launch__mock supporter-photo-launch__mock--post"></div>
+              <div class="supporter-photo-launch__mock supporter-photo-launch__mock--profile"></div>
+              <span>POST · STORY · PERFIL</span>
+            </div>
+          </article>
 
-            <button id="supporter-photo-open" class="button button--primary supporter-photo-launch__button" type="button">
-              <i class="fa-solid fa-camera-retro" aria-hidden="true"></i>
-              CRIE SUA FOTO DE APOIO
-            </button>
+          <article id="support-friends" class="support-action support-action--friends reveal">
+            <div class="support-action__icon"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></div>
+            <div class="support-action__copy">
+              <span class="support-action__kicker">MISSÃO 02 · APRESENTE FABIANO</span>
+              <h3>Convide seus amigos para conhecer o 13007</h3>
+              <p>Monte uma mensagem em poucos segundos e envie pelo WhatsApp. Nada é armazenado pelo site.</p>
+              <div class="support-friend-builder" data-support-friend-builder>
+                <label>Seu primeiro nome
+                  <input id="support-friend-name" type="text" maxlength="40" placeholder="Ex.: André" autocomplete="given-name">
+                </label>
+                <label>Por que você apoia Fabiano?
+                  <select id="support-friend-theme">
+                    <option value="geral">Pela coragem para mudar o DF</option>
+                    <option value="alimentacao">Pelos Supermercados Populares e comida a preço justo</option>
+                    <option value="cultura">Pela cultura e pela música</option>
+                    <option value="educacao">Pela educação pública</option>
+                    <option value="saude">Pela saúde pública</option>
+                    <option value="mobilidade">Pela mobilidade e Tarifa Zero</option>
+                    <option value="democracia">Pela democracia e participação popular</option>
+                  </select>
+                </label>
+                <div class="support-friend-builder__preview" id="support-friend-preview" aria-live="polite"></div>
+                <div class="support-friend-builder__actions">
+                  <button class="button button--ghost" id="support-friend-copy" type="button"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copiar mensagem</button>
+                  <a class="button button--primary" id="support-friend-whatsapp" href="#" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Enviar no WhatsApp</a>
+                </div>
+                <p class="support-friend-builder__status" id="support-friend-status" aria-live="polite"></p>
+              </div>
+            </div>
+          </article>
 
-            <p class="supporter-photo-launch__privacy">
-              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-              <span><strong>Privacidade:</strong> sua fotografia não é enviada nem armazenada no servidor da campanha. Todo o processamento acontece no navegador.</span>
-            </p>
-          </div>
+          <article class="support-action reveal">
+            <div class="support-action__icon"><i class="fa-solid fa-people-group" aria-hidden="true"></i></div>
+            <div class="support-action__copy">
+              <span class="support-action__kicker">MISSÃO 03 · PARTICIPE</span>
+              <h3>Quero participar da campanha</h3>
+              <p>Ajude nas ruas, nas redes, em atividades ou em outras frentes da campanha. Preencha o formulário e diga como você gostaria de colaborar.</p>
+              <a class="button button--primary support-action__button" href="https://docs.google.com/forms/d/e/1FAIpQLSfcQhSZgGGVz1yFafn8EFtYYO12MBvkPAAtb4WG4eUG1tXE3w/viewform" target="_blank" rel="noopener noreferrer">QUERO PARTICIPAR <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+            </div>
+          </article>
 
-          <div class="supporter-photo-launch__visual" aria-hidden="true">
-            <div class="supporter-photo-launch__mock supporter-photo-launch__mock--story"></div>
-            <div class="supporter-photo-launch__mock supporter-photo-launch__mock--post"></div>
-            <div class="supporter-photo-launch__mock supporter-photo-launch__mock--profile"></div>
-            <span>POST · STORY · PERFIL</span>
-          </div>
+          <article class="support-action reveal">
+            <div class="support-action__icon"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></div>
+            <div class="support-action__copy">
+              <span class="support-action__kicker">MISSÃO 04 · CONVITE FABIANO</span>
+              <h3>Leve Fabiano ao seu bairro, comunidade ou atividade</h3>
+              <p>Quer sugerir uma visita, reunião, roda de conversa, evento cultural ou encontro comunitário? Fale diretamente com a campanha pelo WhatsApp.</p>
+              <a class="button button--primary support-action__button" href="https://wa.me/5561984399300?text=Ol%C3%A1%21%20Quero%20convidar%20Fabiano%20Trompetista%2013007%20para%20uma%20atividade%20no%20meu%20bairro%2C%20comunidade%20ou%20evento.%20Gostaria%20de%20passar%20os%20detalhes." target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> FAZER UM CONVITE</a>
+            </div>
+          </article>
+
+          <article class="support-action reveal">
+            <div class="support-action__icon"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i></div>
+            <div class="support-action__copy">
+              <span class="support-action__kicker">MISSÃO 05 · DIVULGUE</span>
+              <h3>Materiais para levar a campanha mais longe</h3>
+              <p>Use os conteúdos já disponíveis no site para apresentar Fabiano, divulgar a campanha e lembrar o número 13007.</p>
+              <div class="support-material-links">
+                <a href="#foto-apoiador"><i class="fa-solid fa-camera" aria-hidden="true"></i><span><strong>Foto de Apoio</strong><small>Crie seu Post, Story ou Perfil</small></span></a>
+                <a href="#cola-eleitoral"><i class="fa-solid fa-check-to-slot" aria-hidden="true"></i><span><strong>Cola eleitoral</strong><small>Preencha e imprima sua cola</small></span></a>
+                <a href="#fotos-campanha"><i class="fa-solid fa-images" aria-hidden="true"></i><span><strong>Fotos da campanha</strong><small>Veja e compartilhe registros</small></span></a>
+                <a href="#midia"><i class="fa-solid fa-play" aria-hidden="true"></i><span><strong>Vídeos e mídia</strong><small>Conheça e divulgue a trajetória</small></span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="support-action support-action--donation reveal">
+            <div class="support-action__icon"><i class="fa-solid fa-heart" aria-hidden="true"></i></div>
+            <div class="support-action__copy">
+              <span class="support-action__kicker">OUTRA FORMA DE APOIAR</span>
+              <h3>Contribua com a campanha</h3>
+              <p>Se quiser ajudar também financeiramente, acesse a página oficial de apoio à candidatura.</p>
+              <a class="button button--primary support-action__button" href="https://queroapoiar.com.br/fabiano-trompetista" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i> QUERO FAZER UMA DOAÇÃO</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="support-hub__next reveal">
+          <i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i>
+          <div><span>UMA AÇÃO PUXA A OUTRA</span><strong>Depois de criar sua foto, apresente Fabiano a pelo menos 5 pessoas.</strong></div>
+          <a href="#support-friends">Começar agora</a>
         </div>
       </div>
     </section>
@@ -1175,23 +1283,7 @@
       </div>
     </aside>
 
-    <section id="participar" class="cta section" aria-labelledby="cta-title">
-      <div class="container">
-        <div class="cta__panel reveal">
-          <span class="cta__number" aria-hidden="true">13007</span>
-          <div class="cta__content">
-            <span class="section-heading__label section-heading__label--light">Faça parte</span>
-            <h2 id="cta-title">Coragem para mudar o DF. E essa mudança pode contar com você</h2>
-            <p>Participe, compartilhe e ajude a construir uma campanha presente em todo o Distrito Federal.</p>
-            <div class="cta__buttons">
-              <a class="button button--light cta__button-donation" href="https://queroapoiar.com.br/fabiano-trompetista" target="_blank" rel="noopener noreferrer">Quero fazer uma doação</a>
-              <a class="button button--light cta__button-participation" href="https://docs.google.com/forms/d/e/1FAIpQLSfcQhSZgGGVz1yFafn8EFtYYO12MBvkPAAtb4WG4eUG1tXE3w/viewform" target="_blank" rel="noopener noreferrer">Quero participar da campanha</a>
-              <a class="button button--light cta__button-profile" href="#foto-apoiador"><i class="fa-solid fa-camera" aria-hidden="true"></i> Criar minha foto 13007</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
   </main>
 
   <footer class="site-footer">
@@ -1253,6 +1345,6 @@
       </button>
     </div>
   </div>
-  <script src="script-v5.js" defer></script>
+  <script src="script-v15.js" defer></script>
 </body>
 </html>

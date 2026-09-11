@@ -7114,3 +7114,181 @@ textarea:focus-visible{
 .supporter-wizard.is-profile-mode [data-wizard-step="5"]{
   display:none!important;
 }
+
+
+/* ==========================================================
+   EU APOIO — Central pública de mobilização 13007
+   ========================================================== */
+.navbar__link--support{
+  color:#fff!important;
+  background:linear-gradient(135deg,#e30613,#a9000b)!important;
+  box-shadow:0 8px 20px rgba(227,6,19,.20);
+}
+.site-header:not(.is-scrolled) .navbar__link--support{
+  border:1px solid rgba(255,255,255,.34);
+}
+.support-hub{
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 88% 8%,rgba(227,6,19,.24),transparent 30%),
+    radial-gradient(circle at 8% 70%,rgba(255,166,64,.10),transparent 26%),
+    #161112;
+}
+.support-hub__anchor{position:absolute;top:0;left:0}
+.support-hub__heading{max-width:880px;margin:0 auto 34px;text-align:center}
+.support-hub__heading .section-heading__label{color:#ffd6d9}
+.support-hub__heading h2{margin:0;color:#fff;font-family:Manrope,sans-serif;font-size:clamp(2.8rem,6vw,5.2rem);line-height:.95;letter-spacing:-.055em}
+.support-hub__heading p{max-width:760px;margin:20px auto 0;color:rgba(255,255,255,.72);font-size:1.08rem}
+.support-hub__missions{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:1080px;margin:0 auto 38px}
+.support-hub__missions span{display:flex;align-items:center;gap:8px;min-height:54px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:16px;color:rgba(255,255,255,.78);background:rgba(255,255,255,.05);font-size:.76rem;font-weight:800;line-height:1.25}
+.support-hub__missions b{display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:50%;color:#fff;background:var(--red)}
+.support-hub__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.support-action{position:relative;display:flex;gap:18px;min-width:0;padding:28px;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:rgba(255,255,255,.065);box-shadow:0 18px 45px rgba(0,0,0,.16);color:#fff}
+.support-action--featured{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(0,1.1fr) minmax(300px,.9fr);align-items:center;gap:28px;background:linear-gradient(135deg,rgba(227,6,19,.22),rgba(255,255,255,.07))}
+.support-action--friends{grid-column:1/-1;background:linear-gradient(135deg,rgba(22,140,73,.16),rgba(255,255,255,.06))}
+.support-action__icon{display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border-radius:16px;color:#fff;background:var(--red);font-size:1.35rem;box-shadow:0 12px 26px rgba(227,6,19,.20)}
+.support-action--friends .support-action__icon{background:#168c49}
+.support-action__copy{min-width:0;flex:1}
+.support-action__kicker{display:block;margin-bottom:7px;color:#ff8d96;font-size:.70rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.support-action h3{margin:0 0 10px;font-family:Manrope,sans-serif;font-size:1.55rem;line-height:1.12}
+.support-action p{margin:0;color:rgba(255,255,255,.70)}
+.support-action__button{margin-top:20px}
+.support-action__chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.support-action__chips span{padding:6px 9px;border:1px solid rgba(255,255,255,.18);border-radius:999px;color:rgba(255,255,255,.82);font-size:.68rem;font-weight:900;letter-spacing:.10em}
+.support-action__privacy{display:flex;align-items:flex-start;gap:7px;margin-top:14px;color:rgba(255,255,255,.58);font-size:.72rem;line-height:1.4}
+.support-action__privacy i{margin-top:.25em;color:#ff8d96}
+.support-action--donation{background:linear-gradient(135deg,rgba(227,6,19,.18),rgba(255,255,255,.055))}
+
+/* reaproveita o visual das três artes, agora dentro do EU APOIO */
+.support-action--featured .supporter-photo-launch__visual{min-height:310px;margin:0;transform:scale(.92);transform-origin:center}
+
+.support-friend-builder{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;margin-top:20px}
+.support-friend-builder label{display:grid;gap:7px;color:rgba(255,255,255,.72);font-size:.74rem;font-weight:800;letter-spacing:.04em}
+.support-friend-builder input,.support-friend-builder select{width:100%;height:50px;padding:10px 13px;border:1px solid rgba(255,255,255,.16);border-radius:14px;outline:none;color:#fff;background:rgba(255,255,255,.08)}
+.support-friend-builder select option{color:#111;background:#fff}
+.support-friend-builder input::placeholder{color:rgba(255,255,255,.42)}
+.support-friend-builder input:focus,.support-friend-builder select:focus{border-color:rgba(255,255,255,.48);box-shadow:0 0 0 4px rgba(255,255,255,.06)}
+.support-friend-builder__preview{grid-column:1/-1;min-height:120px;padding:16px;border:1px dashed rgba(255,255,255,.22);border-radius:16px;color:rgba(255,255,255,.86);background:rgba(0,0,0,.16);white-space:pre-wrap;font-size:.86rem;line-height:1.55}
+.support-friend-builder__actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px}
+.support-friend-builder__actions .button--ghost{color:#fff;border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.06)}
+.support-friend-builder__status{grid-column:1/-1;min-height:1.4em!important;color:#8ce0ae!important;font-size:.78rem}
+
+.support-material-links{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+.support-material-links a{display:flex;align-items:center;gap:11px;min-width:0;padding:13px;border:1px solid rgba(255,255,255,.12);border-radius:15px;color:#fff;background:rgba(255,255,255,.05);text-decoration:none;transition:.2s ease}
+.support-material-links a:hover,.support-material-links a:focus-visible{transform:translateY(-2px);border-color:rgba(255,255,255,.30);background:rgba(255,255,255,.09)}
+.support-material-links i{display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:11px;color:#fff;background:var(--red)}
+.support-material-links span{display:grid;min-width:0}
+.support-material-links strong{font-size:.80rem;line-height:1.2}
+.support-material-links small{margin-top:3px;color:rgba(255,255,255,.55);font-size:.66rem;line-height:1.3}
+.support-hub__next{display:flex;align-items:center;gap:15px;margin-top:18px;padding:18px 20px;border:1px solid rgba(255,255,255,.13);border-radius:20px;color:#fff;background:rgba(255,255,255,.06)}
+.support-hub__next>i{display:grid;place-items:center;flex:0 0 46px;height:46px;border-radius:14px;background:var(--red);font-size:1.1rem}
+.support-hub__next>div{display:grid;flex:1}
+.support-hub__next span{color:#ff8d96;font-size:.66rem;font-weight:900;letter-spacing:.12em}
+.support-hub__next strong{font-size:.98rem}
+.support-hub__next>a{color:#fff;font-size:.78rem;font-weight:900;text-decoration:underline;text-underline-offset:4px}
+
+.cta--support-return .cta__buttons .button{min-width:340px!important}
+
+@media(max-width:960px){
+  .support-hub__missions{grid-template-columns:repeat(2,1fr)}
+  .support-hub__missions span:last-child{grid-column:1/-1}
+  .support-action--featured{grid-template-columns:auto 1fr}
+  .support-action--featured .supporter-photo-launch__visual{grid-column:1/-1;min-height:280px}
+  .support-action{grid-column:1/-1}
+}
+@media(max-width:700px){
+  .support-hub__heading{text-align:left}
+  .support-hub__heading h2{font-size:clamp(2.7rem,14vw,4.2rem)}
+  .support-hub__heading p{font-size:.96rem}
+  .support-hub__missions{grid-template-columns:1fr;gap:7px;margin-bottom:24px}
+  .support-hub__missions span:last-child{grid-column:auto}
+  .support-hub__grid{grid-template-columns:1fr}
+  .support-action,.support-action--featured{display:grid;grid-template-columns:46px minmax(0,1fr);gap:14px;padding:20px;border-radius:20px}
+  .support-action__icon{width:46px;height:46px;border-radius:14px;font-size:1.1rem}
+  .support-action__copy{grid-column:2}
+  .support-action h3{font-size:1.3rem}
+  .support-action p{font-size:.88rem}
+  .support-action__button{width:100%;font-size:.80rem!important;padding-inline:14px!important}
+  .support-action--featured .supporter-photo-launch__visual{grid-column:1/-1;min-height:225px;transform:scale(.84)}
+  .support-friend-builder{grid-template-columns:1fr}
+  .support-friend-builder__preview,.support-friend-builder__actions,.support-friend-builder__status{grid-column:1}
+  .support-friend-builder__actions{display:grid}
+  .support-friend-builder__actions .button{width:100%}
+  .support-material-links{grid-template-columns:1fr}
+  .support-hub__next{align-items:flex-start;flex-wrap:wrap}
+  .support-hub__next>a{width:100%;padding-left:61px}
+}
+
+/* Cola eleitoral — download e compartilhamento pelo WhatsApp */
+.voter-note__button--download{
+  color:#fff;
+  border-color:rgba(255,255,255,.34);
+  background:rgba(255,255,255,.12);
+}
+.voter-note__button--whatsapp{
+  color:#fff!important;
+  border-color:#12833f!important;
+  background:linear-gradient(135deg,#25d366,#128c4a)!important;
+  box-shadow:0 10px 24px rgba(18,140,74,.22)!important;
+}
+.voter-note__button--whatsapp:hover,
+.voter-note__button--whatsapp:focus-visible{
+  filter:brightness(1.05);
+}
+.voter-note__button:disabled{opacity:.72;cursor:wait;transform:none!important}
+.voter-note__bottom-action{flex-wrap:wrap;gap:10px}
+.voter-note__bottom-action .voter-note__button--whatsapp{
+  min-width:250px;
+  min-height:50px;
+  padding:13px 22px;
+  font-size:.9rem;
+  font-weight:800;
+}
+.voter-note__share-status{
+  min-height:1.4em;
+  margin:10px 28px 0;
+  color:#61585b;
+  font-size:.80rem;
+  font-weight:700;
+  text-align:center;
+}
+@media(max-width:700px){
+  .voter-note__actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .voter-note__actions .voter-note__button{width:100%;min-width:0;white-space:normal;line-height:1.2}
+  .voter-note__bottom-action{display:grid;grid-template-columns:1fr}
+  .voter-note__bottom-action .voter-note__button--print,
+  .voter-note__bottom-action .voter-note__button--whatsapp{width:100%;min-width:0}
+  .voter-note__share-status{margin-inline:18px}
+}
+@media(max-width:460px){
+  .voter-note__actions{grid-template-columns:1fr}
+}
+@media print{
+  .voter-note__share-status{display:none!important}
+}
+
+/* Cola eleitoral — identificação e consentimento LGPD */
+.voter-note__identity{margin:0 0 1.4rem;padding:1.25rem;border:2px solid rgba(83,20,20,.16);border-radius:20px;background:#fffaf5;box-shadow:0 12px 30px rgba(27,14,13,.06)}
+.voter-note__identity-heading>span{display:inline-block;margin-bottom:.25rem;color:#dc1413;font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem}
+.voter-note__identity-heading strong{display:block;color:#531414;font-size:1.2rem;line-height:1.2}.voter-note__identity-heading p{margin:.45rem 0 1rem;color:#5f5552;line-height:1.5}
+.voter-note__identity-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:.8rem}.voter-note__identity-field{display:grid;gap:.35rem}.voter-note__identity-field span{font-weight:800;color:#531414;font-size:.88rem}.voter-note__identity-field input{width:100%;min-height:48px;padding:.72rem .85rem;border:1px solid #cfc3bd;border-radius:12px;background:#fff;color:#1b0e0d;font:inherit}.voter-note__identity-field input:focus{outline:3px solid rgba(220,20,19,.14);border-color:#dc1413}
+.voter-note__consent{display:flex;align-items:flex-start;gap:.7rem;margin-top:1rem;padding:.9rem;border-radius:14px;background:#f4e3c8;color:#3f302d;line-height:1.45;font-size:.88rem;cursor:pointer}.voter-note__consent input{width:20px;height:20px;margin-top:.12rem;flex:0 0 auto;accent-color:#dc1413}.voter-note__privacy-note{margin:.75rem 0 0;color:#625754;font-size:.82rem}.voter-note__privacy-note i{color:#dc1413;margin-right:.35rem}.voter-note__identity-error{min-height:1.2em;margin:.55rem 0 0;color:#b00020;font-weight:800;font-size:.86rem}
+@media(max-width:800px){.voter-note__identity-grid{grid-template-columns:1fr}.voter-note__identity{padding:1rem}.voter-note__consent{font-size:.84rem}}
+@media print{.voter-note__identity{display:none!important}}
+
+/* Cola eleitoral — botão de download com contraste reforçado */
+.voter-note__button--download,
+.voter-note__bottom-action .voter-note__button--download{
+  color:#fff!important;
+  border-color:#8f0f0f!important;
+  background:#c51616!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.20)!important;
+  opacity:1;
+}
+.voter-note__button--download:hover,
+.voter-note__button--download:focus-visible{
+  color:#fff!important;
+  background:#a91010!important;
+  border-color:#7b0b0b!important;
+  filter:none!important;
+}
