@@ -537,7 +537,7 @@ function initVoterNote() {
     return [key, image];
   }));
 
-  const getValue = id => (qs(`#${id}`)?.value || '').trim();
+  const getValue = id => { const el = qs(`#${id}`); return ((el && ('value' in el ? el.value : el.textContent)) || '').trim(); };
 
   const roundedRect = (ctx, x, y, w, h, r) => {
     const radius = Math.min(r, w / 2, h / 2);
@@ -579,7 +579,8 @@ function initVoterNote() {
     const rowH = 145;
     rows.forEach((row, index) => {
       const [office, nameId, numberId, portraitKey] = row;
-      const name = getValue(nameId) || '—';
+      const rawName = getValue(nameId) || '—';
+      const name = office === 'Deputado Federal' ? 'Voto na legenda do PT — digite apenas 13' : rawName;
       const number = getValue(numberId) || '—';
       const y = top + index * rowH;
       const featured = office === 'Deputado Distrital' || office === 'Presidente da República';
