@@ -671,7 +671,7 @@ function initVoterNote() {
       const file = createFile();
       downloadFile(file);
 
-      const text = 'Minha cola eleitoral. Fabiano Trompetista para Deputado Distrital — 13007. A imagem da cola foi salva no aparelho; vou anexá-la nesta conversa.';
+      const text = 'Quero compartilhar com você uma sugestão de cola eleitoral. Vou anexá-la a seguir nesta conversa. Fabiano Trompetista para Deputado Distrital — 13007.';
       const encoded = encodeURIComponent(text);
       const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
 
