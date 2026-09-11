@@ -397,9 +397,10 @@ function initVoterNote() {
 
   const endpointIsConfigured = () => /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec(?:\?.*)?$/.test(registrationEndpoint);
 
-  // Envia o cadastro ao Apps Script por dois caminhos independentes.
-  // Ambos usam o mesmo token; o Apps Script v3 elimina duplicidades pelo token.
-  // Isso contorna bloqueios ocasionais de POST em iframe em alguns navegadores/hosts.
+  // Envia o cadastro ao Apps Script por um POST HTML tradicional em uma
+  // janela auxiliar. Isso evita depender de fetch/sendBeacon/CORS no GitHub Pages.
+  // A janela é aberta diretamente pelo clique do usuário e recebe o POST real.
+  let lastRegistrationWindow = null;
   const registerIdentity = action => {
     if(!endpointIsConfigured()) throw new Error('endpoint_nao_configurado');
 
@@ -416,34 +417,21 @@ function initVoterNote() {
       website: ''
     };
 
-    const body = new URLSearchParams(payload);
+    const windowName = `cola_registration_${token}`;
+    const registrationWindow = window.open('', windowName, 'width=480,height=320,resizable=yes,scrollbars=yes');
+    if(!registrationWindow) throw new Error('popup_bloqueado');
+    lastRegistrationWindow = registrationWindow;
 
-    // Caminho principal: POST cross-origin sem leitura da resposta.
-    // `no-cors` é intencional: precisamos apenas entregar os dados ao Web App.
     try{
-      fetch(registrationEndpoint, {
-        method: 'POST',
-        mode: 'no-cors',
-        cache: 'no-store',
-        keepalive: true,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-        body
-      }).catch(() => {});
+      registrationWindow.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Registrando dados</title></head><body style="font-family:Arial,sans-serif;padding:24px"><p>Registrando seus dados…</p></body></html>');
+      registrationWindow.document.close();
     }catch(_error){}
-
-    // Caminho redundante: formulário invisível em iframe. O mesmo token impede
-    // uma linha duplicada caso os dois caminhos cheguem ao Apps Script.
-    const iframeName = `cola_registration_${token}`;
-    const iframe = document.createElement('iframe');
-    iframe.name = iframeName;
-    iframe.hidden = true;
-    iframe.setAttribute('aria-hidden', 'true');
 
     const postForm = document.createElement('form');
     postForm.method = 'POST';
     postForm.action = registrationEndpoint;
-    postForm.target = iframeName;
-    postForm.hidden = true;
+    postForm.target = windowName;
+    postForm.style.display = 'none';
 
     Object.entries(payload).forEach(([name, value]) => {
       const input = document.createElement('input');
@@ -453,18 +441,19 @@ function initVoterNote() {
       postForm.appendChild(input);
     });
 
-    document.body.appendChild(iframe);
     document.body.appendChild(postForm);
-    window.setTimeout(() => {
-      try{ postForm.submit(); }catch(_error){}
-    }, 120);
+    postForm.submit();
+    postForm.remove();
 
-    window.setTimeout(() => {
-      postForm.remove();
-      iframe.remove();
-    }, 20000);
+    // Para impressão/download, a janela é apenas temporária. No fluxo do WhatsApp,
+    // ela será reaproveitada logo abaixo para abrir o app/web depois do POST.
+    if(action !== 'whatsapp') {
+      window.setTimeout(() => {
+        try{ if(!registrationWindow.closed) registrationWindow.close(); }catch(_error){}
+      }, 6500);
+    }
 
-    return true;
+    return registrationWindow;
   };
 
   const authorizeAction = action => {
@@ -476,7 +465,9 @@ function initVoterNote() {
     }catch(error){
       const message = error?.message === 'endpoint_nao_configurado'
         ? 'O cadastro ainda não está conectado ao Google Sheets. Tente novamente em alguns instantes.'
-        : 'Não foi possível iniciar o registro dos seus dados. Tente novamente.';
+        : error?.message === 'popup_bloqueado'
+          ? 'O navegador bloqueou a janela necessária para registrar os dados. Permita pop-ups para este site e tente novamente.'
+          : 'Não foi possível iniciar o registro dos seus dados. Tente novamente.';
       setIdentityMessage(message, true);
       window.alert(message);
       return false;
@@ -708,46 +699,50 @@ function initVoterNote() {
         // Abre uma nova aba/janela sincronamente e, nela, tenta primeiro o app
         // WhatsApp para Windows via protocolo whatsapp://. Só se o navegador
         // continuar em foco após a tentativa, usa WhatsApp Web como fallback.
-        const whatsappTab = window.open('about:blank', '_blank');
+        // Reaproveita a mesma janela que acabou de receber o POST do cadastro.
+        // Assim o clique do usuário não precisa abrir duas janelas e o POST tem tempo
+        // para chegar ao Apps Script antes de seguirmos para o WhatsApp.
+        const whatsappTab = lastRegistrationWindow && !lastRegistrationWindow.closed
+          ? lastRegistrationWindow
+          : window.open('about:blank', '_blank');
         if(!whatsappTab){
           if(shareStatus) shareStatus.textContent = 'Permita pop-ups para abrir o WhatsApp. A página da cola continuará aberta.';
           return;
         }
 
-        try{
-          whatsappTab.document.title = 'Abrindo WhatsApp…';
-          whatsappTab.document.body.innerHTML = '<p style="font-family:Arial,sans-serif;padding:24px">Tentando abrir o aplicativo WhatsApp…</p>';
-        }catch(_){ }
-
-        let appLikelyOpened = false;
-        const markAppOpened = () => { appLikelyOpened = true; };
-        const onVisibility = () => {
-          if(document.visibilityState === 'hidden') appLikelyOpened = true;
-        };
-
-        window.addEventListener('blur', markAppOpened, { once: true });
-        document.addEventListener('visibilitychange', onVisibility);
-
-        // A tentativa do aplicativo acontece somente na nova aba.
-        whatsappTab.location.href = `whatsapp://send?text=${encoded}`;
-
+        // Dá tempo para o POST HTML terminar no Apps Script antes de reutilizar
+        // a janela para o WhatsApp. Navegar nela imediatamente poderia abortar o POST.
         window.setTimeout(() => {
-          document.removeEventListener('visibilitychange', onVisibility);
+          let appLikelyOpened = false;
+          const markAppOpened = () => { appLikelyOpened = true; };
+          const onVisibility = () => {
+            if(document.visibilityState === 'hidden') appLikelyOpened = true;
+          };
 
-          if(appLikelyOpened){
-            // O navegador perdeu o foco, forte sinal de que o app foi acionado.
-            // Mantém a página principal intacta e fecha a aba auxiliar se possível.
-            try{ whatsappTab.close(); }catch(_){ }
-            return;
-          }
+          window.addEventListener('blur', markAppOpened, { once: true });
+          document.addEventListener('visibilitychange', onVisibility);
 
-          // Se o app não abriu, reaproveita a MESMA nova aba para o WhatsApp Web.
           try{
             if(!whatsappTab.closed){
-              whatsappTab.location.href = `https://web.whatsapp.com/send?text=${encoded}`;
+              whatsappTab.location.href = `whatsapp://send?text=${encoded}`;
             }
           }catch(_){ }
-        }, 1800);
+
+          window.setTimeout(() => {
+            document.removeEventListener('visibilitychange', onVisibility);
+
+            if(appLikelyOpened){
+              try{ whatsappTab.close(); }catch(_){ }
+              return;
+            }
+
+            try{
+              if(!whatsappTab.closed){
+                whatsappTab.location.href = `https://web.whatsapp.com/send?text=${encoded}`;
+              }
+            }catch(_){ }
+          }, 1800);
+        }, 3000);
       }
 
       if(shareStatus) shareStatus.textContent = 'A imagem da cola foi baixada. O WhatsApp foi aberto; anexe a imagem salva à conversa.';

@@ -1,0 +1,19 @@
+CORREÇÃO DO CADASTRO DA COLA ELEITORAL — V21
+
+1) Abra a planilha "Cadastros - Cola Eleitoral Fabiano Trompetista 13007".
+2) Extensões > Apps Script.
+3) Substitua TODO o conteúdo do Code.gs pelo Code.gs desta pasta.
+4) Salve.
+5) No seletor de funções, escolha testarGravacao e clique em Executar.
+   - Autorize o acesso, se o Google pedir.
+   - Confira se uma linha "Teste de integração" apareceu na aba Cadastros.
+6) IMPORTANTE: atualizar o código NÃO atualiza sozinho o Web App já publicado.
+   Vá em Implantar > Gerenciar implantações > Editar (lápis) > Versão > Nova versão > Implantar.
+7) Mantenha:
+   - Executar como: Eu
+   - Quem pode acessar: Qualquer pessoa
+8) A URL /exec pode continuar sendo a mesma.
+9) Publique index.html, script-v18.js e style-v6.css na Hostinger.
+
+O novo frontend envia o mesmo cadastro por duas rotas independentes, usando o mesmo token.
+O Apps Script elimina duplicidades por token.
