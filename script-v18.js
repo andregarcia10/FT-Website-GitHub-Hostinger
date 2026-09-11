@@ -397,26 +397,13 @@ function initVoterNote() {
 
   const endpointIsConfigured = () => /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec(?:\?.*)?$/.test(registrationEndpoint);
 
-  // Envia o cadastro ao Apps Script sem aguardar uma resposta dentro do iframe.
-  // O Apps Script pode ser executado em um iframe sandbox do Google, e o postMessage
-  // de confirmação nem sempre chega à página principal. O envio do formulário em si
-  // é suficiente para disparar o doPost e gravar os dados na planilha.
+  // Envia o cadastro ao Apps Script por dois caminhos independentes.
+  // Ambos usam o mesmo token; o Apps Script v3 elimina duplicidades pelo token.
+  // Isso contorna bloqueios ocasionais de POST em iframe em alguns navegadores/hosts.
   const registerIdentity = action => {
     if(!endpointIsConfigured()) throw new Error('endpoint_nao_configurado');
 
     const token = `cola_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
-    const iframeName = `cola_registration_${token}`;
-    const iframe = document.createElement('iframe');
-    iframe.name = iframeName;
-    iframe.hidden = true;
-    iframe.setAttribute('aria-hidden', 'true');
-
-    const postForm = document.createElement('form');
-    postForm.method = 'POST';
-    postForm.action = registrationEndpoint;
-    postForm.target = iframeName;
-    postForm.hidden = true;
-
     const payload = {
       nome: (identityFields.name?.value || '').trim(),
       email: (identityFields.email?.value || '').trim(),
@@ -429,6 +416,35 @@ function initVoterNote() {
       website: ''
     };
 
+    const body = new URLSearchParams(payload);
+
+    // Caminho principal: POST cross-origin sem leitura da resposta.
+    // `no-cors` é intencional: precisamos apenas entregar os dados ao Web App.
+    try{
+      fetch(registrationEndpoint, {
+        method: 'POST',
+        mode: 'no-cors',
+        cache: 'no-store',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body
+      }).catch(() => {});
+    }catch(_error){}
+
+    // Caminho redundante: formulário invisível em iframe. O mesmo token impede
+    // uma linha duplicada caso os dois caminhos cheguem ao Apps Script.
+    const iframeName = `cola_registration_${token}`;
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.hidden = true;
+    iframe.setAttribute('aria-hidden', 'true');
+
+    const postForm = document.createElement('form');
+    postForm.method = 'POST';
+    postForm.action = registrationEndpoint;
+    postForm.target = iframeName;
+    postForm.hidden = true;
+
     Object.entries(payload).forEach(([name, value]) => {
       const input = document.createElement('input');
       input.type = 'hidden';
@@ -439,13 +455,14 @@ function initVoterNote() {
 
     document.body.appendChild(iframe);
     document.body.appendChild(postForm);
-    postForm.submit();
+    window.setTimeout(() => {
+      try{ postForm.submit(); }catch(_error){}
+    }, 120);
 
-    // Mantém iframe/form vivos tempo suficiente para o navegador concluir o POST.
     window.setTimeout(() => {
       postForm.remove();
       iframe.remove();
-    }, 15000);
+    }, 20000);
 
     return true;
   };
