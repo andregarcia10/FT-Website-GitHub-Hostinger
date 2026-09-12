@@ -7373,3 +7373,58 @@ textarea:focus-visible{
   .voter-note__field--legend-note p{font-size:9pt!important;color:#222!important}
   .voter-note__field--legend-note strong{color:#222!important}
 }
+
+/* Crédito técnico do website */
+.site-footer__credit{
+  margin:.45rem 0 0;
+  font-size:.78rem;
+  line-height:1.45;
+  opacity:.72;
+}
+.site-footer__credit a{
+  color:inherit;
+  font-weight:600;
+  text-decoration:none;
+  border-bottom:1px solid currentColor;
+  transition:opacity .2s ease;
+}
+.site-footer__credit a:hover,
+.site-footer__credit a:focus-visible{
+  opacity:1;
+}
+
+
+/* Rodapé: o botão flutuante do WhatsApp desaparece completamente ao entrar no footer */
+.whatsapp-float.is-footer-hidden,
+.media-authenticity-notice.is-visible ~ .whatsapp-float.is-footer-hidden{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transform:translateY(18px) !important;
+  transition:opacity .2s ease, visibility .2s ease, transform .2s ease !important;
+}
+
+@media(max-width:700px){
+  .whatsapp-float.is-footer-hidden,
+  .media-authenticity-notice.is-visible ~ .whatsapp-float.is-footer-hidden{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+    transform:translateY(18px) !important;
+  }
+}
+
+/* Garantia de clicabilidade dos links do rodapé acima do grafismo decorativo */
+.site-footer::after{
+  pointer-events:none;
+}
+.site-footer__bottom{
+  position:relative;
+  z-index:3;
+}
+.site-footer__credit,
+.site-footer__credit a{
+  position:relative;
+  z-index:4;
+  pointer-events:auto;
+}

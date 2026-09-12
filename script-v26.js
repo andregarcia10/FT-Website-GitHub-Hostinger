@@ -350,18 +350,21 @@ function initGallery(openLightbox) {
 }
 
 
-// Texto do botão flutuante na última seção
+// Oculta o botão flutuante do WhatsApp quando o rodapé entra na tela.
 function initWhatsappFloatText(){
   const text=document.getElementById('whatsapp-float-text');
   const footer=document.querySelector('.site-footer');
   const button=document.querySelector('.whatsapp-float');
   if(!text||!footer||!button) return;
 
+  text.textContent='Fale com gente de verdade';
+
   const observer=new IntersectionObserver(entries=>{
-    const onLastPage=entries[0].isIntersecting;
-    text.textContent='Fale com gente de verdade';
-    button.classList.toggle('is-footer-centered', onLastPage);
-  },{threshold:0.15});
+    const footerVisible=entries[0].isIntersecting;
+    button.classList.toggle('is-footer-hidden', footerVisible);
+    button.setAttribute('aria-hidden', footerVisible ? 'true' : 'false');
+    button.tabIndex=footerVisible ? -1 : 0;
+  },{threshold:0.01});
 
   observer.observe(footer);
 }
