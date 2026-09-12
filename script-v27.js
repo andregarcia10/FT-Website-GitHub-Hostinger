@@ -2507,3 +2507,46 @@ function initApp() {
 document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', initApp, { once: true })
   : initApp();
+
+
+// ===== LinkedIn footer mobile deep-link =====
+function initFooterLinkedInDeepLink(){
+  const link=document.getElementById('footer-linkedin-andre');
+  if(!link) return;
+
+  const webUrl='https://www.linkedin.com/in/andregarcia10/';
+  const slug='andregarcia10';
+  const isMobile=()=>/Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+
+  link.addEventListener('click', event=>{
+    if(!isMobile()) return; // desktop continua usando o link normal em nova aba
+
+    event.preventDefault();
+
+    const ua=navigator.userAgent || '';
+    if(/Android/i.test(ua)){
+      // Primeiro tenta o aplicativo oficial do LinkedIn; se indisponível, usa o perfil web.
+      const fallback=encodeURIComponent(webUrl);
+      window.location.href=`intent://in/${slug}#Intent;scheme=linkedin;package=com.linkedin.android;S.browser_fallback_url=${fallback};end`;
+      return;
+    }
+
+    // iPhone/iPad: tenta o esquema do aplicativo e faz fallback para a URL pública.
+    let appOpened=false;
+    const markOpened=()=>{
+      if(document.hidden){
+        appOpened=true;
+        document.removeEventListener('visibilitychange', markOpened);
+      }
+    };
+    document.addEventListener('visibilitychange', markOpened);
+
+    window.location.href=`linkedin://in/${slug}`;
+    window.setTimeout(()=>{
+      document.removeEventListener('visibilitychange', markOpened);
+      if(!appOpened) window.location.href=webUrl;
+    },1200);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initFooterLinkedInDeepLink);

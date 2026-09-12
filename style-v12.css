@@ -7428,3 +7428,49 @@ textarea:focus-visible{
   z-index:4;
   pointer-events:auto;
 }
+
+
+/* v32 — alinhamento preciso da última linha do rodapé */
+.site-footer__bottom{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) !important;
+  align-items:baseline !important;
+  column-gap:24px !important;
+}
+.site-footer__bottom > p{
+  margin:0 !important;
+  padding:0 !important;
+  font-size:inherit !important;
+  line-height:1.45 !important;
+}
+.site-footer__bottom > p:first-child{
+  justify-self:start;
+  text-align:left;
+}
+.site-footer__bottom > .site-footer__legal{
+  justify-self:center;
+  text-align:center;
+}
+.site-footer__bottom > .site-footer__credit{
+  justify-self:end;
+  text-align:right;
+  opacity:1;
+}
+.site-footer__credit{
+  margin:0 !important;
+}
+@media(max-width:900px){
+  .site-footer__bottom{
+    grid-template-columns:1fr !important;
+    row-gap:8px !important;
+    align-items:center !important;
+  }
+  .site-footer__bottom > p,
+  .site-footer__bottom > p:first-child,
+  .site-footer__bottom > .site-footer__legal,
+  .site-footer__bottom > .site-footer__credit{
+    justify-self:center !important;
+    text-align:center !important;
+    width:100%;
+  }
+}
