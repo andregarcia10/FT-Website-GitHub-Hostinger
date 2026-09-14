@@ -7833,3 +7833,78 @@ textarea:focus-visible{
   #cola-eleitoral .voter-note__field--number input[readonly]{font-size:2.05rem !important}
   #cola-eleitoral .voter-note__card:first-child .voter-note__field--legend-note p{font-size:.8rem !important}
 }
+
+
+/* ===== v18: seletor de Deputado Federal ===== */
+#cola-eleitoral .voter-note__card--federal{
+  grid-template-columns:54px minmax(0,1fr) !important;
+  align-items:start !important;
+  padding-top:20px !important;
+  padding-bottom:20px !important;
+}
+#cola-eleitoral .voter-note__card--federal .voter-note__content{min-width:0;width:100%}
+#cola-eleitoral .voter-note__card--federal .voter-note__office{margin-bottom:10px}
+.federal-picker{position:relative;width:100%;max-width:620px}
+.federal-picker__trigger{
+  width:100%;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:8px 14px 8px 9px;border:2px solid rgba(83,20,20,.28);border-radius:14px;
+  background:#fffaf3;color:#1b0e0d;cursor:pointer;text-align:left;
+  box-shadow:0 5px 14px rgba(83,20,20,.07);transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.federal-picker__trigger:hover,.federal-picker__trigger:focus-visible{border-color:#dc1413;box-shadow:0 0 0 4px rgba(220,20,19,.10);outline:0}
+.federal-picker.is-open .federal-picker__trigger{border-color:#dc1413;border-bottom-left-radius:8px;border-bottom-right-radius:8px}
+.federal-picker__selected{min-width:0;display:flex;align-items:center;gap:12px;flex:1}
+.federal-picker__selected img{width:52px;height:58px;flex:0 0 52px;object-fit:cover;object-position:center top;border-radius:7px}
+.federal-picker__selected-text{min-width:0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.federal-picker__selected-text strong{font-size:1.04rem;line-height:1.12;color:#1b0e0d}
+.federal-picker__selected-text span{font-family:"Space Grotesk",sans-serif;font-size:1.45rem;line-height:1;font-weight:900;color:#dc1413;letter-spacing:.02em}
+.federal-picker__placeholder{font-weight:800;color:#531414}
+.federal-picker__trigger>i{flex:0 0 auto;color:#dc1413;font-size:1rem;transition:transform .18s ease}
+.federal-picker.is-open .federal-picker__trigger>i{transform:rotate(180deg)}
+.federal-picker__list{
+  position:absolute;z-index:70;left:0;right:0;top:calc(100% + 5px);max-height:420px;overflow:auto;
+  padding:6px;border:2px solid rgba(83,20,20,.20);border-radius:12px;background:#fffaf3;
+  box-shadow:0 18px 35px rgba(27,14,13,.20)
+}
+.federal-picker__list[hidden]{display:none !important}
+.federal-picker__option{
+  width:100%;display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;align-items:center;
+  padding:7px;border:0;border-bottom:1px solid rgba(83,20,20,.10);background:transparent;color:#1b0e0d;cursor:pointer;text-align:left
+}
+.federal-picker__option:last-child{border-bottom:0}
+.federal-picker__option:hover,.federal-picker__option:focus-visible,.federal-picker__option[aria-selected="true"]{background:#f4e3c8;outline:0}
+.federal-picker__option img{width:48px;height:54px;object-fit:cover;object-position:center top;border-radius:6px}
+.federal-picker__option-text{min-width:0;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.federal-picker__option-text strong{font-size:.94rem;line-height:1.15}
+.federal-picker__option-text span{font-family:"Space Grotesk",sans-serif;font-size:1.15rem;font-weight:900;color:#dc1413;letter-spacing:.03em}
+
+@media(max-width:700px){
+  #cola-eleitoral .voter-note__card--federal{grid-template-columns:40px minmax(0,1fr) !important;gap:10px !important;padding:16px 8px !important}
+  .federal-picker{max-width:none}
+  .federal-picker__trigger{min-height:68px;padding:7px 10px 7px 7px}
+  .federal-picker__selected img{width:46px;height:52px;flex-basis:46px}
+  .federal-picker__selected-text{gap:7px}
+  .federal-picker__selected-text strong{font-size:.9rem}
+  .federal-picker__selected-text span{font-size:1.22rem}
+  .federal-picker__list{position:relative;top:auto;margin-top:5px;max-height:360px;box-shadow:0 8px 22px rgba(27,14,13,.13)}
+  .federal-picker__option{grid-template-columns:44px minmax(0,1fr);gap:9px;padding:7px 5px}
+  .federal-picker__option img{width:44px;height:50px}
+  .federal-picker__option-text{gap:8px}
+  .federal-picker__option-text strong{font-size:.83rem}
+  .federal-picker__option-text span{font-size:1rem}
+}
+@media(max-width:390px){
+  #cola-eleitoral .voter-note__card--federal{grid-template-columns:34px minmax(0,1fr) !important;gap:8px !important}
+  .federal-picker__trigger{padding-right:8px}
+  .federal-picker__selected img{width:42px;height:48px;flex-basis:42px}
+  .federal-picker__selected-text strong{font-size:.82rem}
+  .federal-picker__selected-text span{font-size:1.08rem}
+}
+@media print{
+  #cola-eleitoral .voter-note__card--federal{grid-template-columns:36px minmax(0,1fr) !important}
+  .federal-picker__trigger{min-height:56px !important;border:1px solid #777 !important;border-radius:0 !important;box-shadow:none !important;background:#fff !important}
+  .federal-picker__trigger>i,.federal-picker__list{display:none !important}
+  .federal-picker__selected img{width:42px !important;height:46px !important;flex-basis:42px !important}
+  .federal-picker__selected-text strong{font-size:11px !important}
+  .federal-picker__selected-text span{font-size:15px !important;color:#111 !important}
+}

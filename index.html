@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style-v17.css">
+  <link rel="stylesheet" href="style-v18.css">
   <noscript>
     <style>
       .loader { display: none !important; }
@@ -754,7 +754,7 @@
         <header class="section-heading reveal">
           <span class="section-heading__label">Cola eleitoral</span>
           <h2 id="voter-note-title">Monte sua cola para o dia da votação</h2>
-          <p>A cola eleitoral já está completa com todos os nomes e números. Depois, imprima, baixe ou compartilhe sua cola pelo WhatsApp.</p>
+          <p>Escolha seu candidato a Deputado Federal. Os demais nomes e números já estão preenchidos. Depois, imprima, baixe ou compartilhe sua cola pelo WhatsApp.</p>
         </header>
 
         <div class="voter-note__shell reveal">
@@ -769,7 +769,46 @@
 
           <form class="voter-note__form" id="voter-note-form" autocomplete="off">
             <ol class="voter-note__list">
-              <li class="voter-note__card voter-note__card--fixed"><div class="voter-note__order">1</div><div class="voter-note__portrait voter-note__portrait--logo"><img src="assets/candidatos/pt-estrela.svg" alt="Estrela do PT"></div><div class="voter-note__content"><div class="voter-note__office">Deputado Federal</div><div class="voter-note__fields"><div class="voter-note__field voter-note__field--name voter-note__field--legend-note"><p id="cola-dep-federal-nome">Digite apenas o número <strong>13</strong> para registrar o voto na legenda do PT para Deputado Federal.</p></div><div class="voter-note__field voter-note__field--number"><span>Número</span><input id="cola-dep-federal-numero" name="dep-federal-numero" type="text" inputmode="numeric" maxlength="4" value="13" readonly></div></div></div></li>
+              <li class="voter-note__card voter-note__card--fixed voter-note__card--federal">
+  <div class="voter-note__order">1</div>
+  <div class="voter-note__content">
+    <div class="voter-note__office">Deputado Federal</div>
+    <div class="federal-picker" id="federal-picker">
+      <button class="federal-picker__trigger" id="federal-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="federal-picker-list">
+        <span class="federal-picker__selected federal-picker__selected--placeholder" id="federal-picker-selected">
+          <span class="federal-picker__placeholder">Escolha um candidato do PT</span>
+        </span>
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <div class="federal-picker__list" id="federal-picker-list" role="listbox" aria-label="Candidatos do PT a Deputado Federal" hidden>
+        <button class="federal-picker__option" type="button" role="option" aria-selected="false" data-candidate-key="agnelo" data-candidate-name="Agnelo Queiroz" data-candidate-number="1310">
+<img src="assets/candidatos/deputado-federal/agnelo-queiroz.jpg" alt="" loading="lazy">
+<span class="federal-picker__option-text"><strong>Agnelo Queiroz</strong><span>1310</span></span>
+</button><button class="federal-picker__option" type="button" role="option" aria-selected="false" data-candidate-key="marcia" data-candidate-name="Márcia Abrahão" data-candidate-number="1331">
+<img src="assets/candidatos/deputado-federal/marcia-abrahao.jpg" alt="" loading="lazy">
+<span class="federal-picker__option-text"><strong>Márcia Abrahão</strong><span>1331</span></span>
+</button><button class="federal-picker__option" type="button" role="option" aria-selected="false" data-candidate-key="marivaldo" data-candidate-name="Marivaldo Pereira" data-candidate-number="1300">
+<img src="assets/candidatos/deputado-federal/marivaldo-pereira.jpg" alt="" loading="lazy">
+<span class="federal-picker__option-text"><strong>Marivaldo Pereira</strong><span>1300</span></span>
+</button><button class="federal-picker__option" type="button" role="option" aria-selected="false" data-candidate-key="policarpo" data-candidate-name="Policarpo" data-candidate-number="1313">
+<img src="assets/candidatos/deputado-federal/policarpo.jpg" alt="" loading="lazy">
+<span class="federal-picker__option-text"><strong>Policarpo</strong><span>1313</span></span>
+</button><button class="federal-picker__option" type="button" role="option" aria-selected="false" data-candidate-key="rosilene" data-candidate-name="Rosilene Corrêa" data-candidate-number="1333">
+<img src="assets/candidatos/deputado-federal/rosilene-correa.jpg" alt="" loading="lazy">
+<span class="federal-picker__option-text"><strong>Rosilene Corrêa</strong><span>1333</span></span>
+</button><button class="federal-picker__option" type="button" role="option" aria-selected="false" data-candidate-key="ruth" data-candidate-name="Ruth Venceremos" data-candidate-number="1361">
+<img src="assets/candidatos/deputado-federal/ruth-venceremos.jpg" alt="" loading="lazy">
+<span class="federal-picker__option-text"><strong>Ruth Venceremos</strong><span>1361</span></span>
+</button><button class="federal-picker__option" type="button" role="option" aria-selected="false" data-candidate-key="vanessa" data-candidate-name="Vanessa é o Bicho" data-candidate-number="1324">
+<img src="assets/candidatos/deputado-federal/vanessa-e-o-bicho.jpg" alt="" loading="lazy">
+<span class="federal-picker__option-text"><strong>Vanessa é o Bicho</strong><span>1324</span></span>
+</button>
+      </div>
+      <input id="cola-dep-federal-nome" name="dep-federal-nome" type="hidden" value="">
+      <input id="cola-dep-federal-numero" name="dep-federal-numero" type="hidden" value="">
+    </div>
+  </div>
+</li>
 
               <li class="voter-note__card voter-note__card--fixed"><div class="voter-note__order">2</div><div class="voter-note__portrait"><img src="assets/candidatos/fabiano-trompetista.jpg" alt="Fabiano Trompetista"></div><div class="voter-note__content"><label class="voter-note__office" for="cola-dep-distrital-nome">Deputado Distrital</label><div class="voter-note__fields"><div class="voter-note__field voter-note__field--name"><span>Nome</span><input id="cola-dep-distrital-nome" name="dep-distrital-nome" type="text" value="Fabiano Trompetista" readonly></div><div class="voter-note__field voter-note__field--number"><span>Número</span><input id="cola-dep-distrital-numero" name="dep-distrital-numero" type="text" value="13007" readonly></div></div></div></li>
 
@@ -1343,6 +1382,6 @@
       </button>
     </div>
   </div>
-  <script src="script-v28.js" defer></script>
+  <script src="script-v29.js" defer></script>
 </body>
 </html>
