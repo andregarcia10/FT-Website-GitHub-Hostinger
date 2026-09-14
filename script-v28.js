@@ -399,10 +399,14 @@ function initVoterNote() {
 
   const endpointIsConfigured = () => /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec(?:\?.*)?$/.test(registrationEndpoint);
 
-  // Envia o cadastro ao Apps Script por um POST HTML tradicional em uma
-  // janela auxiliar. Isso evita depender de fetch/sendBeacon/CORS no GitHub Pages.
-  // A janela é aberta diretamente pelo clique do usuário e recebe o POST real.
+  // Envia o cadastro ao Apps Script por POST HTML tradicional.
+  // No mobile o POST usa um iframe invisível, evitando abrir a resposta do Apps Script
+  // em uma aba/janela (o comportamento que fazia aparecer echo/JSON no iPhone).
+  // No desktop mantemos a janela auxiliar porque ela também é reaproveitada no fluxo
+  // de abertura do WhatsApp para Windows/Web.
   let lastRegistrationWindow = null;
+  const isMobileDevice = () => /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+
   const registerIdentity = action => {
     if(!endpointIsConfigured()) throw new Error('endpoint_nao_configurado');
 
@@ -419,20 +423,32 @@ function initVoterNote() {
       website: ''
     };
 
-    const windowName = `cola_registration_${token}`;
-    const registrationWindow = window.open('', windowName, 'width=480,height=320,resizable=yes,scrollbars=yes');
-    if(!registrationWindow) throw new Error('popup_bloqueado');
-    lastRegistrationWindow = registrationWindow;
+    const targetName = `cola_registration_${token}`;
+    let registrationWindow = null;
+    let hiddenFrame = null;
 
-    try{
-      registrationWindow.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Registrando dados</title></head><body style="font-family:Arial,sans-serif;padding:24px"><p>Registrando seus dados…</p></body></html>');
-      registrationWindow.document.close();
-    }catch(_error){}
+    if(isMobileDevice()) {
+      hiddenFrame = document.createElement('iframe');
+      hiddenFrame.name = targetName;
+      hiddenFrame.setAttribute('aria-hidden', 'true');
+      hiddenFrame.tabIndex = -1;
+      hiddenFrame.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;border:0;left:-9999px;top:-9999px';
+      document.body.appendChild(hiddenFrame);
+      lastRegistrationWindow = null;
+    } else {
+      registrationWindow = window.open('', targetName, 'width=480,height=320,resizable=yes,scrollbars=yes');
+      if(!registrationWindow) throw new Error('popup_bloqueado');
+      lastRegistrationWindow = registrationWindow;
+      try{
+        registrationWindow.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Registrando dados</title></head><body style="font-family:Arial,sans-serif;padding:24px"><p>Registrando seus dados…</p></body></html>');
+        registrationWindow.document.close();
+      }catch(_error){}
+    }
 
     const postForm = document.createElement('form');
     postForm.method = 'POST';
     postForm.action = registrationEndpoint;
-    postForm.target = windowName;
+    postForm.target = targetName;
     postForm.style.display = 'none';
 
     Object.entries(payload).forEach(([name, value]) => {
@@ -447,11 +463,11 @@ function initVoterNote() {
     postForm.submit();
     postForm.remove();
 
-    // Para impressão/download, a janela é apenas temporária. No fluxo do WhatsApp,
-    // ela será reaproveitada logo abaixo para abrir o app/web depois do POST.
-    if(action !== 'whatsapp') {
+    if(hiddenFrame) {
+      window.setTimeout(() => hiddenFrame.remove(), 8000);
+    } else if(action !== 'whatsapp') {
       window.setTimeout(() => {
-        try{ if(!registrationWindow.closed) registrationWindow.close(); }catch(_error){}
+        try{ if(registrationWindow && !registrationWindow.closed) registrationWindow.close(); }catch(_error){}
       }, 6500);
     }
 
@@ -686,42 +702,45 @@ function initVoterNote() {
     }
   });
 
-  whatsappButtons.forEach(button => button.addEventListener('click', () => {
+  whatsappButtons.forEach(button => button.addEventListener('click', async () => {
     if(!authorizeAction('whatsapp')) return;
     const original = button.innerHTML;
     button.disabled = true;
-    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Abrindo WhatsApp…';
-    if(shareStatus) shareStatus.textContent = 'Preparando sua cola e abrindo o WhatsApp…';
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Preparando…';
+    if(shareStatus) shareStatus.textContent = 'Preparando sua cola para compartilhar…';
 
     try{
-      // Links do WhatsApp não permitem anexar automaticamente um arquivo local.
-      // Por isso, salvamos a imagem da cola e abrimos diretamente o WhatsApp.
       const file = createFile();
-      downloadFile(file);
-
-      const text = 'Quero compartilhar com você uma sugestão de cola eleitoral. Vou anexá-la a seguir nesta conversa. Fabiano Trompetista para Deputado Distrital — 13007.';
+      const text = 'Quero compartilhar com você uma sugestão de cola eleitoral. Fabiano Trompetista para Deputado Distrital — 13007.';
       const encoded = encodeURIComponent(text);
-      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+      const isMobile = isMobileDevice();
 
       if(isMobile){
-        // No celular, usa o protocolo do aplicativo na própria aba apenas porque
-        // essa é a navegação esperada do sistema móvel.
-        window.location.href = `whatsapp://send?text=${encoded}`;
-
-        // Se o protocolo não estiver disponível, cai para o link oficial.
-        window.setTimeout(() => {
-          if(document.visibilityState === 'visible'){
-            window.location.href = `https://wa.me/?text=${encoded}`;
-          }
-        }, 1200);
+        // Em iPhone/Android, compartilhar o próprio arquivo pelo painel nativo é a
+        // única forma confiável de levar a imagem anexada ao WhatsApp sem expor
+        // a resposta do Apps Script nem obrigar o usuário a procurar o PNG baixado.
+        const canShareFiles = !!navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }));
+        if(canShareFiles){
+          if(shareStatus) shareStatus.textContent = 'Selecione o WhatsApp no menu de compartilhamento para enviar a imagem.';
+          await navigator.share({
+            files: [file],
+            text,
+            title: 'Cola eleitoral'
+          });
+          if(shareStatus) shareStatus.textContent = 'Cola eleitoral pronta para compartilhamento.';
+        }else{
+          // Fallback para navegadores móveis antigos: salva a imagem e abre o app.
+          downloadFile(file);
+          window.location.href = `whatsapp://send?text=${encoded}`;
+          window.setTimeout(() => {
+            if(document.visibilityState === 'visible') window.location.href = `https://wa.me/?text=${encoded}`;
+          }, 1200);
+          if(shareStatus) shareStatus.textContent = 'A imagem foi salva. No WhatsApp, anexe o arquivo baixado à conversa.';
+        }
       }else{
-        // DESKTOP: a página original nunca é redirecionada.
-        // Abre uma nova aba/janela sincronamente e, nela, tenta primeiro o app
-        // WhatsApp para Windows via protocolo whatsapp://. Só se o navegador
-        // continuar em foco após a tentativa, usa WhatsApp Web como fallback.
-        // Reaproveita a mesma janela que acabou de receber o POST do cadastro.
-        // Assim o clique do usuário não precisa abrir duas janelas e o POST tem tempo
-        // para chegar ao Apps Script antes de seguirmos para o WhatsApp.
+        // Desktop: a página original nunca é redirecionada. A janela usada no POST
+        // é reaproveitada para tentar o aplicativo e, se necessário, o WhatsApp Web.
+        downloadFile(file);
         const whatsappTab = lastRegistrationWindow && !lastRegistrationWindow.closed
           ? lastRegistrationWindow
           : window.open('about:blank', '_blank');
@@ -730,44 +749,33 @@ function initVoterNote() {
           return;
         }
 
-        // Dá tempo para o POST HTML terminar no Apps Script antes de reutilizar
-        // a janela para o WhatsApp. Navegar nela imediatamente poderia abortar o POST.
         window.setTimeout(() => {
           let appLikelyOpened = false;
           const markAppOpened = () => { appLikelyOpened = true; };
-          const onVisibility = () => {
-            if(document.visibilityState === 'hidden') appLikelyOpened = true;
-          };
-
+          const onVisibility = () => { if(document.visibilityState === 'hidden') appLikelyOpened = true; };
           window.addEventListener('blur', markAppOpened, { once: true });
           document.addEventListener('visibilitychange', onVisibility);
 
-          try{
-            if(!whatsappTab.closed){
-              whatsappTab.location.href = `whatsapp://send?text=${encoded}`;
-            }
-          }catch(_){ }
+          try{ if(!whatsappTab.closed) whatsappTab.location.href = `whatsapp://send?text=${encoded}`; }catch(_){ }
 
           window.setTimeout(() => {
             document.removeEventListener('visibilitychange', onVisibility);
-
             if(appLikelyOpened){
               try{ whatsappTab.close(); }catch(_){ }
               return;
             }
-
-            try{
-              if(!whatsappTab.closed){
-                whatsappTab.location.href = `https://web.whatsapp.com/send?text=${encoded}`;
-              }
-            }catch(_){ }
+            try{ if(!whatsappTab.closed) whatsappTab.location.href = `https://web.whatsapp.com/send?text=${encoded}`; }catch(_){ }
           }, 1800);
         }, 3000);
-      }
 
-      if(shareStatus) shareStatus.textContent = 'A imagem da cola foi baixada. O WhatsApp foi aberto; anexe a imagem salva à conversa.';
+        if(shareStatus) shareStatus.textContent = 'A imagem da cola foi baixada. O WhatsApp foi aberto; anexe a imagem salva à conversa.';
+      }
     }catch(error){
-      if(shareStatus) shareStatus.textContent = 'Não foi possível abrir o WhatsApp agora. Use “Baixar cola” e envie a imagem manualmente.';
+      if(error?.name === 'AbortError') {
+        if(shareStatus) shareStatus.textContent = 'Compartilhamento cancelado.';
+      } else {
+        if(shareStatus) shareStatus.textContent = 'Não foi possível compartilhar agora. Use “Baixar cola” e envie a imagem manualmente.';
+      }
     }finally{
       window.setTimeout(() => {
         button.disabled = false;

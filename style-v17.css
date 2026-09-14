@@ -7723,3 +7723,113 @@ textarea:focus-visible{
     line-height:1.32 !important;
   }
 }
+
+/* v37 — Cola Eleitoral: mobile alinhado à remodelagem desktop */
+@media (max-width:700px){
+  #cola-eleitoral .voter-note__form{
+    padding:8px 12px 6px;
+  }
+  #cola-eleitoral .voter-note__card{
+    grid-template-columns:30px 82px minmax(0,1fr) !important;
+    column-gap:10px !important;
+    align-items:center !important;
+    min-height:118px !important;
+    padding:16px 2px !important;
+    border:0 !important;
+    border-bottom:1px solid rgba(83,20,20,.18) !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+  #cola-eleitoral .voter-note__card:last-child{border-bottom:0 !important}
+  #cola-eleitoral .voter-note__portrait{
+    width:78px !important;
+    height:94px !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:4px 4px 0 rgba(83,20,20,.20) !important;
+  }
+  #cola-eleitoral .voter-note__content{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+  }
+  #cola-eleitoral .voter-note__office{
+    margin:0 0 5px !important;
+    font-size:.94rem !important;
+    line-height:1.05 !important;
+  }
+  #cola-eleitoral .voter-note__fields{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:4px !important;
+    width:100% !important;
+    min-width:0 !important;
+  }
+  #cola-eleitoral .voter-note__field,
+  #cola-eleitoral .voter-note__field--name,
+  #cola-eleitoral .voter-note__field--number{
+    width:100% !important;
+    min-width:0 !important;
+  }
+  #cola-eleitoral .voter-note__field input,
+  #cola-eleitoral .voter-note__field input[readonly]{
+    display:block !important;
+    width:100% !important;
+    max-width:none !important;
+    height:auto !important;
+    min-height:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    white-space:normal !important;
+    font-size:clamp(1.04rem,4.8vw,1.28rem) !important;
+    line-height:1.08 !important;
+  }
+  #cola-eleitoral .voter-note__field--number,
+  #cola-eleitoral .voter-note__field--number input,
+  #cola-eleitoral .voter-note__field--number input[readonly]{
+    width:auto !important;
+  }
+  #cola-eleitoral .voter-note__field--number input,
+  #cola-eleitoral .voter-note__field--number input[readonly]{
+    font-size:clamp(2.15rem,9.2vw,2.7rem) !important;
+    line-height:.92 !important;
+    text-align:left !important;
+  }
+  #cola-eleitoral .voter-note__card:first-child .voter-note__field--legend-note p{
+    display:block !important;
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    white-space:normal !important;
+    font-size:.88rem !important;
+    line-height:1.28 !important;
+    text-align:left !important;
+  }
+  #cola-eleitoral .voter-note__card:first-child .voter-note__field--legend-note p strong{
+    display:inline !important;
+    white-space:nowrap !important;
+    color:var(--red,#dc1413) !important;
+    font-size:1.15em !important;
+  }
+}
+
+@media (max-width:390px){
+  #cola-eleitoral .voter-note__card{
+    grid-template-columns:27px 70px minmax(0,1fr) !important;
+    column-gap:8px !important;
+    padding:14px 0 !important;
+  }
+  #cola-eleitoral .voter-note__portrait{width:68px !important;height:84px !important}
+  #cola-eleitoral .voter-note__office{font-size:.86rem !important}
+  #cola-eleitoral .voter-note__field input,
+  #cola-eleitoral .voter-note__field input[readonly]{font-size:1rem !important}
+  #cola-eleitoral .voter-note__field--number input,
+  #cola-eleitoral .voter-note__field--number input[readonly]{font-size:2.05rem !important}
+  #cola-eleitoral .voter-note__card:first-child .voter-note__field--legend-note p{font-size:.8rem !important}
+}
