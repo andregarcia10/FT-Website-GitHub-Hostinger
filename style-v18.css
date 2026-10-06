@@ -7990,3 +7990,32 @@ textarea:focus-visible{
     justify-content: flex-start !important;
   }
 }
+
+
+/* v24 — SOMENTE MOBILE: bloco REAL das frases rotativas no canto inferior esquerdo */
+@media (max-width: 700px) {
+  #inicio .hero__title-wrap {
+    position: absolute !important;
+    left: var(--pad) !important;
+    right: var(--pad) !important;
+    top: auto !important;
+    bottom: 5.5rem !important;
+    transform: none !important;
+    margin: 0 !important;
+    width: auto !important;
+    text-align: left !important;
+    z-index: 6 !important;
+  }
+
+  #inicio .hero__title {
+    margin: 0 !important;
+    text-align: left !important;
+  }
+
+  #inicio .hero__title-slot {
+    left: 0 !important;
+    right: auto !important;
+    text-align: left !important;
+    transform-origin: left bottom !important;
+  }
+}
