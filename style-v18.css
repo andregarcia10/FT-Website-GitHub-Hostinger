@@ -8019,3 +8019,36 @@ textarea:focus-visible{
     transform-origin: left bottom !important;
   }
 }
+
+
+/* v25 — CORREÇÃO CONFIRMADA NO HTML: move o contêiner REAL das frases somente no mobile */
+@media (max-width: 700px) {
+  #inicio .hero__video-layout {
+    position: relative !important;
+  }
+
+  #inicio .hero__video-content {
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 5.5rem !important;
+    width: calc(100% - 28px) !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+    z-index: 6 !important;
+  }
+
+  #inicio .hero__video-content .hero__title {
+    margin: 0 !important;
+    text-align: left !important;
+  }
+
+  #inicio .hero__video-content .hero__title-slide {
+    align-items: flex-start !important;
+    justify-content: center !important;
+    text-align: left !important;
+  }
+}
