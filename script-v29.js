@@ -268,6 +268,46 @@ function initHeroVideoPlaylist() {
 
   videos[0].play().catch(() => {});
 }
+
+// ===== hero-video-sound-toggle.js =====
+function initHeroVideoSoundToggle() {
+  const button = qs('#hero-sound-toggle');
+  const videos = qsa('[data-hero-video]');
+  if (!button || !videos.length) return;
+
+  const icon = qs('i', button);
+  const label = qs('span', button);
+  let soundOn = false;
+
+  const render = () => {
+    button.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+    button.setAttribute('aria-label', soundOn ? 'Desligar som dos vídeos' : 'Ativar som dos vídeos');
+    button.title = soundOn ? 'Desligar som dos vídeos' : 'Ativar som dos vídeos';
+    if (label) label.textContent = soundOn ? 'Som ligado' : 'Som desligado';
+    if (icon) {
+      icon.classList.toggle('fa-volume-high', soundOn);
+      icon.classList.toggle('fa-volume-xmark', !soundOn);
+    }
+  };
+
+  const applySound = () => {
+    videos.forEach(video => { video.muted = !soundOn; });
+    // O clique do usuário libera áudio; garante que o vídeo ativo continue tocando.
+    const active = videos.find(video => video.classList.contains('is-active')) || videos[0];
+    active.play().catch(() => {});
+    render();
+  };
+
+  // Autoplay começa mudo, conforme exigido pelos navegadores.
+  videos.forEach(video => { video.muted = true; });
+  render();
+
+  button.addEventListener('click', () => {
+    soundOn = !soundOn;
+    applySound();
+  });
+}
+
 // ===== lightbox.js =====
 function initLightbox() {
   const lightbox = qs('#lightbox');
@@ -1293,7 +1333,7 @@ function initDynamicAgenda(){
       ));
     }
 
-    content.append(create('h3', '', item.evento || 'Compromisso da campanha'));
+    content.append(create('h3', '', item.evento || 'Luta da campanha'));
 
     const meta = create('p');
     appendMeta(meta, 'fa-regular fa-clock', item.horario);
@@ -1317,7 +1357,7 @@ function initDynamicAgenda(){
       const empty = create('div', 'agenda__empty');
       empty.append(
         icon('fa-regular fa-calendar'),
-        create('strong', '', 'Novos compromissos serão divulgados em breve.'),
+        create('strong', '', 'Novos lutas serão divulgados em breve.'),
         create('span', '', 'A equipe da campanha está atualizando a agenda.')
       );
       list.append(empty);
@@ -2573,6 +2613,7 @@ function initApp() {
   initCounters();
   initHero();
   initHeroVideoPlaylist();
+  initHeroVideoSoundToggle();
   const lightbox = initLightbox();
   initGallery(lightbox.open);
   initLazyImages();
